@@ -17,7 +17,7 @@ app.set('port', port);
 
 // Config
 if (process.env.NODE_ENV === 'production') {
-  app.set('appDomain', 'up.bloco.io');
+  app.set('appDomain', 'https://up.bloco.io');
 } else {
   app.set('appDomain', 'http://localhost:' + app.get('port'));
 }
