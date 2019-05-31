@@ -4,7 +4,7 @@ const GaiaFile = require('../lib/gaia_file');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'The Best Blockstack App Ever' });
+  res.render('index', { title: 'Envelop' });
 });
 
 router.get('/d/:username/:filename', function(req, res, next) {
