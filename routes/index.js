@@ -13,23 +13,9 @@ router.get('/d/:username/:filename', function(req, res, next) {
     username += '.id.blockstack';
   }
 
-  const gaiaFile = new GaiaFile(req.app.get('appDomain'), username, req.params.filename);
-
-  gaiaFile
-    .fetchInfo()
-    .then((infoJson) => {
-      const info = JSON.parse(infoJson);
-      
-      gaiaFile
-        .fetchFullUrl(info['url'])
-        .then((fullUrl) => {
-          res.render('download', {
-            name: info.url.split('/').pop(),
-            url: fullUrl,
-            size: info.size
-          });
-        });
-    })
+  new GaiaFile(req.app.get('appDomain'), username, req.params.filename)
+    .fetch()
+    .then(file => res.render('download', file))
     .catch(() => res.status(404).send('Not Found'));
 });
 
