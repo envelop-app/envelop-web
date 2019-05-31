@@ -5,9 +5,14 @@ Install dependencies:
 yarn install
 ```
 
-Start server:
+Start local server:
 ```
 DEBUG=blockstack-web:* npm start
+```
+
+Start local server with access to "production" data:
+```
+APP_DOMAIN=https://envelop.app DEBUG=blockstack-web:* npm start
 ```
 
 Open in  browser:

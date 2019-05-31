@@ -16,7 +16,9 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 // Config
-if (process.env.NODE_ENV === 'production') {
+if (process.env.APP_DOMAIN) {
+  app.set('appDomain', process.env.APP_DOMAIN);
+} else if (process.env.NODE_ENV === 'production') {
   app.set('appDomain', 'https://envelop.app');
 } else {
   app.set('appDomain', 'http://localhost:' + app.get('port'));
