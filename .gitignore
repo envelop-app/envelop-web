@@ -3,3 +3,6 @@
 .DS_Store
 .sass-cache
 build/
+
+.tmp
+node_modules
