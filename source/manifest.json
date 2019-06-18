@@ -1,0 +1,10 @@
+{
+  "name": "Envelop",
+  "start_url": "https://envelop.app",
+  "description": "Share private files easily.",
+  "icons": [{
+    "src": "https://envelop.app/images/manifest-icon.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }]
+}

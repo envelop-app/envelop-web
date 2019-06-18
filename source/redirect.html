@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hello, Blockstack!</title>
+  <script>
+  function getParameterByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+  }
+
+  var authResponse = getParameterByName('authResponse')
+  window.location="https://envelop.app/redirect_mobile/" + authResponse
+  </script>
+<body>
+</body>
+</html>

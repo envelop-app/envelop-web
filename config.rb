@@ -1,7 +1,14 @@
 # Per-page layout changes
+
 page '/*.xml', layout: false
 page '/*.json', layout: false
 page '/*.txt', layout: false
+
+# Include special files (Middleman ignores .dotfiles)
+
+ready do
+  proxy '.well-known/assetlinks.json', 'well-known/assetlinks.json', ignore: true
+end
 
 # Helpers
 

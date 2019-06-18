@@ -1,0 +1,23 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.envelop",
+      "sha256_cert_fingerprints":
+      [
+        "2D:05:27:07:C6:F2:4C:5B:42:A6:95:0A:1D:16:24:45:7A:64:49:81:1B:2A:F8:CC:47:D5:3D:2B:9A:AA:17:D9",
+        "11:1A:90:70:A5:0F:0B:79:E7:CB:63:83:7E:DB:2B:7E:BF:CA:84:14:4C:E3:1D:82:9F:6F:D3:89:96:AF:0A:C3"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.envelop.debug",
+      "sha256_cert_fingerprints":
+      ["02:18:22:9B:1E:0E:55:26:63:31:5D:E5:D2:C3:F6:D7:FE:AB:29:AB:E1:AB:54:CA:5E:33:27:C3:F8:70:89:8E"]
+    }
+  }
+]
