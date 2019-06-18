@@ -6,3 +6,9 @@
   from = "/d/:username/:hash"
   to = "/download.html"
   status = 200
+
+[[headers]]
+  for = "/manifest.json"
+    [headers.values]
+      Access-Control-Allow-Origin = "*"
+      Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept"
