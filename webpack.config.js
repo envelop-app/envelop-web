@@ -5,6 +5,7 @@ var autoprefixer = require('autoprefixer');
 module.exports = {
   entry: {
     site: [
+      'babel-polyfill',
       path.join(__dirname, 'assets', 'javascripts', 'index.js'),
       path.join(__dirname, 'assets', 'stylesheets', 'index.scss')
     ]
@@ -51,4 +52,9 @@ module.exports = {
       }
     ]
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  }
 };

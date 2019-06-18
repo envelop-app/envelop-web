@@ -1,0 +1,7 @@
+[[redirects]]
+  from = "/d/:username/:hash"
+  to = "/download.html"
+  status = 200
+
+[dev]
+  port = 4000

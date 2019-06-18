@@ -1,13 +1,16 @@
 {
   "scripts": {
     "start": "./node_modules/webpack/bin/webpack.js --watch --progress --color",
-    "build": "./node_modules/webpack/bin/webpack.js --bail"
+    "build": "./node_modules/webpack/bin/webpack.js --bail",
+    "netlify": "./node_modules/netlify-cli/bin/run dev",
+    "netlify-live": "./node_modules/netlify-cli/bin/run dev --live"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "autoprefixer": "^9.6.0",
     "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
     "css-loader": "^3.0.0",
     "extract-loader": "^3.1.0",
     "file-loader": "^4.0.0",
@@ -20,6 +23,9 @@
   },
   "dependencies": {
     "@material/ripple": "^2.3.0",
-    "material-components-web": "^2.3.1"
+    "blockstack": "^19.1.0",
+    "material-components-web": "^2.3.1",
+    "netlify-cli": "^2.11.23",
+    "pretty-bytes": "^5.2.0"
   }
 }
