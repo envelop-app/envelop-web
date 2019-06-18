@@ -1,3 +1,6 @@
+[build]
+  command = "middleman build"
+
 [[redirects]]
   from = "/d/:username/:hash"
   to = "/download.html"
