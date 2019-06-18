@@ -1,8 +1,3 @@
-# Server configuration
-
-set :host, '0.0.0.0'
-set :port, 4000
-
 # Per-page layout changes
 page '/*.xml', layout: false
 page '/*.json', layout: false
