@@ -1,5 +1,6 @@
 [build]
   command = "middleman build"
+  publish = "build/"
 
 [[redirects]]
   from = "/d/:username/:hash"
