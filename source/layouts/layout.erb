@@ -20,7 +20,7 @@
     <%= javascript_include_tag "vendors~site" %>
     <%= javascript_include_tag "site" %>
   </head>
-  <body>
+  <body class="ev-body__<%= current_page.data.name %>">
     <%= yield %>
   </body>
 </html>

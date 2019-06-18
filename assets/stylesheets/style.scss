@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Questrial&display=swap');
 
+$ev-yellow: #FBC02D;
+
 body {
   font-size: 18px;
 
@@ -41,8 +43,12 @@ header .cta {
 
 /* Homepage */
 
+.ev-body__homepage {
+  background: $ev-yellow;
+}
+
 .homepage {
-  background: #FBC02D;
+  background: $ev-yellow;
 }
 
 .cta .google-play img {
@@ -153,7 +159,7 @@ footer .made {
 
 /* Download */
 
-.download {
+.ev-body__download {
   background: white;
 }
 
@@ -209,7 +215,7 @@ footer .made {
 
 .button {
   display: inline-block;
-  background: #FBC02D;
+  background: $ev-yellow;
   padding: 0.75rem 1.25rem 0.7rem;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.5);
