@@ -28,3 +28,7 @@ activate :external_pipeline,
 
 config[:assets_dir] = 'assets/javascripts'
 config[:css_dir] = 'assets/stylesheets'
+
+configure :build do
+  activate :asset_hash, exts: %w(.css .js)
+end
