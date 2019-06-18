@@ -4,10 +4,13 @@ var autoprefixer = require('autoprefixer');
 
 module.exports = {
   entry: {
-    site: [
+    common: [
+      path.join(__dirname, 'assets', 'javascripts', 'common.js'),
+      path.join(__dirname, 'assets', 'stylesheets', 'common.scss')
+    ],
+    download: [
       'babel-polyfill',
-      path.join(__dirname, 'assets', 'javascripts', 'index.js'),
-      path.join(__dirname, 'assets', 'stylesheets', 'index.scss')
+      path.join(__dirname, 'assets', 'javascripts', 'download.js'),
     ]
   },
 
@@ -24,7 +27,7 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: 'site.css',
+              name: 'common.css',
             },
           },
           { loader: 'extract-loader' },

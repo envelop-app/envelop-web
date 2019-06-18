@@ -30,6 +30,7 @@ function updateDownloadPage(file) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("cona")
   const urlData = parseUrl();
 
   var username = urlData.username;

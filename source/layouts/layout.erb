@@ -16,9 +16,8 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
     <![endif]-->
 
-    <%= stylesheet_link_tag "site" %>
-    <%= javascript_include_tag "vendors~site" %>
-    <%= javascript_include_tag "site" %>
+    <%= stylesheet_link_tag "common" %>
+    <%= javascript_include_tag "common" %>
   </head>
   <body class="ev-body__<%= current_page.data.name %>">
     <%= yield %>
