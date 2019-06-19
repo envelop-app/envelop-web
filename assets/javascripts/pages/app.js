@@ -1,4 +1,7 @@
 import {AppConfig, Person, UserSession} from 'blockstack';
+import React from "react";
+import ReactDOM from "react-dom";
+import FileListComponent from '../components/file_list.jsx'
 
 const appDomain = window.location.origin;
 const scopes = ['store_write', 'publish_data'];
@@ -13,9 +16,19 @@ function showNavbarUser(profile) {
   displayNameNode.innerText = displayName;
 }
 
+function mountFileList() {
+  const container = document.querySelector('.js-file-list-container');
+  ReactDOM.render(<FileListComponent />, container);
+}
+
+function mountComponents() {
+  mountFileList();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   if (userSession.isUserSignedIn()) {
     showNavbarUser(userSession.loadUserData());
+    mountComponents();
   } else if (userSession.isSignInPending()) {
     userSession.handlePendingSignIn().then(userData => {
       window.location = window.location.href;

@@ -64,7 +64,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         query: {
           presets: ['@babel/preset-env'],
@@ -77,5 +77,10 @@ module.exports = {
       chunks: 'all',
       name: 'vendors'
     }
+  },
+  watchOptions: {
+    aggregateTimeout: 600,
+    poll: 1000,
+    ignored: /node_modules/
   }
 };
