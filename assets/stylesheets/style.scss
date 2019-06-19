@@ -21,13 +21,13 @@ a:hover {
  text-decoration: underline; 
 }
 
-header {
+.header {
   display: flex;
   align-items: center;
   padding: 1rem 2rem 0;
 }
 
-header .logo {
+.header .logo {
   font-size: 2rem;
   flex-grow: 1;
 }
@@ -36,7 +36,7 @@ header .logo {
   width: 180px;
 }
 
-header .cta {
+.header .cta {
   text-align: right;
   flex-grow: 1;
 }
