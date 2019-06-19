@@ -1,2 +1,16 @@
 @import "./reset";
 @import "./style";
+@import "./pages/*";
+
+.hide {
+  display: none;
+}
+
+.ev-login-controls {
+  padding: 40px;
+  text-align: center;
+
+  & > a {
+    margin: 10px;
+  }
+}

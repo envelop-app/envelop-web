@@ -1,4 +1,4 @@
-import GaiaFile from './lib/gaia_file';
+import GaiaFile from '../lib/gaia_file';
 
 const appDomain = 'https://envelop.app';
 
@@ -30,7 +30,6 @@ function updateDownloadPage(file) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("cona")
   const urlData = parseUrl();
 
   var username = urlData.username;

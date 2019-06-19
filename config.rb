@@ -1,3 +1,12 @@
+configure :development do
+  config[:host] = "http://localhost:3000"
+end
+
+configure :build do
+  config[:host] = "http://envelop.app"
+  activate :asset_hash, exts: %w(.css .js)
+end
+
 # Per-page layout changes
 
 page '/*.xml', layout: false
@@ -35,7 +44,3 @@ activate :external_pipeline,
 
 config[:assets_dir] = 'assets/javascripts'
 config[:css_dir] = 'assets/stylesheets'
-
-configure :build do
-  activate :asset_hash, exts: %w(.css .js)
-end
