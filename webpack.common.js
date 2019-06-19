@@ -72,4 +72,10 @@ module.exports = {
       }
     ]
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      name: 'vendors'
+    }
+  }
 };
