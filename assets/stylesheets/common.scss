@@ -1,4 +1,9 @@
 @import "./reset";
+@import "./variables";
+
+// Overrides
+$mdc-theme-primary: $ev-yellow;
+
 @import "./style";
 @import "./pages/*";
 
