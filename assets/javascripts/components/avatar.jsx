@@ -59,7 +59,9 @@ class AvatarComponent extends Component {
       <div ref={this.anchorRef} onClick={this.onOpen} style={{width: '100%', height: '100%'}}>
         <a href="#" className="ev-navbar__item-link">
           <span style={{paddingRight: '10px'}}>{this.displayName()}</span>
-          <img src={this.avatarUrl()} className="ev-navbar__avatar" alt="avatar"/>
+          <span className="ev-navbar__avatar">
+            <img src={this.avatarUrl()} alt="avatar"/>
+          </span>
         </a>
         <Menu
           open={this.state.open}

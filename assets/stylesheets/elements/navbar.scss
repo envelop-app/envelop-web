@@ -50,7 +50,14 @@ $logo-height: 30px;
 }
 
 .ev-navbar__avatar {
+  width: 40px;
   height: 40px;
+  background-color: $gray-light;
   border-radius: 100%;
+
+  img {
+    height: 40px;
+    border-radius: 100%;
+  }
 }
 
