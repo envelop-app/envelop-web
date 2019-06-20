@@ -32,7 +32,7 @@ class DocumentCardComponent extends Component {
     return (
       <div className="ev-document-card">
         <div className="ev-document-card__media">
-          <img src=""/>
+          <img src="/images/card-file.svg"/>
         </div>
         <div className="ev-document-card__body">
           <div className="ev-document-card__body-left">
