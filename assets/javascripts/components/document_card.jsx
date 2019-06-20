@@ -3,12 +3,11 @@ import ReactDOM from "react-dom";
 import copy from 'copy-to-clipboard';
 import { privateUserSession } from '../lib/blockstack_client'
 import Toast from '../lib/toast.jsx'
-import prettyBytes from 'pretty-bytes';
 
 class DocumentCardComponent extends Component {
   shareUrl() {
     const username = privateUserSession.loadUserData().username;
-    return `${window.location.origin}/d/${username}/${this.props.id}`;
+    return `${window.location.origin}/d/${username}/${this.props.doc.id}`;
   }
 
   handleCopyLinkClick(evt) {
@@ -22,13 +21,8 @@ class DocumentCardComponent extends Component {
     return `${month} ${date.getDate()}, ${date.getHours()}:${date.getMinutes()}`;
   }
 
-  formatSize(size) {
-    return prettyBytes(size);
-  }
-
   render() {
-    const { url, size, created_at } = this.props;
-    const name = url.split('/').pop();
+    const doc = this.props.doc;
     return (
       <div className="ev-document-card">
         <div className="ev-document-card__media">
@@ -36,9 +30,9 @@ class DocumentCardComponent extends Component {
         </div>
         <div className="ev-document-card__body">
           <div className="ev-document-card__body-left">
-            <div className="ev-document-card__text-title">{name}</div>
-            <div className="ev-document-card__text-primary">{this.formatSize(size)}</div>
-            <div className="ev-document-card__text-secondary">{this.formatDate(created_at)}</div>
+            <div className="ev-document-card__text-title">{doc.getName()}</div>
+            <div className="ev-document-card__text-primary">{doc.getSizePretty()}</div>
+            <div className="ev-document-card__text-secondary">{this.formatDate(doc.created_at)}</div>
           </div>
           <div className="ev-document-card__body-right">
             <a href={this.shareUrl()} className="ev-document-card__open" target="_blank"></a>

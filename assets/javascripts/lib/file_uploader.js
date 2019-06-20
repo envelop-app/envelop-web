@@ -1,6 +1,7 @@
 import { Random } from 'random-js'
 import { privateUserSession } from './blockstack_client';
 import GaiaDocument from './gaia_document';
+import GaiaIndex from './gaia_index';
 
 const publicFileOptions = { encrypt: false, verify: false };
 
@@ -21,7 +22,7 @@ class FileUploader {
         this.reader.onload = (evt) => {
           resolve(this.uploadRawFile(evt.target.result).then(() => true));
         }
-        this.reader.readAsBinaryString(this.file);
+        this.reader.readAsArrayBuffer(this.file);
       }
     });
   }
@@ -34,23 +35,15 @@ class FileUploader {
 
   uploadGaiaDocument() {
     const gaiaDocument = this.buildGaiaDocument();
-    const contents = JSON.stringify(gaiaDocument.serialize());
-    return this.putPublicFile(gaiaDocument.id, contents)
+    return this.putPublicFile(gaiaDocument.id, JSON.stringify(gaiaDocument))
       .then(() => this.updateIndex(gaiaDocument));
   }
 
   updateIndex(gaiaDocument) {
     return privateUserSession.getFile('index').then(index => {
-      const serializedDocument = gaiaDocument.serialize();
-
-      if (index) {
-        index = JSON.parse(index);
-        index.push(serializedDocument);
-      } else {
-        index = [serializedDocument];
-      }
-
-      return privateUserSession.putFile('index', JSON.stringify(index));
+      const gaiaIndex = new GaiaIndex(JSON.parse(index));
+      gaiaIndex.addDocument(gaiaDocument);
+      return privateUserSession.putFile('index', JSON.stringify(gaiaIndex));
     });
   }
 

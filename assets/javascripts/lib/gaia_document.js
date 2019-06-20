@@ -49,6 +49,10 @@ class GaiaDocument {
       version: this.version || null
     };
   }
+
+  toJSON() {
+    return this.serialize();
+  }
 }
 
 export default GaiaDocument;

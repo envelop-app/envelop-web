@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { privateUserSession } from '../lib/blockstack_client';
+import GaiaIndex from '../lib/gaia_index'
 import DocumentCardComponent from "./document_card.jsx"
 
 class DocumentListComponent extends Component {
@@ -11,8 +12,8 @@ class DocumentListComponent extends Component {
 
   componentDidMount() {
     privateUserSession.getFile('index').then(index => {
-      const documents = index ? JSON.parse(index) : [];
-      this.setState({ documents: this.sortDocuments(documents) });
+      const gaiaIndex = new GaiaIndex(JSON.parse(index));
+      this.setState({ documents: this.sortDocuments(gaiaIndex.documents) });
     })
   }
 
@@ -24,7 +25,7 @@ class DocumentListComponent extends Component {
 
   renderDocuments() {
     return this.state.documents.map(doc => {
-      return <DocumentCardComponent key={doc.id} {...doc} />;
+      return <DocumentCardComponent key={doc.id} doc={doc} />;
     });
   }
 
