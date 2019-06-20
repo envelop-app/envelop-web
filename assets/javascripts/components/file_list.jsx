@@ -1,45 +1,24 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import { privateUserSession } from '../lib/blockstack_client';
 import FileCardComponent from "./file_card.jsx"
-import GaiaFile from '../lib/gaia_file'
 
 class FileListComponent extends Component {
   constructor() {
     super();
-    this.state = {
-      files: [
-        {
-          name: 'My_Fileasdaa-sd-adas-das-dadasasd-.png',
-          date: 'May 31, 11:45',
-          size: '123 Kb'
-        },
-        {
-          name: 'Sedond_File.png',
-          date: 'May 31, 11:45',
-          size: '44 Kb'
-        },
-        {
-          name: 'Third_File.png',
-          date: 'May 31, 11:45',
-          size: '44 Kb'
-        },
-        {
-          name: 'Third_Fe.png',
-          date: 'May 31, 11:45',
-          size: '44 Kb'
-        },
-        {
-          name: 'Thd_File.png',
-          date: 'May 31, 11:45',
-          size: '44 Kb'
-        }
-      ]
-    };
+    this.state = { files: [] };
+  }
+
+  componentDidMount() {
+    privateUserSession.getFile('index').then(index => {
+      const files = index ? JSON.parse(index) : [];
+      this.setState({ files });
+    })
   }
 
   renderFiles() {
     return this.state.files.map(file => {
-      return <FileCardComponent key={file.name} {...file} />;
+      return <FileCardComponent key={file.id} {...file} />;
     });
   }
 

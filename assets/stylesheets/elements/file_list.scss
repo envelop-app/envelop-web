@@ -6,7 +6,7 @@ $text-secondary: rgba(0, 0, 0, 0.6);
 
 .ev-file-list-container {
   margin: auto;
-  max-width: 1120px;
+  max-width: 1268px;
 }
 
 .ev-file-list {
@@ -44,10 +44,22 @@ $text-secondary: rgba(0, 0, 0, 0.6);
 }
 
 .ev-file-card__body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 16px;
 }
 
-.ev-file-card__text-primary {
+.ev-file-card__body-left {
+  width: 80%;
+}
+
+.ev-file-card__body-right {
+  text-align: right;
+  align-self: flex-start;
+}
+
+.ev-file-card__text-title {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -56,13 +68,20 @@ $text-secondary: rgba(0, 0, 0, 0.6);
   padding-bottom: 4px;
 }
 
-.ev-file-card__text-secondary {
+.ev-file-card__open {
+  display: block;
+  height: 24px;
+  width: 24px;
+  background-image: url("/images/baseline-open_in_new-24px.svg");
+}
+
+.ev-file-card__text-primary {
   font-size: 15px;
   color: $text-primary;
   padding-bottom: 4px;
 }
 
-.ev-file-card__text-tertiary {
+.ev-file-card__text-secondary {
   font-size: 15px;
   color: $text-secondary;
   padding-bottom: 4px;

@@ -25,9 +25,12 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@material/snackbar": "^2.3.0",
     "blockstack": "^19.1.0",
+    "copy-to-clipboard": "^3.2.0",
     "material-components-web": "^2.3.1",
     "pretty-bytes": "^5.2.0",
+    "random-js": "^2.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   }

@@ -1,10 +1,6 @@
-import {AppConfig, Person, UserSession} from 'blockstack';
+import { privateUserSession } from '../lib/blockstack_client';
 
-const appDomain = window.location.origin;
-const redirectURI = `${window.location.origin}/app.html`;
-const scopes = ['store_write', 'publish_data'];
-const appConfig = new AppConfig(scopes, appDomain);
-const userSession = new UserSession({ appConfig: appConfig });
+const redirectURI = window.location.origin + '/app.html';
 
 document.addEventListener("DOMContentLoaded", event => {
   const loginControlsNode = document.querySelector('.ev-login-controls');
@@ -18,20 +14,20 @@ document.addEventListener("DOMContentLoaded", event => {
 
   loginBtn.addEventListener('click', event => {
     event.preventDefault();
-    userSession.redirectToSignIn(redirectURI);
+    privateUserSession.redirectToSignIn(redirectURI);
   })
 
   logoutBtn.addEventListener('click', event => {
     event.preventDefault();
-    userSession.signUserOut();
+    privateUserSession.signUserOut();
     window.location = window.location.href;
   });
 
-  if (userSession.isUserSignedIn()) {
+  if (privateUserSession.isUserSignedIn()) {
     goToAppBtn.classList.remove('hide');
     logoutBtn.classList.remove('hide');
-  } else if (userSession.isSignInPending()) {
-    userSession.handlePendingSignIn().then(userData => {
+  } else if (privateUserSession.isSignInPending()) {
+    privateUserSession.handlePendingSignIn().then(userData => {
       window.location = redirectURI;
     });
   } else {

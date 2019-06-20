@@ -1,10 +1,17 @@
 @import '../elements/navbar';
 @import '../elements/file_list';
 
-.ev-file-card__btn {
-  @extend .mdc-button, .mdc-button--outlined;
-  height: 36px;
-  width: 262px;
-  color: black !important;
-  border-color: rgba(0, 0, 0, 0.12) !important;
+.ev-upload-btn {
+  position: absolute;
+  right: 174px;
+  bottom: 33px;
+  height: 48px;
+  line-height: 48px;
+  width: 132px;
+  text-align: center;
+
+  background-color: black;
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
 }

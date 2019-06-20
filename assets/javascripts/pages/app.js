@@ -1,12 +1,30 @@
-import {AppConfig, Person, UserSession} from 'blockstack';
+import { privateUserSession } from '../lib/blockstack_client';
 import React from "react";
 import ReactDOM from "react-dom";
 import FileListComponent from '../components/file_list.jsx'
+import FileUploader from '../lib/file_uploader'
 
-const appDomain = window.location.origin;
-const scopes = ['store_write', 'publish_data'];
-const appConfig = new AppConfig(scopes, appDomain);
-const userSession = new UserSession({ appConfig: appConfig });
+function uploadRawFile(file) {
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    const binaryString = evt.target.result;
+    const options = { encrypt: false, verify: false };
+    privateUserSession.putFile(file.name, binaryString, options)
+  }
+  reader.readAsBinaryString(file);
+}
+
+function showUploadInput() {
+  const input = document.querySelector('.js-file-input');
+
+  if (window.location.href.indexOf('?dev') != -1) {
+    input.classList.remove('hide');
+  }
+
+  new FileUploader(input)
+    .bind()
+    .then(() => window.location = window.location.href);
+}
 
 function showNavbarUser(profile) {
   const navbarUserNode = document.querySelector('.js-navbar-user');
@@ -26,11 +44,12 @@ function mountComponents() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (userSession.isUserSignedIn()) {
-    showNavbarUser(userSession.loadUserData());
+  if (privateUserSession.isUserSignedIn()) {
+    showNavbarUser(privateUserSession.loadUserData());
+    showUploadInput();
     mountComponents();
-  } else if (userSession.isSignInPending()) {
-    userSession.handlePendingSignIn().then(userData => {
+  } else if (privateUserSession.isSignInPending()) {
+    privateUserSession.handlePendingSignIn().then(userData => {
       window.location = window.location.href;
     });
   } else {
