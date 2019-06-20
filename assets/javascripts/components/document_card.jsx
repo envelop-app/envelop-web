@@ -5,7 +5,7 @@ import { privateUserSession } from '../lib/blockstack_client'
 import Toast from '../lib/toast.jsx'
 import prettyBytes from 'pretty-bytes';
 
-class FileCardComponent extends Component {
+class DocumentCardComponent extends Component {
   shareUrl() {
     const username = privateUserSession.loadUserData().username;
     return `${window.location.origin}/d/${username}/${this.props.id}`;
@@ -30,26 +30,26 @@ class FileCardComponent extends Component {
     const { url, size, created_at } = this.props;
     const name = url.split('/').pop();
     return (
-      <div className="ev-file-card">
-        <div className="ev-file-card__media">
+      <div className="ev-document-card">
+        <div className="ev-document-card__media">
           <img src=""/>
         </div>
-        <div className="ev-file-card__body">
-          <div className="ev-file-card__body-left">
-            <div className="ev-file-card__text-title">{name}</div>
-            <div className="ev-file-card__text-primary">{this.formatSize(size)}</div>
-            <div className="ev-file-card__text-secondary">{this.formatDate(created_at)}</div>
+        <div className="ev-document-card__body">
+          <div className="ev-document-card__body-left">
+            <div className="ev-document-card__text-title">{name}</div>
+            <div className="ev-document-card__text-primary">{this.formatSize(size)}</div>
+            <div className="ev-document-card__text-secondary">{this.formatDate(created_at)}</div>
           </div>
-          <div className="ev-file-card__body-right">
-            <a href={this.shareUrl()} className="ev-file-card__open" target="_blank"></a>
+          <div className="ev-document-card__body-right">
+            <a href={this.shareUrl()} className="ev-document-card__open" target="_blank"></a>
           </div>
         </div>
-        <div className="ev-file-card__controls">
-          <button className="ev-file-card__btn" onClick={(evt) => this.handleCopyLinkClick(evt)}>copy link</button>
+        <div className="ev-document-card__controls">
+          <button className="ev-document-card__btn" onClick={(evt) => this.handleCopyLinkClick(evt)}>copy link</button>
         </div>
       </div>
     );
   }
 }
 
-export default FileCardComponent;
+export default DocumentCardComponent;

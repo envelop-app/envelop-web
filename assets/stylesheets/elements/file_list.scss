@@ -4,12 +4,12 @@ $gray-light: #e9e9e9;
 $text-primary: rgba(0, 0, 0, 0.87);
 $text-secondary: rgba(0, 0, 0, 0.6);
 
-.ev-file-list-container {
+.ev-document-list-container {
   margin: auto;
   max-width: 1268px;
 }
 
-.ev-file-list {
+.ev-document-list {
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
@@ -19,7 +19,7 @@ $text-secondary: rgba(0, 0, 0, 0.6);
   padding: 50px 50px;
 }
 
-.ev-file-card {
+.ev-document-card {
   width: 270px;
   margin: 10px 10px;
   border: 1px solid $gray-light;
@@ -27,7 +27,7 @@ $text-secondary: rgba(0, 0, 0, 0.6);
   box-shadow: 0px 1px 3px 1px rgba(209,209,209,0.81);
 }
 
-.ev-file-card__media {
+.ev-document-card__media {
   height: 200px;
   width: 100%;
   position: relative;
@@ -43,23 +43,23 @@ $text-secondary: rgba(0, 0, 0, 0.6);
   }
 }
 
-.ev-file-card__body {
+.ev-document-card__body {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px;
 }
 
-.ev-file-card__body-left {
+.ev-document-card__body-left {
   width: 80%;
 }
 
-.ev-file-card__body-right {
+.ev-document-card__body-right {
   text-align: right;
   align-self: flex-start;
 }
 
-.ev-file-card__text-title {
+.ev-document-card__text-title {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -68,33 +68,33 @@ $text-secondary: rgba(0, 0, 0, 0.6);
   padding-bottom: 4px;
 }
 
-.ev-file-card__open {
+.ev-document-card__open {
   display: block;
   height: 24px;
   width: 24px;
   background-image: url("/images/baseline-open_in_new-24px.svg");
 }
 
-.ev-file-card__text-primary {
+.ev-document-card__text-primary {
   font-size: 15px;
   color: $text-primary;
   padding-bottom: 4px;
 }
 
-.ev-file-card__text-secondary {
+.ev-document-card__text-secondary {
   font-size: 15px;
   color: $text-secondary;
   padding-bottom: 4px;
 }
 
-.ev-file-card__controls {
+.ev-document-card__controls {
   display: flex;
   alignt-items: center;
   justify-content: space-around;
   padding: 8px;
 }
 
-.ev-file-card__btn {
+.ev-document-card__btn {
   @extend .mdc-button, .mdc-button--outlined;
   height: 36px;
   width: 262px;

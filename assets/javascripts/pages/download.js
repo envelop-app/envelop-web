@@ -24,7 +24,10 @@ function updateDownloadPage(gaiaDocument) {
   filesizeNodes.forEach(node => node.innerText = gaiaDocument.getSizePretty());
 
   const fileurlNodes = document.querySelectorAll('.ev-fileurl');
-  fileurlNodes.forEach(node => node.href = gaiaDocument.url);
+  fileurlNodes.forEach(node => {
+    node.classList.remove('hide');
+    node.href = gaiaDocument.url;
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
