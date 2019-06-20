@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { MDCMenu, Corner } from '@material/menu';
+import { Person } from 'blockstack';
 import FileListComponent from '../components/file_list.jsx'
 import FileUploader from '../lib/file_uploader'
 import { privateUserSession } from '../lib/blockstack_client';
@@ -28,14 +29,19 @@ function showUploadInput() {
 }
 
 function showNavbarUser() {
-  const profile = privateUserSession.loadUserData();
-  // TODO: use profile.name() and profile.avatarUrl()
+  const user = privateUserSession.loadUserData();
+  const person = new Person(user.profile);
+
   const navbarUserNode = document.querySelector('.js-navbar-user');
 
   const displayNameNode = document.querySelector('.js-username');
-  const displayName = profile.email || profile.username.replace('.id.blockstack', '');
-  navbarUserNode.classList.remove('hide');
+  const displayName = person.name() || user.email || user.username.replace('.id.blockstack', '');
   displayNameNode.innerText = displayName;
+
+  if (person.avatarUrl()) {
+    const avatarImgNode = document.querySelector('.js-avatar');
+    avatarImgNode.src = person.avatarUrl();
+  }
 
   const menu = new MDCMenu(document.querySelector('.js-accounts-menu'));
   menu.setAnchorCorner(Corner.BOTTOM_START);
@@ -53,6 +59,8 @@ function showNavbarUser() {
     privateUserSession.signUserOut();
     window.location = window.location.origin;
   })
+
+  navbarUserNode.classList.remove('hide');
 }
 
 function mountFileList() {
