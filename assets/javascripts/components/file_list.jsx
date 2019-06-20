@@ -12,8 +12,14 @@ class FileListComponent extends Component {
   componentDidMount() {
     privateUserSession.getFile('index').then(index => {
       const files = index ? JSON.parse(index) : [];
-      this.setState({ files });
+      this.setState({ files: this.sortFiles(files) });
     })
+  }
+
+  sortFiles(files) {
+    return files.sort(function(a, b) {
+      return new Date(b.created_at) - new Date(a.created_at)
+    });
   }
 
   renderFiles() {
