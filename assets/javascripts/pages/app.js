@@ -1,8 +1,9 @@
-import { privateUserSession } from '../lib/blockstack_client';
 import React from "react";
 import ReactDOM from "react-dom";
+import { MDCMenu, Corner } from '@material/menu';
 import FileListComponent from '../components/file_list.jsx'
 import FileUploader from '../lib/file_uploader'
+import { privateUserSession } from '../lib/blockstack_client';
 
 function uploadRawFile(file) {
   const reader = new FileReader();
@@ -26,12 +27,32 @@ function showUploadInput() {
     .then(() => window.location = window.location.href);
 }
 
-function showNavbarUser(profile) {
+function showNavbarUser() {
+  const profile = privateUserSession.loadUserData();
+  // TODO: use profile.name() and profile.avatarUrl()
   const navbarUserNode = document.querySelector('.js-navbar-user');
+
   const displayNameNode = document.querySelector('.js-username');
   const displayName = profile.email || profile.username.replace('.id.blockstack', '');
   navbarUserNode.classList.remove('hide');
   displayNameNode.innerText = displayName;
+
+  const menu = new MDCMenu(document.querySelector('.js-accounts-menu'));
+  menu.setAnchorCorner(Corner.BOTTOM_START);
+
+  navbarUserNode.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    evt.stopPropagation();
+    menu.open = !menu.open;
+  })
+
+  const logoutBtnNode = document.querySelector('.js-logout-btn');
+  logoutBtnNode.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    evt.stopPropagation();
+    privateUserSession.signUserOut();
+    window.location = window.location.origin;
+  })
 }
 
 function mountFileList() {
@@ -45,7 +66,7 @@ function mountComponents() {
 
 document.addEventListener("DOMContentLoaded", () => {
   if (privateUserSession.isUserSignedIn()) {
-    showNavbarUser(privateUserSession.loadUserData());
+    showNavbarUser();
     showUploadInput();
     mountComponents();
   } else if (privateUserSession.isSignInPending()) {

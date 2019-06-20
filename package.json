@@ -25,6 +25,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@material/menu": "^2.3.0",
     "@material/snackbar": "^2.3.0",
     "blockstack": "^19.1.0",
     "copy-to-clipboard": "^3.2.0",
