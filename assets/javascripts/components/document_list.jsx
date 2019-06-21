@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { privateUserSession } from '../lib/blockstack_client';
 import GaiaIndex from '../lib/gaia_index'
+import GaiaDocument from '../lib/gaia_document'
 import DocumentCardComponent from "./document_card.jsx"
 import FileInputUploader from '../lib/file_input_uploader'
 
@@ -16,9 +17,11 @@ class DocumentListComponent extends Component {
     this.syncDocuments();
   }
 
-  syncDocuments = () => {
+  syncDocuments = (options = {}) => {
     this.gaiaIndex.load().then(() => {
-      this.setState({ documents: this.sortDocuments(this.gaiaIndex.documents) });
+      const newState = { documents: this.sortDocuments(this.gaiaIndex.documents) };
+      if (options.removeDummyDoc) { newState.dummyDoc = null };
+      this.setState(newState);
     });
   }
 
@@ -29,9 +32,29 @@ class DocumentListComponent extends Component {
   }
 
   onInputChange = (evt) => {
+    const file = evt.target.files[0];
+    this.setState({
+      dummyDoc: new GaiaDocument({
+        id: file.lastModified,
+        url: `dummy/${file.name}`,
+        created_at: file.lastModifiedDate,
+        size: file.size,
+        content_type: file.type
+      })
+    });
     new FileInputUploader(evt.target.files[0])
       .upload()
-      .then(() => this.syncDocuments());
+      .then(() => this.syncDocuments({ removeDummyDoc: true }));
+  }
+
+  maybeRenderDummyDoc() {
+    return this.state.dummyDoc &&
+      <DocumentCardComponent
+        dummy
+        key={this.state.dummyDoc.id}
+        doc={this.state.dummyDoc}
+        syncDocuments={this.syncDocuments}
+      />;
   }
 
   renderDocuments() {
@@ -57,6 +80,7 @@ class DocumentListComponent extends Component {
             name="file-upload" />
         </div>
         <div className="ev-document-list">
+          {this.maybeRenderDummyDoc()}
           {this.renderDocuments()}
         </div>
       </div>

@@ -50,17 +50,19 @@ class DocumentCardComponent extends Component {
   }
 
   render() {
-    const doc = this.props.doc;
+    const {doc, dummy} = this.props;
     return (
-      <div className="ev-document-card">
+      <div className={`ev-document-card ${dummy && 'ev-document-card__dummy'}`}>
         <div className="ev-document-card__media">
           <img className="ev-document-card__media-image" src="/images/card-file.svg"/>
-          <a
-            href=""
-            onClick={this.handleKebabOpen}
-            className="ev-document-card__media-kebab mdc-menu-surface--anchor"
-            ref={this.setAnchorElement}
-          />
+          {!dummy &&
+              <a
+                href=""
+                onClick={this.handleKebabOpen}
+                className="ev-document-card__media-kebab mdc-menu-surface--anchor"
+                ref={this.setAnchorElement}
+              />
+          }
           <Menu
             anchorCorner={Corner.BOTTOM_START}
             anchorElement={this.state.anchorElement}
@@ -83,11 +85,17 @@ class DocumentCardComponent extends Component {
             <div className="ev-document-card__text-secondary">{this.formatDate(doc.created_at)}</div>
           </div>
           <div className="ev-document-card__body-right">
-            <a href={doc.shareUrl()} className="ev-document-card__open" target="_blank"></a>
+            {!dummy && <a href={doc.shareUrl()} className="ev-document-card__open" target="_blank"></a>}
           </div>
         </div>
         <div className="ev-document-card__controls">
-          <button className="ev-document-card__btn" onClick={this.handleCopyLinkClick}>copy link</button>
+          <button
+            className="ev-document-card__btn"
+            onClick={this.handleCopyLinkClick}
+            disabled={dummy}
+          >
+            {dummy ? 'uploading ...' : 'copy link'}
+          </button>
         </div>
       </div>
     );
