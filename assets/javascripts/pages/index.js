@@ -1,6 +1,6 @@
 import { privateUserSession } from '../lib/blockstack_client';
 
-const redirectURI = window.location.origin + '/app.html';
+const redirectURI = window.location.origin + '/app';
 
 document.addEventListener("DOMContentLoaded", event => {
   const loginControlsNode = document.querySelector('.ev-login-controls');
