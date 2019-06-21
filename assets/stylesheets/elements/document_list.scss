@@ -28,15 +28,25 @@
   width: 100%;
   position: relative;
   background-color: $gray-light;
+}
 
-  img {
-    position: absolute;
-    margin: auto;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
+.ev-document-card__media-image {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.ev-document-card__media-kebab {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 24px;
+  width: 24px;
+  margin: 10px;
+  background-image: url('/images/baseline-more_vert-24px.svg');
 }
 
 .ev-document-card__body {

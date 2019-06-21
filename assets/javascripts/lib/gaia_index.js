@@ -15,6 +15,10 @@ class GaiaIndex {
     this.documents.push(doc);
   }
 
+  removeDocument(doc) {
+    this.documents = this.documents.filter(d => d.id !== doc.id);
+  }
+
   serialize() {
     return this.documents;
   }
