@@ -75,7 +75,10 @@ class DocumentCardComponent extends Component {
     return (
       <div className={`ev-document-card ${this.isDisabled() && 'ev-document-card__disabled'}`}>
         <div className="ev-document-card__media">
-          <img className="ev-document-card__media-image" src="/images/card-file.svg"/>
+          <img
+            className="ev-document-card__media-image"
+            src={`/images/${doc.getType()}.svg`}
+          />
           {!this.isDisabled() &&
               <a
                 href=""
