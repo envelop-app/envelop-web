@@ -1,9 +1,8 @@
 import {AppConfig, Person, UserSession} from 'blockstack';
-
-const appDomain = window.location.origin;
+import Constants from './constants';
 
 function getUserSession(scopes) {
-  const appConfig = new AppConfig(scopes, appDomain);
+  const appConfig = new AppConfig(scopes, Constants.BLOCKSTACK_ORIGIN);
   return new UserSession({ appConfig: appConfig });
 }
 

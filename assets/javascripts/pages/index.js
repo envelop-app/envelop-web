@@ -1,6 +1,5 @@
 import { privateUserSession } from '../lib/blockstack_client';
-
-const redirectURI = window.location.origin + '/app';
+import Constants from '../lib/constants'
 
 document.addEventListener("DOMContentLoaded", event => {
   const loginControlsNode = document.querySelector('.ev-login-controls');
@@ -14,7 +13,7 @@ document.addEventListener("DOMContentLoaded", event => {
 
   loginBtn.addEventListener('click', event => {
     event.preventDefault();
-    privateUserSession.redirectToSignIn(redirectURI);
+    privateUserSession.redirectToSignIn(Constants.BLOCKSTACK_REDIRECT_URI);
   })
 
   logoutBtn.addEventListener('click', event => {
@@ -28,7 +27,7 @@ document.addEventListener("DOMContentLoaded", event => {
     logoutBtn.classList.remove('hide');
   } else if (privateUserSession.isSignInPending()) {
     privateUserSession.handlePendingSignIn().then(userData => {
-      window.location = redirectURI;
+      window.location = Constants.BLOCKSTACK_REDIRECT_URI;
     });
   } else {
     loginBtn.classList.remove('hide');
