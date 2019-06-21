@@ -72,6 +72,11 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      __PREVIEW__: !!process.env.PREVIEW
+    })
+  ],
   optimization: {
     splitChunks: {
       chunks: 'all',
