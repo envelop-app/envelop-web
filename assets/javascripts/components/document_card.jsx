@@ -4,18 +4,12 @@ import copy from 'copy-to-clipboard';
 import Menu, {MenuList, MenuListItem, MenuListItemText, MenuListItemGraphic} from '@material/react-menu';
 import MaterialIcon from '@material/react-material-icon';
 import { Corner } from '@material/menu';
-import { privateUserSession } from '../lib/blockstack_client'
 import Toast from '../lib/toast.jsx'
 
 class DocumentCardComponent extends Component {
   constructor(props) {
     super(props);
     this.state = { coordinates: undefined, open: false };
-  }
-
-  shareUrl() {
-    const username = privateUserSession.loadUserData().username;
-    return `${window.location.origin}/d/${username}/${this.props.doc.id}`;
   }
 
   setAnchorElement = (element) => {
@@ -26,7 +20,7 @@ class DocumentCardComponent extends Component {
   }
 
   handleCopyLinkClick = (evt) => {
-    copy(this.shareUrl());
+    copy(this.props.doc.shareUrl());
     Toast.open('Link copied to clipboard');
   }
 
@@ -88,7 +82,7 @@ class DocumentCardComponent extends Component {
             <div className="ev-document-card__text-secondary">{this.formatDate(doc.created_at)}</div>
           </div>
           <div className="ev-document-card__body-right">
-            <a href={this.shareUrl()} className="ev-document-card__open" target="_blank"></a>
+            <a href={doc.shareUrl()} className="ev-document-card__open" target="_blank"></a>
           </div>
         </div>
         <div className="ev-document-card__controls">

@@ -1,17 +1,32 @@
 import GaiaDocument from './gaia_document';
 import { privateUserSession } from './blockstack_client';
 
+const version = 1;
+
 function parseDocuments(documents) {
-  return (documents || []).map(doc => {
-    return new GaiaDocument(doc);
-  });
+  return (documents || []).map(doc => new GaiaDocument(doc));
 }
 
 class GaiaIndex {
+  constructor() {
+    this.version = null;
+    this.documents = null;
+  }
+
   load() {
     const that = this;
     return privateUserSession.getFile('index').then((indexJson) => {
-      return that.documents = parseDocuments(JSON.parse(indexJson));
+      const index = JSON.parse(indexJson);
+
+      if (index) {
+        that.version = index.version || 1;
+        that.documents = parseDocuments(index.files);
+      } else {
+        that.version = index.version || version;
+        that.documents = [];
+      }
+
+      return true;
     });
   }
 
@@ -28,7 +43,7 @@ class GaiaIndex {
   }
 
   serialize() {
-    return this.documents;
+    return { files: this.documents, version: this.version };
   }
 
   toJSON() {

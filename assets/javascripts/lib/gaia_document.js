@@ -55,6 +55,12 @@ class GaiaDocument {
     };
   }
 
+  shareUrl() {
+    let username = privateUserSession.loadUserData().username;
+    username = username.replace('.id.blockstack', '');
+    return `${Constants.SHARE_ORIGIN}/d/${username}/${this.id}`;
+  }
+
   toJSON() {
     return this.serialize();
   }

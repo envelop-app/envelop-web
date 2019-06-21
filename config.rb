@@ -3,7 +3,6 @@ require 'webrick'
 ::WEBrick::HTTPRequest.const_set("MAX_URI_LENGTH", 10240)
 
 configure :development do
-  activate :directory_indexes
   config[:host] = "http://localhost:3000"
 end
 
