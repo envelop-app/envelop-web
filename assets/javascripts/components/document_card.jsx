@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import copy from 'copy-to-clipboard';
-import Menu, {MenuList, MenuListItem, MenuListItemText} from '@material/react-menu';
+import Menu, {MenuList, MenuListItem, MenuListItemText, MenuListItemGraphic} from '@material/react-menu';
+import MaterialIcon from '@material/react-material-icon';
 import { Corner } from '@material/menu';
 import { privateUserSession } from '../lib/blockstack_client'
 import Toast from '../lib/toast.jsx'
@@ -75,6 +76,7 @@ class DocumentCardComponent extends Component {
           >
             <MenuList>
               <MenuListItem>
+                <MenuListItemGraphic graphic={<MaterialIcon icon="delete" />} />
                 <MenuListItemText primaryText={'Delete'} />
               </MenuListItem>
             </MenuList>

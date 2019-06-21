@@ -1111,6 +1111,15 @@
     memoize-one "^5.0.4"
     react "^16.4.2"
 
+"@material/react-material-icon@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@material/react-material-icon/-/react-material-icon-0.13.0.tgz#dbe79a6edda1052cf21d39e7a0fb2a458030153c"
+  integrity sha512-NExAfoJmil42S5FaZ5nLQmRW4YsHXRVJoNXl7ulaJzaMIN7vwbj6CH2WC/aCNTXzYIbsDwj2igmKBnE+N4tc8Q==
+  dependencies:
+    "@material/react-ripple" "^0.13.0"
+    classnames "^2.2.6"
+    react "^16.4.2"
+
 "@material/react-menu-surface@^0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@material/react-menu-surface/-/react-menu-surface-0.13.0.tgz#f1beb13ec15a562a24da928619aac5619d6d8fff"

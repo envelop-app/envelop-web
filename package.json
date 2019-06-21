@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@material/menu": "^2.3.0",
+    "@material/react-material-icon": "^0.13.0",
     "@material/react-menu": "^0.13.2",
     "@material/snackbar": "^2.3.0",
     "blockstack": "^19.1.0",
