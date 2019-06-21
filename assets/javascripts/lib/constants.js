@@ -23,7 +23,8 @@ const Constants = {
   BLOCKSTACK_ORIGIN: BLOCKSTACK_ORIGIN,
   BLOCKSTACK_REDIRECT_URI: isProduction() ? redirectUri('/app') : redirectUri('/app.html'),
   SHARE_ORIGIN: isProduction() ? 'https://envlp.app' : window.location.origin,
-  ENV: process.env.NODE_ENV
+  ENV: process.env.NODE_ENV,
+  PREVIEW: process.env.PREVIEW
 };
 
 export default Constants;
