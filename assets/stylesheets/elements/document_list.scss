@@ -1,0 +1,113 @@
+@import "@material/button/mdc-button";
+@import '@material/react-material-icon/index.scss';
+
+.ev-document-list-container {
+  margin: auto;
+  max-width: 1268px;
+}
+
+.ev-document-list {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.ev-document-card {
+  width: 270px;
+  margin: 10px 10px;
+  border: 1px solid $gray-light;
+  border-radius: 4px;
+  box-shadow: 0px 1px 3px 1px rgba(209,209,209,0.81);
+}
+
+.ev-document-card__disabled {
+  opacity: 0.5;
+}
+
+.ev-document-card__media {
+  height: 200px;
+  width: 100%;
+  position: relative;
+  background-color: $gray-light;
+}
+
+.ev-document-card__media-image {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.ev-document-card__media-kebab {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 24px;
+  width: 24px;
+  margin: 10px;
+  background-image: url('/images/baseline-more_vert-24px.svg');
+}
+
+.ev-document-card__body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.ev-document-card__body-left {
+  width: 80%;
+}
+
+.ev-document-card__body-right {
+  text-align: right;
+  align-self: flex-start;
+}
+
+.ev-document-card__text-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 21px;
+  color: $text-primary;
+  padding-bottom: 4px;
+}
+
+.ev-document-card__open {
+  display: block;
+  height: 24px;
+  width: 24px;
+  background-image: url("/images/baseline-open_in_new-24px.svg");
+}
+
+.ev-document-card__text-primary {
+  font-size: 15px;
+  color: $text-primary;
+  padding-bottom: 4px;
+}
+
+.ev-document-card__text-secondary {
+  font-size: 15px;
+  color: $text-secondary;
+  padding-bottom: 4px;
+}
+
+.ev-document-card__controls {
+  display: flex;
+  alignt-items: center;
+  justify-content: space-around;
+  padding: 8px;
+}
+
+.ev-document-card__btn {
+  @extend .mdc-button, .mdc-button--outlined;
+  height: 36px;
+  width: 262px;
+  color: black !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}

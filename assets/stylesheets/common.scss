@@ -1,4 +1,10 @@
+@import "./variables";
+
+// Overrides must exist before imports
+$mdc-theme-primary: $ev-yellow;
+
 @import "./reset";
+@import "@material/snackbar/mdc-snackbar";
 @import "./style";
 @import "./pages/*";
 

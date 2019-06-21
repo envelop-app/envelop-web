@@ -1,23 +1,22 @@
-import {AppConfig, Person, UserSession} from 'blockstack';
+import React from "react";
+import ReactDOM from "react-dom";
+import DocumentListComponent from '../components/document_list.jsx'
+import AvatarComponent from '../components/avatar.jsx'
+import { privateUserSession } from '../lib/blockstack_client';
 
-const appDomain = window.location.origin;
-const scopes = ['store_write', 'publish_data'];
-const appConfig = new AppConfig(scopes, appDomain);
-const userSession = new UserSession({ appConfig: appConfig });
+function mountComponents() {
+  const avatarContainer = document.querySelector('.js-navbar-user');
+  ReactDOM.render(<AvatarComponent />, avatarContainer);
 
-function showNavbarUser(profile) {
-  const navbarUserNode = document.querySelector('.js-navbar-user');
-  const displayNameNode = document.querySelector('.js-username');
-  const displayName = profile.email || profile.username.replace('.id.blockstack', '');
-  navbarUserNode.classList.remove('hide');
-  displayNameNode.innerText = displayName;
+  const documentListContainer = document.querySelector('.js-document-list-container');
+  ReactDOM.render(<DocumentListComponent />, documentListContainer);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (userSession.isUserSignedIn()) {
-    showNavbarUser(userSession.loadUserData());
-  } else if (userSession.isSignInPending()) {
-    userSession.handlePendingSignIn().then(userData => {
+  if (privateUserSession.isUserSignedIn()) {
+    mountComponents();
+  } else if (privateUserSession.isSignInPending()) {
+    privateUserSession.handlePendingSignIn().then(userData => {
       window.location = window.location.href;
     });
   } else {

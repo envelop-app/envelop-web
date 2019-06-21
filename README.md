@@ -5,6 +5,11 @@ Install dependencies:
 yarn install
 ```
 
+Run docker-compose:
+```
+docker-compose up
+```
+
 Start local server with access to production data:
 (available at http://localhost:3000, ignore netlify's cli output)
 ```

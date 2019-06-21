@@ -11,6 +11,7 @@
     <meta property="og:image" content="<%= image_path('og-image.png') %>">
 
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!--[if lt IE 9]>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
@@ -19,9 +20,10 @@
     <%= stylesheet_link_tag "common" %>
     <%= javascript_include_tag "vendors" %>
     <%= javascript_include_tag "common" %>
-    <%= javascript_include_tag File.basename(current_path, '.html'), defer: true %>
+    <%= javascript_include_tag File.basename(current_resource.path, '.html'), defer: true %>
   </head>
   <body class="ev-body__<%= current_page.data.name %>">
     <%= yield %>
+    <div class="js-toast-wrapper"></div>
   </body>
 </html>

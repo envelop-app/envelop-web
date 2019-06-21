@@ -1,6 +1,4 @@
-import GaiaFile from '../lib/gaia_file';
-
-const appDomain = 'https://envelop.app';
+import FileDownloader from '../lib/file_downloader';
 
 function parseUrl() {
   const paths = window.location.pathname.split('/').filter(s => s);
@@ -10,23 +8,26 @@ function parseUrl() {
   return { hash: paths[2], username: paths[1] };
 }
 
-function updatePlaceholderImage(node, file) {
-  node.src = `${node.dataset.path}/icon-type-${file.type}.svg`;
-  node.alt = file.type;
+function updatePlaceholderImage(node, gaiaDocument) {
+  node.src = `${node.dataset.path}/icon-type-${gaiaDocument.getType()}.svg`;
+  node.alt = gaiaDocument.type;
 }
 
-function updateDownloadPage(file) {
+function updateDownloadPage(gaiaDocument) {
   const filetypeNodes = document.querySelectorAll('.ev-filetype');
-  filetypeNodes.forEach(node => updatePlaceholderImage(node, file));
+  filetypeNodes.forEach(node => updatePlaceholderImage(node, gaiaDocument));
 
   const filenameNodes = document.querySelectorAll('.ev-filename');
-  filenameNodes.forEach(node => node.innerText = file.name);
+  filenameNodes.forEach(node => node.innerText = gaiaDocument.getName());
 
   const filesizeNodes = document.querySelectorAll('.ev-filesize');
-  filesizeNodes.forEach(node => node.innerText = file.sizePretty);
+  filesizeNodes.forEach(node => node.innerText = gaiaDocument.getSizePretty());
 
   const fileurlNodes = document.querySelectorAll('.ev-fileurl');
-  fileurlNodes.forEach(node => node.href = file.url);
+  fileurlNodes.forEach(node => {
+    node.classList.remove('hide');
+    node.href = gaiaDocument.url;
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -37,8 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
     username += '.id.blockstack';
   }
 
-  new GaiaFile(appDomain, username, urlData.hash)
-    .fetch()
+  new FileDownloader(username, urlData.hash)
+    .download()
     .then(updateDownloadPage)
     // TODO: .catch(() => /* do something when file doesn't exist */);
 });

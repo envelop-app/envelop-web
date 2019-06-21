@@ -4,26 +4,17 @@ title: Manage files – envelop
 description: Share private files easily with envelop
 ---
 
-<div class="ev-page-app">
+<div class="ev-app">
   <nav class="ev-navbar">
     <a class="ev-navbar__logo" href="/">
       <%= image_tag('logo.svg', alt: 'envelop') %>
     </a>
     <ul class="ev-navbar__items">
-      <li class="ev-navbar__item js-navbar-user hide">
-        <a href="#" class="ev-navbar__item-link">
-          <span class="js-username" style="padding-right: 10px"></span>
-          <%= image_tag('default-avatar.png', class: 'ev-navbar__avatar', alt: 'avatar') %>
-        </a>
-      </li>
+      <li class="ev-navbar__item js-navbar-user"></li>
     </ul>
   </nav>
 
-  <main></main>
-
-  <footer class="ev-page-app__footer">
-    <p>
-      Share private files easily, without losing their ownership. <a href="/" class="try-link">Try Envelop</a>
-    </p>
-  </footer>
+  <main class="ev-app__main">
+    <div class="js-document-list-container ev-document-list-container"></div>
+  </main>
 </div>
