@@ -8,10 +8,6 @@ import { privateUserSession } from '../lib/blockstack_client';
 function showUploadInput() {
   const input = document.querySelector('.js-file-input');
 
-  if (window.location.href.indexOf('?dev') != -1) {
-    input.classList.remove('hide');
-  }
-
   new FileUploader(input)
     .bind()
     .then(() => window.location = window.location.href);
