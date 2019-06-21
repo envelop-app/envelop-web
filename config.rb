@@ -42,7 +42,7 @@ end
 
 activate :external_pipeline,
   name: :webpack,
-  command: build? ? 'npm run build' : 'npm run start',
+  command: build? ? "PREVIEW=#{ENV['PREVIEW']} npm run build" : 'npm run start',
   source: '.tmp/dist',
   latency: 1
 
