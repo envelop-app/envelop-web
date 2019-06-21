@@ -41,7 +41,7 @@ class DocumentListComponent extends Component {
       <div>
         <div className="ev-upload-btn__wrapper">
           {/* <a href="" className="ev-upload-btn">UPLOAD</a> */}
-          <label className="ev-upload__btn" for="file-upload">
+          <label className="ev-upload__btn" htmlFor="file-upload">
             <img src="/images/baseline-cloud_upload-24px.svg" />
             <span>UPLOAD</span>
           </label>

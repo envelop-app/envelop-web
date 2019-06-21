@@ -6,13 +6,14 @@ function isProduction() {
  return process.env.NODE_ENV === 'production';
 }
 
-let BLOCKSTACK_ORIGIN = '';
-if (isProduction() && !isPreview()) {
-  BLOCKSTACK_ORIGIN = 'https://envelop.app';
-}
-else {
-  BLOCKSTACK_ORIGIN = window.location.origin;
-}
+let BLOCKSTACK_ORIGIN = window.location.origin;
+// TODO: Fix preview environment
+// if (isProduction() && !isPreview()) {
+//   BLOCKSTACK_ORIGIN = 'https://envelop.app';
+// }
+// else {
+//   BLOCKSTACK_ORIGIN = window.location.origin;
+// }
 
 function redirectUri(suffix) {
   return BLOCKSTACK_ORIGIN + suffix;
