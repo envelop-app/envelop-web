@@ -1,5 +1,5 @@
 function isPreview() {
- return process.env.PREVIEW === 'yes';
+ return __PREVIEW__;
 }
 
 function isProduction() {
@@ -7,13 +7,11 @@ function isProduction() {
 }
 
 let BLOCKSTACK_ORIGIN = window.location.origin;
-// TODO: Fix preview environment
-// if (isProduction() && !isPreview()) {
-//   BLOCKSTACK_ORIGIN = 'https://envelop.app';
-// }
-// else {
-//   BLOCKSTACK_ORIGIN = window.location.origin;
-// }
+let SHARE_URI = window.location.origin + '/d';
+if (isProduction() && !isPreview()) {
+  BLOCKSTACK_ORIGIN = 'https://envelop.app';
+  SHARE_URI = 'https://envl.app';
+}
 
 function redirectUri(suffix) {
   return BLOCKSTACK_ORIGIN + suffix;
@@ -22,9 +20,10 @@ function redirectUri(suffix) {
 const Constants = {
   BLOCKSTACK_ORIGIN: BLOCKSTACK_ORIGIN,
   BLOCKSTACK_REDIRECT_URI: isProduction() ? redirectUri('/app') : redirectUri('/app.html'),
-  SHARE_ORIGIN: isProduction() ? 'https://envl.app' : window.location.origin,
-  ENV: process.env.NODE_ENV,
-  PREVIEW: process.env.PREVIEW
+  SHARE_URI: SHARE_URI,
+  PREVIEW: __PREVIEW__
 };
+
+console.log(Constants)
 
 export default Constants;

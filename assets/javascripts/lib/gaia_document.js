@@ -60,7 +60,7 @@ class GaiaDocument {
   shareUrl() {
     let username = privateUserSession.loadUserData().username;
     username = username.replace('.id.blockstack', '');
-    return `${Constants.SHARE_ORIGIN}/d/${username}/${this.id}`;
+    return `${Constants.SHARE_URI}/${username}/${this.id}`;
   }
 
   toJSON() {
