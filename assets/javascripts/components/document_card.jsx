@@ -35,8 +35,9 @@ class DocumentCardComponent extends Component {
 
   onDelete = () => {
     if (window.confirm('Delete this file?')) {
+      const that = this;
       this.props.doc.delete().then(() => {
-        window.location = window.location.href;
+        that.props.syncDocuments();
       });
     }
   }

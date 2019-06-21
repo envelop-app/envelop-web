@@ -8,13 +8,17 @@ import FileInputUploader from '../lib/file_input_uploader'
 class DocumentListComponent extends Component {
   constructor() {
     super();
+    this.gaiaIndex = new GaiaIndex();
     this.state = { documents: [] };
   }
 
   componentDidMount() {
-    const gaiaIndex = new GaiaIndex();
-    gaiaIndex.load().then(() => {
-      this.setState({ documents: this.sortDocuments(gaiaIndex.documents) });
+    this.syncDocuments();
+  }
+
+  syncDocuments = () => {
+    this.gaiaIndex.load().then(() => {
+      this.setState({ documents: this.sortDocuments(this.gaiaIndex.documents) });
     });
   }
 
@@ -27,12 +31,12 @@ class DocumentListComponent extends Component {
   onInputChange = (evt) => {
     new FileInputUploader(evt.target.files[0])
       .upload()
-      .then(() => window.location = window.location.href);
+      .then(() => this.syncDocuments());
   }
 
   renderDocuments() {
     return this.state.documents.map(doc => {
-      return <DocumentCardComponent key={doc.id} doc={doc} />;
+      return <DocumentCardComponent key={doc.id} doc={doc} syncDocuments={this.syncDocuments} />;
     });
   }
 
@@ -45,7 +49,12 @@ class DocumentListComponent extends Component {
             <img src="/images/baseline-cloud_upload-24px.svg" />
             <span>UPLOAD</span>
           </label>
-          <input className="ev-upload__input" id="file-upload" onChange={this.onInputChange} type="file" name="file-upload" />
+          <input
+            className="ev-upload__input"
+            id="file-upload"
+            onChange={this.onInputChange}
+            type="file"
+            name="file-upload" />
         </div>
         <div className="ev-document-list">
           {this.renderDocuments()}
