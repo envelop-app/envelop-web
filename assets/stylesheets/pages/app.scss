@@ -1,17 +1,35 @@
 @import '../elements/navbar';
 @import '../elements/document_list';
 
-.ev-upload-btn {
-  position: absolute;
-  right: 174px;
-  bottom: 33px;
+.ev-app__main {
+  margin: auto;
+  width: 80%;
+  padding-top: 50px;
+  padding-bottom: 150px;
+  // TODO: media queries e o crl
+}
+
+.ev-upload__btn {
+  position: fixed;
+  right: 50px;
+  bottom: 50px;
   height: 48px;
   line-height: 48px;
   width: 132px;
-  text-align: center;
+  z-index: 99999;
 
+  text-align: center;
   background-color: black;
   color: white;
   text-decoration: none;
   border-radius: 25px;
+  box-shadow: 0px 5px 9px 0px grey;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.ev-upload__input {
+  position: absolute;
+  top: -1000px;
+  opacity: 0;
 }

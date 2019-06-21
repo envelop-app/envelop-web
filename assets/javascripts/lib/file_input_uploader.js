@@ -6,24 +6,19 @@ import GaiaIndex from './gaia_index';
 const publicFileOptions = { encrypt: false, verify: false };
 
 class FileInputUploader {
-  constructor(input) {
-    this.input = input;
+  constructor(file) {
+    this.file = file;
     this.reader = new FileReader();
-    this.file = null;
     this.longHash = new Random().string(14);
     this.shortHash = new Random().string(6);
   }
 
-  bind() {
+  upload() {
     return new Promise((resolve, reject) => {
-      this.input.onchange = (evt) => {
-        const file = evt.target.files[0];
-        this.file = file;
-        this.reader.onload = (evt) => {
-          resolve(this.uploadRawFile(evt.target.result).then(() => true));
-        }
-        this.reader.readAsArrayBuffer(this.file);
+      this.reader.onload = (evt) => {
+        resolve(this.uploadRawFile(evt.target.result).then(() => true));
       }
+      this.reader.readAsArrayBuffer(this.file);
     });
   }
 

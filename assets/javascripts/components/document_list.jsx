@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { privateUserSession } from '../lib/blockstack_client';
 import GaiaIndex from '../lib/gaia_index'
 import DocumentCardComponent from "./document_card.jsx"
+import FileInputUploader from '../lib/file_input_uploader'
 
 class DocumentListComponent extends Component {
   constructor() {
@@ -23,6 +24,12 @@ class DocumentListComponent extends Component {
     });
   }
 
+  onInputChange = (evt) => {
+    new FileInputUploader(evt.target.files[0])
+      .upload()
+      .then(() => window.location = window.location.href);
+  }
+
   renderDocuments() {
     return this.state.documents.map(doc => {
       return <DocumentCardComponent key={doc.id} doc={doc} />;
@@ -31,8 +38,15 @@ class DocumentListComponent extends Component {
 
   render() {
     return (
-      <div className="ev-document-list">
-        {this.renderDocuments()}
+      <div>
+        <div className="ev-upload-btn__wrapper">
+          {/* <a href="" className="ev-upload-btn">UPLOAD</a> */}
+          <label className="ev-upload__btn" for="file-upload">UPLOAD</label>
+          <input className="ev-upload__input" id="file-upload" onChange={this.onInputChange} type="file" name="file-upload" />
+        </div>
+        <div className="ev-document-list">
+          {this.renderDocuments()}
+        </div>
       </div>
     );
   }
