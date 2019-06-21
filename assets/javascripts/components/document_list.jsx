@@ -10,7 +10,7 @@ class DocumentListComponent extends Component {
   constructor() {
     super();
     this.gaiaIndex = new GaiaIndex();
-    this.state = { documents: [] };
+    this.state = { documents: [], dummyDoc: null };
   }
 
   componentDidMount() {
@@ -18,10 +18,11 @@ class DocumentListComponent extends Component {
   }
 
   syncDocuments = (options = {}) => {
-    this.gaiaIndex.load().then(() => {
+    return this.gaiaIndex.load().then(() => {
       const newState = { documents: this.sortDocuments(this.gaiaIndex.documents) };
       if (options.removeDummyDoc) { newState.dummyDoc = null };
       this.setState(newState);
+      return true;
     });
   }
 
@@ -50,7 +51,7 @@ class DocumentListComponent extends Component {
   maybeRenderDummyDoc() {
     return this.state.dummyDoc &&
       <DocumentCardComponent
-        dummy
+        uploading={!!this.state.dummyDoc}
         key={this.state.dummyDoc.id}
         doc={this.state.dummyDoc}
         syncDocuments={this.syncDocuments}
