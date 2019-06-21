@@ -24,6 +24,4 @@ const Constants = {
   PREVIEW: __PREVIEW__
 };
 
-console.log(Constants)
-
 export default Constants;
