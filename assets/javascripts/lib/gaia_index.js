@@ -22,7 +22,7 @@ class GaiaIndex {
         that.version = index.version || 1;
         that.documents = parseDocuments(index.files);
       } else {
-        that.version = index.version || version;
+        that.version = version;
         that.documents = [];
       }
 
