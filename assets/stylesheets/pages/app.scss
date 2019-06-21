@@ -10,6 +10,9 @@
 }
 
 .ev-upload__btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
   position: fixed;
   right: 50px;
   bottom: 50px;
@@ -26,6 +29,11 @@
   box-shadow: 0px 5px 9px 0px grey;
   font-size: 15px;
   cursor: pointer;
+
+  img {
+    height: 24px;
+    width: 24px;
+  }
 }
 
 .ev-upload__input {

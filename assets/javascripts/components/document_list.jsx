@@ -41,7 +41,10 @@ class DocumentListComponent extends Component {
       <div>
         <div className="ev-upload-btn__wrapper">
           {/* <a href="" className="ev-upload-btn">UPLOAD</a> */}
-          <label className="ev-upload__btn" for="file-upload">UPLOAD</label>
+          <label className="ev-upload__btn" for="file-upload">
+            <img src="/images/baseline-cloud_upload-24px.svg" />
+            <span>UPLOAD</span>
+          </label>
           <input className="ev-upload__input" id="file-upload" onChange={this.onInputChange} type="file" name="file-upload" />
         </div>
         <div className="ev-document-list">
