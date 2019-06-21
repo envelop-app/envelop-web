@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+
+import FileInputUploader from '../lib/file_input_uploader';
+import GaiaDocument from '../lib/gaia_document';
+import GaiaIndex from '../lib/gaia_index';
 import { privateUserSession } from '../lib/blockstack_client';
-import GaiaIndex from '../lib/gaia_index'
-import GaiaDocument from '../lib/gaia_document'
-import DocumentCardComponent from "./document_card.jsx"
-import FileInputUploader from '../lib/file_input_uploader'
+
+import DocumentCardComponent from './document_card.jsx';
+import DropZoneComponent from './drop_zone.jsx';
 
 class DocumentListComponent extends Component {
   constructor() {
@@ -32,8 +35,7 @@ class DocumentListComponent extends Component {
     });
   }
 
-  onInputChange = (evt) => {
-    const file = evt.target.files[0];
+  uploadFile(file) {
     this.setState({
       dummyDoc: new GaiaDocument({
         id: file.lastModified,
@@ -43,7 +45,7 @@ class DocumentListComponent extends Component {
         content_type: file.type
       })
     });
-    new FileInputUploader(evt.target.files[0])
+    new FileInputUploader(file)
       .upload()
       .then(() => this.syncDocuments({ removeDummyDoc: true }));
   }
@@ -76,7 +78,7 @@ class DocumentListComponent extends Component {
           <input
             className="ev-upload__input"
             id="file-upload"
-            onChange={this.onInputChange}
+            onChange={(evt) => this.uploadFile(evt.target.files[0])}
             type="file"
             name="file-upload" />
         </div>
@@ -84,6 +86,7 @@ class DocumentListComponent extends Component {
           {this.maybeRenderDummyDoc()}
           {this.renderDocuments()}
         </div>
+        <DropZoneComponent onDroppedFile={(file) => this.uploadFile(file)} />
       </div>
     );
   }
