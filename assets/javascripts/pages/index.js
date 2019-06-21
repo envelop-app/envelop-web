@@ -2,7 +2,7 @@ import { privateUserSession } from '../lib/blockstack_client';
 import Constants from '../lib/constants'
 
 document.addEventListener("DOMContentLoaded", event => {
-  console.log(Constants.ENV);
+  console.log(Constants);
 
   const loginControlsNode = document.querySelector('.ev-login-controls');
   const loginBtn = document.querySelector('.ev-login-btn');
