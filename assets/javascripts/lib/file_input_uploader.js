@@ -5,7 +5,7 @@ import GaiaIndex from './gaia_index';
 
 const publicFileOptions = { encrypt: false, verify: false };
 
-class FileUploader {
+class FileInputUploader {
   constructor(input) {
     this.input = input;
     this.reader = new FileReader();
@@ -42,8 +42,7 @@ class FileUploader {
   updateIndex(gaiaDocument) {
     return privateUserSession.getFile('index').then(index => {
       const gaiaIndex = new GaiaIndex(JSON.parse(index));
-      gaiaIndex.addDocument(gaiaDocument);
-      return privateUserSession.putFile('index', JSON.stringify(gaiaIndex));
+      return gaiaIndex.addDocument(gaiaDocument);
     });
   }
 
@@ -62,4 +61,4 @@ class FileUploader {
   }
 }
 
-export default FileUploader;
+export default FileInputUploader;

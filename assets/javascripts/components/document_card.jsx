@@ -6,7 +6,6 @@ import MaterialIcon from '@material/react-material-icon';
 import { Corner } from '@material/menu';
 import { privateUserSession } from '../lib/blockstack_client'
 import Toast from '../lib/toast.jsx'
-import FileRemover from '../lib/file_remover'
 
 class DocumentCardComponent extends Component {
   constructor(props) {
@@ -42,8 +41,7 @@ class DocumentCardComponent extends Component {
 
   onDelete = () => {
     if (window.confirm('Delete this file?')) {
-      const documentRemover = new FileRemover(this.props.doc);
-      documentRemover.remove().then(() => {
+      this.props.doc.delete().then(() => {
         window.location = window.location.href;
       });
     }

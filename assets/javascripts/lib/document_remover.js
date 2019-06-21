@@ -3,7 +3,7 @@ import { privateUserSession } from './blockstack_client';
 import GaiaDocument from './gaia_document';
 import GaiaIndex from './gaia_index';
 
-class FileRemover {
+class DocumentRemover {
   constructor(gaiaDocument) {
     this.gaiaDocument = gaiaDocument;
   }
@@ -27,9 +27,8 @@ class FileRemover {
     return privateUserSession.getFile('index').then(index => {
       const gaiaIndex = new GaiaIndex(JSON.parse(index));
       gaiaIndex.removeDocument(this.gaiaDocument);
-      return privateUserSession.putFile('index', JSON.stringify(gaiaIndex));
     });
   }
 }
 
-export default FileRemover;
+export default DocumentRemover;

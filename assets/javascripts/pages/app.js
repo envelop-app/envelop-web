@@ -2,13 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import DocumentListComponent from '../components/document_list.jsx'
 import AvatarComponent from '../components/avatar.jsx'
-import FileUploader from '../lib/file_uploader'
+import FileInputUploader from '../lib/file_input_uploader'
 import { privateUserSession } from '../lib/blockstack_client';
 
 function showUploadInput() {
   const input = document.querySelector('.js-file-input');
 
-  new FileUploader(input)
+  new FileInputUploader(input)
     .bind()
     .then(() => window.location = window.location.href);
 }

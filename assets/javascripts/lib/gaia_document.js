@@ -1,4 +1,5 @@
 import { publicUserSession } from '../lib/blockstack_client'
+import DocumentRemover from '../lib/document_remover'
 import prettyBytes from 'pretty-bytes';
 
 const defaultOptions = { decrypt: false, verify: false };
@@ -37,6 +38,10 @@ class GaiaDocument {
       }
     }
     return this._prettySize = 'file';
+  }
+
+  delete() {
+    return new DocumentRemover(this).remove();
   }
 
   serialize() {
