@@ -50,7 +50,8 @@ class DocumentCardComponent extends Component {
   formatDate(dateStr) {
     const date = new Date(dateStr);
     const month = date.toLocaleDateString('en-us', { month: 'short' });
-    return `${month} ${date.getDate()}, ${date.getHours()}:${date.getMinutes()}`;
+    const minutes = ('0' + date.getMinutes()).slice(-2);
+    return `${month} ${date.getDate()}, ${date.getHours()}:${minutes}`;
   }
 
   render() {

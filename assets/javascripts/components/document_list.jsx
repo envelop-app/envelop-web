@@ -11,10 +11,10 @@ class DocumentListComponent extends Component {
   }
 
   componentDidMount() {
-    privateUserSession.getFile('index').then(index => {
-      const gaiaIndex = new GaiaIndex(JSON.parse(index));
+    const gaiaIndex = new GaiaIndex();
+    gaiaIndex.load().then(() => {
       this.setState({ documents: this.sortDocuments(gaiaIndex.documents) });
-    })
+    });
   }
 
   sortDocuments(documents) {

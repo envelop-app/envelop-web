@@ -11,7 +11,7 @@ class DocumentRemover {
   remove() {
     return this.removeRawFile()
       .then(() => this.removeDocument())
-      .then(() => this.updateIndex ());
+      .then(() => this.updateIndex());
   }
 
 
@@ -24,10 +24,8 @@ class DocumentRemover {
   }
 
   updateIndex() {
-    return privateUserSession.getFile('index').then(index => {
-      const gaiaIndex = new GaiaIndex(JSON.parse(index));
-      gaiaIndex.removeDocument(this.gaiaDocument);
-    });
+    const gaiaIndex = new GaiaIndex();
+    return gaiaIndex.removeDocument(this.gaiaDocument);
   }
 }
 

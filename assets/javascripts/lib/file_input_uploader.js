@@ -40,10 +40,8 @@ class FileInputUploader {
   }
 
   updateIndex(gaiaDocument) {
-    return privateUserSession.getFile('index').then(index => {
-      const gaiaIndex = new GaiaIndex(JSON.parse(index));
-      return gaiaIndex.addDocument(gaiaDocument);
-    });
+    const gaiaIndex = new GaiaIndex();
+    return gaiaIndex.addDocument(gaiaDocument);
   }
 
   putPublicFile(filename, contents) {
