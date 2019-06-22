@@ -31,14 +31,14 @@ class DocumentListComponent extends Component {
 
   handleInputChange = (evt) => {
     this
-      .uploadFile(evt.target.files[0])
+      .uploadFiles([...evt.target.files])
       .then(() => this.inputRef.current.value = null);
   }
 
-  uploadFile(file) {
-    const gaiaDocument = GaiaDocument.fromFile(file);
-    this.setState({ documents: [gaiaDocument, ...this.state.documents] });
-    return this.gaiaIndex.addDocument(gaiaDocument);
+  uploadFiles(files) {
+    const gaiaDocuments = files.map(file => GaiaDocument.fromFile(file));
+    this.setState({ documents: [...gaiaDocuments, ...this.state.documents] });
+    return this.gaiaIndex.addDocuments(gaiaDocuments);
   }
 
   onDocumentDelete = async (doc, callback) => {
@@ -49,7 +49,7 @@ class DocumentListComponent extends Component {
   renderDocuments() {
     return this.state.documents.map(doc => {
       return <DocumentCardComponent
-        key={doc.created_at.getTime()}
+        key={`${doc.getName()}/${doc.created_at.getTime()}`}
         doc={doc}
         onDelete={this.onDocumentDelete}
       />;
@@ -75,7 +75,7 @@ class DocumentListComponent extends Component {
         <div className="ev-document-list">
           {this.renderDocuments()}
         </div>
-        <DropZoneComponent onDroppedFile={(file) => this.uploadFile(file)} />
+        <DropZoneComponent onDroppedFile={(files) => this.uploadFiles(files)} />
       </div>
     );
   }

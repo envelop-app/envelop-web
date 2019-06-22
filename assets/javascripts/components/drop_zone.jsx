@@ -38,17 +38,7 @@ class DropZoneComponent extends Component {
         }
       }
 
-      if (files.length === 1) {
-        this.props.onDroppedFile(files[0]);
-      }
-      else if (files.length > 1) {
-        const message = `
-          Sorry, only single file uploads are supported at the moment.
-          Please try again with one file at a time.
-        `;
-        window.alert(message);
-      }
-
+      this.props.onDroppedFile([...files]);
       this.setState({ open: false });
     });
   }

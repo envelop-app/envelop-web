@@ -1,3 +1,4 @@
+import { chunk } from 'lodash';
 import GaiaDocument from './gaia_document';
 import { privateUserSession } from './blockstack_client';
 
@@ -10,13 +11,20 @@ function parseDocuments(rawDocuments) {
 class GaiaIndex {
   constructor() {
     this.version = null;
-    this.documents = null;
+    this.documents = [];
     this.onChangeCallbacks = [];
   }
 
-  async addDocument(doc) {
-    await doc.save();
-    await this._syncFile(that => that.setDocuments([...that.documents, doc]));
+  async addDocuments(docs) {
+    // Upload files at a time and update index in the end
+    const groups = chunk(docs, 5);
+
+    for (const group of groups) {
+      await Promise.all(group.map(doc => doc.save()));
+    }
+    await this._syncFile(that => {
+      that.setDocuments([...that.documents, ...docs])
+    });
     return this;
   }
 

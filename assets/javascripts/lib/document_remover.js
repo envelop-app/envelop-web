@@ -8,8 +8,10 @@ class DocumentRemover {
   }
 
   async remove() {
-    await this.removeRawFile();
-    return this.removeDocument();
+    return Promise.all([
+      this.removeRawFile(),
+      this.removeDocument()
+    ]);
   }
 
 
