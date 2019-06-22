@@ -49,11 +49,11 @@ class DocumentCardComponent extends Component {
   }
 
   isDisabled() {
-    return !this.props.doc.synced || this.state.deleting;
+    return !this.props.doc.isSynced() || this.state.deleting;
   }
 
   renderButtonText() {
-    if (!this.props.doc.synced) {
+    if (!this.props.doc.isSynced()) {
       return 'uploading ...'
     }
     else if (this.state.deleting) {

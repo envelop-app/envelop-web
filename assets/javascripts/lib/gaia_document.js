@@ -47,7 +47,6 @@ class GaiaDocument {
     this.id = fields.id;
     this.name = fields.name;
     this.size = fields.size;
-    this.synced = !!fields.id;
     this.url = fields.url;
     this.version = fields.version || version;
   }
@@ -73,6 +72,10 @@ class GaiaDocument {
       }
     }
     return this._prettySize = 'file';
+  }
+
+  isSynced() {
+    return !!this.id;
   }
 
   async save() {
