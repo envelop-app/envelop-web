@@ -23,16 +23,13 @@ class DocumentListComponent extends Component {
   }
 
   componentDidMount() {
-    this.syncDocuments();
-  }
-
-  syncDocuments = async (options = {}) => {
-    await this.gaiaIndex.load();
-
-    const newState = {};
-    newState.documents = sortDocuments(this.gaiaIndex.documents);
-    if (options.removeDummyDoc) { newState.dummyDoc = null };
-    this.setState(newState);
+    this.gaiaIndex.onChange(() => {
+      this.setState({
+        documents: sortDocuments(this.gaiaIndex.documents),
+        dummyDoc: null // FIXME: dummydoc should not exist
+      });
+    });
+    this.gaiaIndex.load();
   }
 
   handleInputChange = (evt) => {
@@ -41,24 +38,15 @@ class DocumentListComponent extends Component {
       .then(() => this.inputRef.current.value = null);
   }
 
-  async uploadFile(file) {
+  uploadFile(file) {
     const gaiaDocument = GaiaDocument.fromFile(file);
-    await this.setState({ dummyDoc: gaiaDocument });
-    await this.gaiaIndex.addDocument(gaiaDocument);
-    this.setState({
-      documents: sortDocuments(this.gaiaIndex.documents),
-      dummyDoc: false
-    });
+    this.setState({ dummyDoc: gaiaDocument });
+    return this.gaiaIndex.addDocument(gaiaDocument);
   }
 
   onDocumentDelete = async (doc, callback) => {
     if (!window.confirm('Delete this file?')) { return; }
-
-    await this.gaiaIndex.deleteDocument(doc);
-    console.log(this.gaiaIndex.documents)
-    this.setState({
-      documents: sortDocuments(this.gaiaIndex.documents)
-    });
+    this.gaiaIndex.deleteDocument(doc);
   }
 
   maybeRenderDummyDoc() {
@@ -67,7 +55,7 @@ class DocumentListComponent extends Component {
         uploading={!!this.state.dummyDoc}
         key={this.state.dummyDoc.created_at}
         doc={this.state.dummyDoc}
-        syncDocuments={this.syncDocuments}
+        onDelete={this.onDocumentDelete}
       />;
   }
 

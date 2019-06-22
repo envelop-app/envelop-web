@@ -121,7 +121,8 @@ class DocumentCardComponent extends Component {
 
 DocumentCardComponent.propTypes = {
   doc: PropTypes.instanceOf(GaiaDocument).isRequired,
-  uploading: PropTypes.bool
+  onDelete: PropTypes.func.isRequired,
+  uploading: PropTypes.bool,
 };
 
 export default DocumentCardComponent;

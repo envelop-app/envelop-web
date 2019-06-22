@@ -11,6 +11,25 @@ class GaiaIndex {
   constructor() {
     this.version = null;
     this.documents = null;
+    this.onChangeCallbacks = [];
+  }
+
+  async addDocument(doc) {
+    await doc.save();
+    await this._syncFile(that => that.setDocuments([...that.documents, doc]));
+    return this;
+  }
+
+  callOnChange() {
+    this.onChangeCallbacks.forEach((callback) => callback());
+  }
+
+  async deleteDocument(doc) {
+    await doc.delete();
+    await this._syncFile(that => {
+      that.setDocuments(that.documents.filter(d => d.id !== doc.id));
+    });
+    return this;
   }
 
   async load() {
@@ -19,31 +38,29 @@ class GaiaIndex {
 
     if (index) {
       this.version = index.version || 1;
-      this.documents = parseDocuments(index.files);
+      this.setDocuments(index.files);
     } else {
       this.version = version;
-      this.documents = [];
+      this.setDocuments([]);
     }
 
     return this;
   }
 
-  async addDocument(doc) {
-    await doc.save();
-    await this._syncFile(that => that.documents.push(doc));
-    return this;
-  }
-
-  async deleteDocument(doc) {
-    await doc.delete();
-    await this._syncFile(that => {
-      that.documents = that.documents.filter(d => d.id !== doc.id);
-    });
-    return this;
+  onChange(callback) {
+    if (typeof callback !== 'function') {
+      throw(`Callback must be a function. Received ${typeof callback}`);
+    }
+    this.onChangeCallbacks.push(callback);
   }
 
   serialize() {
     return { files: this.documents, version: this.version };
+  }
+
+  setDocuments(documents) {
+    this.documents = parseDocuments(documents);
+    this.callOnChange();
   }
 
   toJSON() {
