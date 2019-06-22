@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
-import FileInputUploader from '../lib/file_input_uploader';
 import GaiaDocument from '../lib/gaia_document';
 import GaiaIndex from '../lib/gaia_index';
 import { privateUserSession } from '../lib/blockstack_client';
@@ -9,11 +8,18 @@ import { privateUserSession } from '../lib/blockstack_client';
 import DocumentCardComponent from './document_card.jsx';
 import DropZoneComponent from './drop_zone.jsx';
 
+function sortDocuments(documents) {
+  return documents.sort(function(a, b) {
+    return new Date(b.created_at) - new Date(a.created_at)
+  });
+}
+
 class DocumentListComponent extends Component {
   constructor() {
     super();
     this.inputRef = React.createRef();
     this.state = { documents: [], dummyDoc: null };
+    this.gaiaIndex = new GaiaIndex();
   }
 
   componentDidMount() {
@@ -21,44 +27,45 @@ class DocumentListComponent extends Component {
   }
 
   syncDocuments = async (options = {}) => {
-    const gaiaIndex = new GaiaIndex();
-    await gaiaIndex.load();
+    await this.gaiaIndex.load();
 
     const newState = {};
-    newState.documents = this.sortDocuments(gaiaIndex.documents);
+    newState.documents = sortDocuments(this.gaiaIndex.documents);
     if (options.removeDummyDoc) { newState.dummyDoc = null };
     this.setState(newState);
   }
 
-  sortDocuments(documents) {
-    return documents.sort(function(a, b) {
-      return new Date(b.created_at) - new Date(a.created_at)
-    });
-  }
-
   handleInputChange = (evt) => {
-    this.uploadFile(evt.target.files[0]).then(() => this.inputRef.current.value = null);
+    this
+      .uploadFile(evt.target.files[0])
+      .then(() => this.inputRef.current.value = null);
   }
 
   async uploadFile(file) {
+    const gaiaDocument = GaiaDocument.fromFile(file);
+    await this.setState({ dummyDoc: gaiaDocument });
+    await this.gaiaIndex.addDocument(gaiaDocument);
     this.setState({
-      dummyDoc: new GaiaDocument({
-        id: file.lastModified,
-        url: `dummy/${file.name}`,
-        created_at: file.lastModifiedDate,
-        size: file.size,
-        content_type: file.type
-      })
+      documents: sortDocuments(this.gaiaIndex.documents),
+      dummyDoc: false
     });
-    await new FileInputUploader(file).upload();
-    setTimeout(() => this.syncDocuments({ removeDummyDoc: true }), 100);
+  }
+
+  onDocumentDelete = async (doc, callback) => {
+    if (!window.confirm('Delete this file?')) { return; }
+
+    await this.gaiaIndex.deleteDocument(doc);
+    console.log(this.gaiaIndex.documents)
+    this.setState({
+      documents: sortDocuments(this.gaiaIndex.documents)
+    });
   }
 
   maybeRenderDummyDoc() {
     return this.state.dummyDoc &&
       <DocumentCardComponent
         uploading={!!this.state.dummyDoc}
-        key={this.state.dummyDoc.id}
+        key={this.state.dummyDoc.created_at}
         doc={this.state.dummyDoc}
         syncDocuments={this.syncDocuments}
       />;
@@ -66,7 +73,11 @@ class DocumentListComponent extends Component {
 
   renderDocuments() {
     return this.state.documents.map(doc => {
-      return <DocumentCardComponent key={doc.id} doc={doc} syncDocuments={this.syncDocuments} />;
+      return <DocumentCardComponent
+        key={doc.created_at.getTime()}
+        doc={doc}
+        onDelete={this.onDocumentDelete}
+      />;
     });
   }
 

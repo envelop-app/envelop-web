@@ -13,7 +13,7 @@ class FileDownloader {
     const metadata = await this.fetchMetadata();
     const fullUrl = await this.fetchFullUrl(metadata);
     const name = metadata.url.split('/').pop();
-    return new GaiaDocument(Object.assign({}, metadata, { url: fullUrl }));
+    return GaiaDocument.fromGaia(Object.assign({}, metadata, { url: fullUrl }));
   }
 
   async fetchMetadata() {

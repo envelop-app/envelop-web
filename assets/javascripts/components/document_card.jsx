@@ -5,6 +5,7 @@ import copy from 'copy-to-clipboard';
 import Menu, {MenuList, MenuListItem, MenuListItemText, MenuListItemGraphic} from '@material/react-menu';
 import MaterialIcon from '@material/react-material-icon';
 import { Corner } from '@material/menu';
+
 import Toast from '../lib/toast.jsx'
 import GaiaDocument from '../lib/gaia_document'
 
@@ -37,11 +38,7 @@ class DocumentCardComponent extends Component {
 
   onDelete = async () => {
     this.setState({ deleting: true });
-    if (window.confirm('Delete this file?')) {
-      const that = this;
-      await this.props.doc.delete();
-      setTimeout(() => that.props.syncDocuments(), 100);
-    }
+    this.props.onDelete(this.props.doc);
   }
 
   formatDate(dateStr) {

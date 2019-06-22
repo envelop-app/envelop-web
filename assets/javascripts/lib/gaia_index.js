@@ -3,8 +3,8 @@ import { privateUserSession } from './blockstack_client';
 
 const version = 1;
 
-function parseDocuments(documents) {
-  return (documents || []).map(doc => new GaiaDocument(doc));
+function parseDocuments(rawDocuments) {
+  return (rawDocuments || []).map(raw => GaiaDocument.fromGaia(raw));
 }
 
 class GaiaIndex {
@@ -28,16 +28,18 @@ class GaiaIndex {
     return this;
   }
 
-  addDocument(doc) {
-    return this._syncFile((that) => {
-      return that.documents.push(doc);
-    });
+  async addDocument(doc) {
+    await doc.save();
+    await this._syncFile(that => that.documents.push(doc));
+    return this;
   }
 
-  removeDocument(doc) {
-    return this._syncFile((that) => {
-      return that.documents = that.documents.filter(d => d.id !== doc.id);
+  async deleteDocument(doc) {
+    await doc.delete();
+    await this._syncFile(that => {
+      that.documents = that.documents.filter(d => d.id !== doc.id);
     });
+    return this;
   }
 
   serialize() {
