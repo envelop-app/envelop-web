@@ -18,16 +18,13 @@ class DocumentListComponent extends Component {
   constructor() {
     super();
     this.inputRef = React.createRef();
-    this.state = { documents: [], dummyDoc: null };
+    this.state = { documents: [] };
     this.gaiaIndex = new GaiaIndex();
   }
 
   componentDidMount() {
     this.gaiaIndex.onChange(() => {
-      this.setState({
-        documents: sortDocuments(this.gaiaIndex.documents),
-        dummyDoc: null // FIXME: dummydoc should not exist
-      });
+      this.setState({ documents: sortDocuments(this.gaiaIndex.documents) });
     });
     this.gaiaIndex.load();
   }
@@ -40,23 +37,13 @@ class DocumentListComponent extends Component {
 
   uploadFile(file) {
     const gaiaDocument = GaiaDocument.fromFile(file);
-    this.setState({ dummyDoc: gaiaDocument });
+    this.setState({ documents: [gaiaDocument, ...this.state.documents] });
     return this.gaiaIndex.addDocument(gaiaDocument);
   }
 
   onDocumentDelete = async (doc, callback) => {
     if (!window.confirm('Delete this file?')) { return; }
     this.gaiaIndex.deleteDocument(doc);
-  }
-
-  maybeRenderDummyDoc() {
-    return this.state.dummyDoc &&
-      <DocumentCardComponent
-        uploading={!!this.state.dummyDoc}
-        key={this.state.dummyDoc.created_at}
-        doc={this.state.dummyDoc}
-        onDelete={this.onDocumentDelete}
-      />;
   }
 
   renderDocuments() {
@@ -73,7 +60,6 @@ class DocumentListComponent extends Component {
     return (
       <div>
         <div className="ev-upload-btn__wrapper">
-          {/* <a href="" className="ev-upload-btn">UPLOAD</a> */}
           <label className="ev-upload__btn" htmlFor="file-upload">
             <img src="/images/baseline-cloud_upload-24px.svg" />
             <span>UPLOAD</span>
@@ -87,7 +73,6 @@ class DocumentListComponent extends Component {
             name="file-upload" />
         </div>
         <div className="ev-document-list">
-          {this.maybeRenderDummyDoc()}
           {this.renderDocuments()}
         </div>
         <DropZoneComponent onDroppedFile={(file) => this.uploadFile(file)} />

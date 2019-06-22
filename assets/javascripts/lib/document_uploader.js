@@ -16,11 +16,12 @@ class DocumentUploader {
   upload() {
     return new Promise((resolve, reject) => {
       this.reader.onload = (evt) => {
-        (async () => {
-          await this.uploadRawFile(evt.target.result);
-          await this.uploadDocument();
-          resolve(this.gaiaDocument);
-        })();
+        const rawFilePromise =  this.uploadRawFile(evt.target.result);
+        const documentPromise = this.uploadDocument();
+
+        Promise
+          .all([rawFilePromise, documentPromise])
+          .then(() => resolve(this.gaiaDocument));
       }
       this.reader.readAsArrayBuffer(this.gaiaDocument.file);
     });

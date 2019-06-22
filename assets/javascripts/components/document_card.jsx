@@ -49,11 +49,11 @@ class DocumentCardComponent extends Component {
   }
 
   isDisabled() {
-    return this.props.uploading || this.state.deleting;
+    return !this.props.doc.synced || this.state.deleting;
   }
 
   renderButtonText() {
-    if (this.props.uploading) {
+    if (!this.props.doc.synced) {
       return 'uploading ...'
     }
     else if (this.state.deleting) {
@@ -65,7 +65,7 @@ class DocumentCardComponent extends Component {
   }
 
   render() {
-    const {doc, uploading} = this.props;
+    const doc = this.props.doc;
     const deleting = this.state.deleting;
 
     return (
@@ -121,8 +121,7 @@ class DocumentCardComponent extends Component {
 
 DocumentCardComponent.propTypes = {
   doc: PropTypes.instanceOf(GaiaDocument).isRequired,
-  onDelete: PropTypes.func.isRequired,
-  uploading: PropTypes.bool,
+  onDelete: PropTypes.func.isRequired
 };
 
 export default DocumentCardComponent;
