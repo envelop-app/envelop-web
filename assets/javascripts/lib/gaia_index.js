@@ -13,21 +13,19 @@ class GaiaIndex {
     this.documents = null;
   }
 
-  load() {
-    const that = this;
-    return privateUserSession.getFile('index').then((indexJson) => {
-      const index = JSON.parse(indexJson);
+  async load() {
+    const indexJson = await privateUserSession.getFile('index');
+    const index = JSON.parse(indexJson);
 
-      if (index) {
-        that.version = index.version || 1;
-        that.documents = parseDocuments(index.files);
-      } else {
-        that.version = version;
-        that.documents = [];
-      }
+    if (index) {
+      this.version = index.version || 1;
+      this.documents = parseDocuments(index.files);
+    } else {
+      this.version = version;
+      this.documents = [];
+    }
 
-      return true;
-    });
+    return this;
   }
 
   addDocument(doc) {
@@ -50,10 +48,11 @@ class GaiaIndex {
     return this.serialize();
   }
 
-  _syncFile(callback) {
-    return this.load()
-      .then(() => callback(this))
-      .then(() => privateUserSession.putFile('index', JSON.stringify(this)));
+  async _syncFile(callback) {
+    await this.load();
+    callback(this);
+    await privateUserSession.putFile('index', JSON.stringify(this));
+    return this;
   }
 }
 

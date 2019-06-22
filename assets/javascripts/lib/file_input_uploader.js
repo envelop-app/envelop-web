@@ -16,7 +16,12 @@ class FileInputUploader {
   upload() {
     return new Promise((resolve, reject) => {
       this.reader.onload = (evt) => {
-        resolve(this.uploadRawFile(evt.target.result).then(() => true));
+        (async () => {
+          await this.uploadRawFile(evt.target.result);
+          const gaiaDocument = await this.uploadGaiaDocument();
+          await this.updateIndex(gaiaDocument);
+          resolve(gaiaDocument);
+        })();
       }
       this.reader.readAsArrayBuffer(this.file);
     });
@@ -24,14 +29,13 @@ class FileInputUploader {
 
   uploadRawFile(contents) {
     const filename = `${this.longHash}/${this.file.name}`;
-    return this.putPublicFile(filename, contents)
-      .then(() => this.uploadGaiaDocument());
+    return this.putPublicFile(filename, contents);
   }
 
-  uploadGaiaDocument() {
+  async uploadGaiaDocument() {
     const gaiaDocument = this.buildGaiaDocument();
-    return this.putPublicFile(gaiaDocument.id, JSON.stringify(gaiaDocument))
-      .then(() => this.updateIndex(gaiaDocument));
+    await this.putPublicFile(gaiaDocument.id, JSON.stringify(gaiaDocument));
+    return gaiaDocument
   }
 
   updateIndex(gaiaDocument) {
@@ -40,7 +44,7 @@ class FileInputUploader {
   }
 
   putPublicFile(filename, contents) {
-    return privateUserSession.putFile(filename, contents, publicFileOptions)
+    return privateUserSession.putFile(filename, contents, publicFileOptions);
   }
 
   buildGaiaDocument() {

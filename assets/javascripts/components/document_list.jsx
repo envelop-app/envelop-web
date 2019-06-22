@@ -12,7 +12,7 @@ import DropZoneComponent from './drop_zone.jsx';
 class DocumentListComponent extends Component {
   constructor() {
     super();
-    this.gaiaIndex = new GaiaIndex();
+    this.inputRef = React.createRef();
     this.state = { documents: [], dummyDoc: null };
   }
 
@@ -20,13 +20,14 @@ class DocumentListComponent extends Component {
     this.syncDocuments();
   }
 
-  syncDocuments = (options = {}) => {
-    return this.gaiaIndex.load().then(() => {
-      const newState = { documents: this.sortDocuments(this.gaiaIndex.documents) };
-      if (options.removeDummyDoc) { newState.dummyDoc = null };
-      this.setState(newState);
-      return true;
-    });
+  syncDocuments = async (options = {}) => {
+    const gaiaIndex = new GaiaIndex();
+    await gaiaIndex.load();
+
+    const newState = {};
+    newState.documents = this.sortDocuments(gaiaIndex.documents);
+    if (options.removeDummyDoc) { newState.dummyDoc = null };
+    this.setState(newState);
   }
 
   sortDocuments(documents) {
@@ -35,7 +36,11 @@ class DocumentListComponent extends Component {
     });
   }
 
-  uploadFile(file) {
+  handleInputChange = (evt) => {
+    this.uploadFile(evt.target.files[0]).then(() => this.inputRef.current.value = null);
+  }
+
+  async uploadFile(file) {
     this.setState({
       dummyDoc: new GaiaDocument({
         id: file.lastModified,
@@ -45,9 +50,8 @@ class DocumentListComponent extends Component {
         content_type: file.type
       })
     });
-    new FileInputUploader(file)
-      .upload()
-      .then(() => this.syncDocuments({ removeDummyDoc: true }));
+    await new FileInputUploader(file).upload();
+    setTimeout(() => this.syncDocuments({ removeDummyDoc: true }), 100);
   }
 
   maybeRenderDummyDoc() {
@@ -76,9 +80,10 @@ class DocumentListComponent extends Component {
             <span>UPLOAD</span>
           </label>
           <input
+            ref={this.inputRef}
             className="ev-upload__input"
             id="file-upload"
-            onChange={(evt) => this.uploadFile(evt.target.files[0])}
+            onChange={this.handleInputChange}
             type="file"
             name="file-upload" />
         </div>

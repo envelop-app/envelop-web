@@ -8,10 +8,10 @@ class DocumentRemover {
     this.gaiaDocument = gaiaDocument;
   }
 
-  remove() {
-    return this.removeRawFile()
-      .then(() => this.removeDocument())
-      .then(() => this.updateIndex());
+  async remove() {
+    await this.removeRawFile();
+    await this.removeDocument();
+    return this.updateIndex();
   }
 
 

@@ -11,7 +11,7 @@ import GaiaDocument from '../lib/gaia_document'
 class DocumentCardComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { coordinates: undefined, open: false, deleting: false };
+    this.state = { open: false, deleting: false };
   }
 
   setAnchorElement = (element) => {
@@ -35,13 +35,12 @@ class DocumentCardComponent extends Component {
     this.setState({open: false});
   }
 
-  onDelete = () => {
+  onDelete = async () => {
     this.setState({ deleting: true });
     if (window.confirm('Delete this file?')) {
       const that = this;
-      this.props.doc.delete().then(() => {
-        that.props.syncDocuments();
-      });
+      await this.props.doc.delete();
+      setTimeout(() => that.props.syncDocuments(), 100);
     }
   }
 
@@ -60,7 +59,7 @@ class DocumentCardComponent extends Component {
     if (this.props.uploading) {
       return 'uploading ...'
     }
-    else if (this.props.deleting) {
+    else if (this.state.deleting) {
       return 'deleting ...';
     }
     else {
