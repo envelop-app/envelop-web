@@ -24,7 +24,7 @@ class GaiaDocument {
   static fromFile(file) {
     return new GaiaDocument({
       name: file.name,
-      created_at: file.lastModifiedDate,
+      created_at: new Date(),
       size: file.size,
       content_type: file.type,
       file: file
@@ -111,6 +111,10 @@ class GaiaDocument {
 
   toJSON() {
     return this.serialize();
+  }
+
+  uniqueKey() {
+    return `${this.getName()}/${this.created_at.getTime()}`;
   }
 }
 
