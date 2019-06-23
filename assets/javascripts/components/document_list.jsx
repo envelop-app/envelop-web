@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import MaterialIcon from '@material/react-material-icon';
 
 import GaiaDocument from '../lib/gaia_document';
 import GaiaIndex from '../lib/gaia_index';
-import { privateUserSession } from '../lib/blockstack_client';
 
 import DocumentCardComponent from './document_card.jsx';
 import DropZoneComponent from './drop_zone.jsx';
@@ -61,7 +61,7 @@ class DocumentListComponent extends Component {
       <div>
         <div className="ev-upload-btn__wrapper">
           <label className="ev-upload__btn" htmlFor="file-upload">
-            <img src="/images/baseline-cloud_upload-24px.svg" />
+            <MaterialIcon icon="add" />
             <span>UPLOAD</span>
           </label>
           <input
