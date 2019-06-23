@@ -47,12 +47,16 @@ class DocumentListComponent extends Component {
   }
 
   renderDocuments() {
+    // FIXME: Sometimes keys are not unique, when files with the same name are uploaded at the same time
+
     return this.state.documents.map(doc => {
-      return <DocumentCardComponent
-        key={`${doc.getName()}/${doc.created_at.getTime()}`}
-        doc={doc}
-        onDelete={this.onDocumentDelete}
-      />;
+      return <div className="ev-document-list-grid__cell">
+        <DocumentCardComponent
+          key={`${doc.getName()}/${doc.created_at.getTime()}`}
+          doc={doc}
+          onDelete={this.onDocumentDelete}
+        />
+      </div>;
     });
   }
 
@@ -72,8 +76,10 @@ class DocumentListComponent extends Component {
             type="file"
             name="file-upload" />
         </div>
-        <div className="ev-document-list">
-          {this.renderDocuments()}
+        <div className="ev-document-list ev-document-list-grid">
+          <div className="ev-document-list-grid__inner">
+            {this.renderDocuments()}
+          </div>
         </div>
         <DropZoneComponent onDroppedFile={(files) => this.uploadFiles(files)} />
       </div>
