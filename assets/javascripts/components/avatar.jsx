@@ -21,7 +21,13 @@ class AvatarComponent extends Component {
   }
 
   componentDidMount() {
+    this.setSize();
+    window.addEventListener('resize', () => this.setSize());
+  }
+
+  setSize() {
     const anchorPosition = this.anchorRef.current.getBoundingClientRect();
+
     this.setState({
       coordinates: {
         x: anchorPosition.x + anchorPosition.width,
