@@ -49,7 +49,7 @@ class DropZoneComponent extends Component {
         ref={this.dropZoneRef}
         className={`ev-drop-zone ${this.state.open && 'ev-drop-zone--open'}`}
       >
-        Drop a file here
+        Drop files here
       </div>
     );
   }
