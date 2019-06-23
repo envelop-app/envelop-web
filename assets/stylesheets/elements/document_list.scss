@@ -26,12 +26,12 @@ $document-list-gutter: 10px;
   @extend .mdc-layout-grid--fixed-column-width;
 
   @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
-    $phone-max-width: $document-card-max-width;
+    $phone-max-width: $document-card-max-width + $document-list-gutter*2;
     @include mdc-layout-grid('phone', auto, $phone-max-width);
   }
 
   @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
-    $tablet-max-width: $document-card-max-width*2 +$document-list-gutter*2;
+    $tablet-max-width: $document-card-max-width*2 +$document-list-gutter*3;
     @include mdc-layout-grid('tablet', auto, $tablet-max-width);
   }
 
