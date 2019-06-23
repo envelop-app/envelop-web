@@ -47,15 +47,10 @@ class DocumentListComponent extends Component {
   }
 
   renderDocuments() {
-    // FIXME: Sometimes keys are not unique, when files with the same name are uploaded at the same time
-
     return this.state.documents.map(doc => {
-      return <div className="ev-document-list-grid__cell">
-        <DocumentCardComponent
-          key={`${doc.getName()}/${doc.created_at.getTime()}`}
-          doc={doc}
-          onDelete={this.onDocumentDelete}
-        />
+      const key = `${doc.getName()}/${doc.created_at.getTime()}`;
+      return <div className="ev-document-list-grid__cell" key={key}>
+        <DocumentCardComponent doc={doc} onDelete={this.onDocumentDelete} />
       </div>;
     });
   }
