@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import MaterialIcon from '@material/react-material-icon';
 
+import Constants from '../lib/constants';
 import GaiaDocument from '../lib/gaia_document';
 import GaiaIndex from '../lib/gaia_index';
 
@@ -14,7 +15,7 @@ class AppComponent extends Component {
     super();
     this.inputRef = React.createRef();
     this.gaiaIndex = new GaiaIndex();
-    this.state = { documents: [], toDelete: null, deleting: null };
+    this.state = { documents: [], deleting: null, dialog: {} };
   }
 
   componentDidMount() {
@@ -30,22 +31,58 @@ class AppComponent extends Component {
   }
 
   uploadFiles(files) {
+    if (files.some(file => file.size > Constants.FILE_SIZE_LIMIT)) {
+      this.maximumFileSizeDialog('open');
+      return;
+    }
+
     const gaiaDocuments = files.map(file => GaiaDocument.fromFile(file));
     this.setState({ documents: [...gaiaDocuments, ...this.state.documents] });
     return this.gaiaIndex.addDocuments(gaiaDocuments);
   }
 
   onDocumentDelete = (doc, callback) => {
-    this.setState({ toDelete: doc });
+    this.deleteConfirmationDialog('open', doc)
   }
 
   onConfirmDelete = (doc) => {
+    this.setState({ deleting: doc });
     this.gaiaIndex.deleteDocument(doc);
-    this.setState({ deleting: doc, toDelete: null });
   }
 
-  onCancelDelete = (doc) => {
-    this.setState({ toDelete: null });
+  dialog(status, dialogState = {}) {
+    if (status === 'open') {
+      const openState = Object.assign(
+        dialogState,
+        { open: true, onClose: (() => this.dialog('close'))}
+      );
+      this.setState({ dialog: openState });
+    }
+    else if (status === 'close') {
+      this.setState({ dialog: {} });
+    }
+    else {
+      throw("Missing argument 'status'")
+    }
+  }
+
+  deleteConfirmationDialog(status, doc) {
+    const dialogState = {
+      acceptText: 'Delete',
+      content: <p>Delete this file?</p>,
+      dismissText: 'Cancel',
+      onAccept: () => this.onConfirmDelete(doc)
+    }
+    this.dialog('open', dialogState);
+  }
+
+  maximumFileSizeDialog(status) {
+    const dialogState = {
+      title: 'File size over limit',
+      acceptText: 'Ok, got it',
+      content: <p>File size limit is <strong>25Mb</strong>, try again with a smaller file.</p>
+    }
+    this.dialog('open', dialogState);
   }
 
   render() {
@@ -70,14 +107,7 @@ class AppComponent extends Component {
           onDelete={this.onDocumentDelete}
         />
         <DropZoneComponent onDroppedFile={(files) => this.uploadFiles(files)} />
-        <MainDialogComponent
-          acceptText={'Delete'}
-          body={'Delete this file?'}
-          dismissText={'Cancel'}
-          onAccept={() => this.onConfirmDelete(this.state.toDelete)}
-          onDismiss={() => this.onCancelDelete(this.state.toDelete)}
-          open={!!this.state.toDelete}
-        />
+        <MainDialogComponent {...this.state.dialog} />
       </div>
     );
   }

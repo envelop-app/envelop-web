@@ -15,25 +15,20 @@ class MainDialogComponent extends Component {
     else if (action === 'dismiss') {
       this.props.onDismiss && this.props.onDismiss();
     }
+
+    this.props.onClose && this.props.onClose();
   }
 
   render() {
+    const { open, title, content, dismissText, acceptText } = this.props;
+
     return (
-      <Dialog
-        open={this.props.open}
-        onClose={this.onClose}
-      >
-        {this.props.title ? <DialogTitle>{this.props.title}</DialogTitle> : ''}
-        <DialogContent>
-          <p>{this.props.body}</p>
-        </DialogContent>
+      <Dialog open={open} onClose={this.onClose}>
+        {title ? <DialogTitle>{title}</DialogTitle> : ''}
+        <DialogContent>{content && content}</DialogContent>
         <DialogFooter>
-          <DialogButton action='dismiss'>
-            {this.props.dismissText || 'Dismiss'}
-          </DialogButton>
-          <DialogButton action='accept' isDefault>
-            {this.props.acceptText || 'Accept'}
-          </DialogButton>
+          {dismissText && <DialogButton action='dismiss'>{dismissText}</DialogButton>}
+          {acceptText && <DialogButton action='accept'>{acceptText}</DialogButton>}
         </DialogFooter>
       </Dialog>
     );
@@ -42,9 +37,11 @@ class MainDialogComponent extends Component {
 
 MainDialogComponent.propTypes = {
   acceptText: PropTypes.string,
-  body: PropTypes.string,
+  content: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
   dismissText: PropTypes.string,
   onAccept: PropTypes.func,
+  onClose: PropTypes.func,
+  onDismiss: PropTypes.func,
   open: PropTypes.bool,
   title: PropTypes.string,
 };
