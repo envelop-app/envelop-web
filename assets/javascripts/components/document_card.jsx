@@ -12,7 +12,7 @@ import GaiaDocument from '../lib/gaia_document'
 class DocumentCardComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { open: false, deleting: false };
+    this.state = { open: false };
   }
 
   setAnchorElement = (element) => {
@@ -37,7 +37,6 @@ class DocumentCardComponent extends Component {
   }
 
   onDelete = async () => {
-    this.setState({ deleting: true });
     this.props.onDelete(this.props.doc);
   }
 
@@ -49,14 +48,14 @@ class DocumentCardComponent extends Component {
   }
 
   isDisabled() {
-    return !this.props.doc.isSynced() || this.state.deleting;
+    return !this.props.doc.isSynced() || this.props.deleting;
   }
 
   renderButtonText() {
     if (!this.props.doc.isSynced()) {
       return 'uploading ...'
     }
-    else if (this.state.deleting) {
+    else if (this.props.deleting) {
       return 'deleting ...';
     }
     else {
@@ -65,8 +64,7 @@ class DocumentCardComponent extends Component {
   }
 
   render() {
-    const doc = this.props.doc;
-    const deleting = this.state.deleting;
+    const {deleting, doc} = this.props;
 
     return (
       <div className={`ev-document-card ${this.isDisabled() && 'ev-document-card__disabled'}`}>
@@ -120,6 +118,7 @@ class DocumentCardComponent extends Component {
 }
 
 DocumentCardComponent.propTypes = {
+  deleting: PropTypes.bool,
   doc: PropTypes.instanceOf(GaiaDocument).isRequired,
   onDelete: PropTypes.func.isRequired
 };

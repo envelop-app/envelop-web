@@ -18,7 +18,11 @@ function DocumentListComponent(props) {
       <div className="ev-document-list-grid__inner">
         {sortDocuments(props.documents).map(doc => (
           <div className="ev-document-list-grid__cell" key={doc.uniqueKey()}>
-            <DocumentCardComponent doc={doc} onDelete={props.onDelete} />
+            <DocumentCardComponent
+              deleting={props.deleting === doc}
+              doc={doc}
+              onDelete={props.onDelete}
+            />
           </div>
         ))}
       </div>
@@ -27,6 +31,7 @@ function DocumentListComponent(props) {
 }
 
 DocumentListComponent.propTypes = {
+  deleting: PropTypes.instanceOf(GaiaDocument),
   documents: PropTypes.arrayOf(PropTypes.instanceOf(GaiaDocument)).isRequired,
   onDelete: PropTypes.func.isRequired
 };

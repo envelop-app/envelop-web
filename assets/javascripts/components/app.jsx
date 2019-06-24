@@ -7,13 +7,14 @@ import GaiaIndex from '../lib/gaia_index';
 
 import DocumentListComponent from './document_list.jsx';
 import DropZoneComponent from './drop_zone.jsx';
+import MainDialogComponent from './main_dialog.jsx';
 
 class AppComponent extends Component {
   constructor() {
     super();
     this.inputRef = React.createRef();
     this.gaiaIndex = new GaiaIndex();
-    this.state = { documents: [] };
+    this.state = { documents: [], toDelete: null, deleting: null };
   }
 
   componentDidMount() {
@@ -35,8 +36,16 @@ class AppComponent extends Component {
   }
 
   onDocumentDelete = (doc, callback) => {
-    if (!window.confirm('Delete this file?')) { return; }
-    return this.gaiaIndex.deleteDocument(doc);
+    this.setState({ toDelete: doc });
+  }
+
+  onConfirmDelete = (doc) => {
+    this.gaiaIndex.deleteDocument(doc);
+    this.setState({ deleting: doc, toDelete: null });
+  }
+
+  onCancelDelete = (doc) => {
+    this.setState({ toDelete: null });
   }
 
   render() {
@@ -56,10 +65,19 @@ class AppComponent extends Component {
             name="file-upload" />
         </div>
         <DocumentListComponent
+          deleting={this.state.deleting}
           documents={this.state.documents}
           onDelete={this.onDocumentDelete}
         />
         <DropZoneComponent onDroppedFile={(files) => this.uploadFiles(files)} />
+        <MainDialogComponent
+          acceptText={'Delete'}
+          body={'Delete this file?'}
+          dismissText={'Cancel'}
+          onAccept={() => this.onConfirmDelete(this.state.toDelete)}
+          onDismiss={() => this.onCancelDelete(this.state.toDelete)}
+          open={!!this.state.toDelete}
+        />
       </div>
     );
   }
