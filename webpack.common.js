@@ -83,9 +83,4 @@ module.exports = {
       name: 'vendors'
     }
   },
-  watchOptions: {
-    aggregateTimeout: 600,
-    poll: 1000,
-    ignored: /node_modules/
-  }
 };
