@@ -10,7 +10,6 @@ configure :build do
   config[:host] = "http://envelop.app"
   activate :asset_hash, exts: %w(.css .js)
   activate :minify_html
-  activate :minify_javascript
   activate :gzip
 end
 
