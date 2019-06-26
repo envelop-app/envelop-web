@@ -6,6 +6,7 @@ import DocumentRemover from '../lib/document_remover'
 import { privateUserSession } from '../lib/blockstack_client'
 import Constants from '../lib/constants'
 import DocumentUploader from '../lib/document_uploader';
+import LocalDocumentUploader from '../lib/local_document_uploader';
 
 const types = {
   image:   ['png', 'gif', 'jpg', 'jpeg', 'svg', 'tif', 'tiff', 'ico'],
@@ -40,15 +41,22 @@ class GaiaDocument {
     );
   }
 
+  static fromLocal(raw) {
+    return new GaiaDocument(raw);
+  }
+
   constructor(fields = {}) {
     this.content_type = fields.content_type;
     this.created_at = fields.created_at;
     this.file = fields.file;
     this.id = fields.id;
+    this.localId = fields.localId;
+    this.name = fields.name;
     this.name = fields.name;
     this.size = fields.size;
     this.url = fields.url;
     this.version = fields.version || version;
+    this.localContents = null;
   }
 
   delete() {
@@ -78,16 +86,32 @@ class GaiaDocument {
     return !!this.id;
   }
 
-  async save() {
+  _prepareForSave() {
     const payload = this.serialize();
     payload.file = this.file;
-    payload.id = this.id || generateHash(6);
     payload.url = this.url || `${generateHash(14)}/${this.name}`;
     payload.content_type = this.content_type || this.name.split('.').pop();
     payload.created_at = new Date();
 
-    const documentUploader = new DocumentUploader(payload)
-    await documentUploader.upload();
+    return payload;
+  }
+
+  async save() {
+    const payload = this._prepareForSave();
+    payload.id = this.id || generateHash(6);
+
+    const uploader = new DocumentUploader(payload)
+    await uploader.upload();
+
+    return Object.assign(this, payload);
+  }
+
+  async saveLocal() {
+    const payload = this._prepareForSave();
+    payload.localId = this.localId || generateHash(20);
+
+    const uploader = new LocalDocumentUploader(payload)
+    await uploader.upload();
 
     return Object.assign(this, payload);
   }
@@ -97,6 +121,7 @@ class GaiaDocument {
       content_type: this.content_type || null,
       created_at: this.created_at || null,
       id: this.id || null,
+      localId: this.id || null,
       url: this.url || null,
       size: this.size || null,
       version: this.version || null
