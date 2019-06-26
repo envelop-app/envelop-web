@@ -43,8 +43,9 @@ class AvatarComponent extends Component {
 
   displayName() {
     return this.state.person.name() ||
+      this.state.user.username.replace('.id.blockstack', '') ||
       this.state.user.email ||
-      this.state.user.username.replace('.id.blockstack', '');
+      this.state.user.decentralizedID;
   }
 
   onOpen = () => {
