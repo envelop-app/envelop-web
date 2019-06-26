@@ -28,7 +28,8 @@ class DocumentUploader {
   }
 
   uploadRawFile(contents) {
-    return putPublicFile(this.gaiaDocument.url, contents);
+    const options = { contentType: 'application/octet-stream' };
+    return putPublicFile(this.gaiaDocument.url, contents, options);
   }
 
   uploadDocument() {
