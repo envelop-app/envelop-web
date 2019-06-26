@@ -1,0 +1,12 @@
+---
+name: extension
+title: Files – envelop
+description: Share private files easily with envelop
+---
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    var authResponse = window.location.search.split('=').pop();
+    window.location = 'chrome-extension://kopbpfhhgkipijljcngacpeofkmoeppd/auth.html?authResponse=' + authResponse;
+  });
+</script>
