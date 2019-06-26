@@ -64,14 +64,14 @@ class GaiaDocument {
   }
 
   getType() {
-    if (this._prettySize) { return this._prettySize; }
+    if (this._type) { return this._type; }
 
     for (var t in types) {
       if (types[t].includes(this.content_type)) {
-        return this._prettySize = t;
+        return this._type = t;
       }
     }
-    return this._prettySize = 'file';
+    return this._type = 'file';
   }
 
   isSynced() {
