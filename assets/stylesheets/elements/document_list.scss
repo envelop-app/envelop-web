@@ -1,23 +1,12 @@
-@import "@material/button/mdc-button";
-@import '@material/react-material-icon/index.scss';
+@import "@material/layout-grid/mdc-layout-grid";
 
-.ev-document-list-container {
-  margin: auto;
-  max-width: 1268px;
-}
-
+.ev-document-list-container { }
 .ev-document-list {
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-start;
   width: 100%;
 }
 
 .ev-document-card {
-  width: 270px;
-  margin: 10px 10px;
+  max-width: 260px;
   border: 1px solid $gray-light;
   border-radius: 4px;
   box-shadow: 0px 1px 3px 1px rgba(209,209,209,0.81);
@@ -27,20 +16,56 @@
   opacity: 0.5;
 }
 
+$document-card-max-width: 260px;
+$document-list-gutter: 10px;
+
+.ev-document-list-grid {
+  @extend .mdc-layout-grid;
+  @extend .mdc-layout-grid--fixed-column-width;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    $phone-max-width: $document-card-max-width + $document-list-gutter*2;
+    @include mdc-layout-grid('phone', auto, $phone-max-width);
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    $tablet-max-width: $document-card-max-width*2 +$document-list-gutter*3;
+    @include mdc-layout-grid('tablet', auto, $tablet-max-width);
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('desktop')) {
+    $desktop-max-width: $document-card-max-width*4 +$document-list-gutter*4;
+    @include mdc-layout-grid('desktop', auto, $desktop-max-width);
+  }
+}
+
+.ev-document-list-grid__inner {
+  @extend .mdc-layout-grid__inner;
+}
+
+.ev-document-list-grid__cell {
+  @extend .mdc-layout-grid__cell;
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('phone')) {
+    @include mdc-layout-grid-cell('phone', 4, 10px);
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    @include mdc-layout-grid-cell('tablet', 4, 10px);
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('desktop')) {
+    @include mdc-layout-grid-cell('desktop', 3, 10px);
+  }
+}
+
 .ev-document-card__media {
-  height: 200px;
-  width: 100%;
   position: relative;
   background-color: $gray-light;
 }
 
 .ev-document-card__media-image {
-  position: absolute;
-  margin: auto;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  max-width: 100%;
 }
 
 .ev-document-card__media-kebab {
@@ -107,7 +132,7 @@
 .ev-document-card__btn {
   @extend .mdc-button, .mdc-button--outlined;
   height: 36px;
-  width: 262px;
+  width: 100%;
   color: black !important;
   border-color: rgba(0, 0, 0, 0.12) !important;
 }

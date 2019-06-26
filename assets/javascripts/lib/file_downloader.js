@@ -9,19 +9,16 @@ class FileDownloader {
     this.filename = filename;
   }
 
-  download() {
-    return this.fetchMetadata()
-      .then(metadata => Promise.all([metadata, this.fetchFullUrl(metadata)]))
-      .then(([metadata, fullUrl]) => {
-        const name = metadata.url.split('/').pop();
-        return new GaiaDocument(Object.assign({}, metadata, { url: fullUrl }));
-      });
+  async download() {
+    const metadata = await this.fetchMetadata();
+    const fullUrl = await this.fetchFullUrl(metadata);
+    const name = metadata.url.split('/').pop();
+    return GaiaDocument.fromGaia(Object.assign({}, metadata, { url: fullUrl }));
   }
 
-  fetchMetadata() {
-    return publicUserSession
-      .getFile(this.filename, this.options())
-      .then(JSON.parse)
+  async fetchMetadata() {
+    const metadataJson = await publicUserSession.getFile(this.filename, this.options());
+    return JSON.parse(metadataJson);
   }
 
   fetchFullUrl(metadata) {

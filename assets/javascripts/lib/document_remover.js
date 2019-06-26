@@ -1,17 +1,17 @@
 import { Random } from 'random-js'
 import { privateUserSession } from './blockstack_client';
 import GaiaDocument from './gaia_document';
-import GaiaIndex from './gaia_index';
 
 class DocumentRemover {
   constructor(gaiaDocument) {
     this.gaiaDocument = gaiaDocument;
   }
 
-  remove() {
-    return this.removeRawFile()
-      .then(() => this.removeDocument())
-      .then(() => this.updateIndex());
+  async remove() {
+    return Promise.all([
+      this.removeRawFile(),
+      this.removeDocument()
+    ]);
   }
 
 
@@ -21,11 +21,6 @@ class DocumentRemover {
 
   removeDocument() {
     return privateUserSession.deleteFile(this.gaiaDocument.id);
-  }
-
-  updateIndex() {
-    const gaiaIndex = new GaiaIndex();
-    return gaiaIndex.removeDocument(this.gaiaDocument);
   }
 }
 

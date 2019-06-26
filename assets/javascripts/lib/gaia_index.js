@@ -1,59 +1,85 @@
+import { chunk } from 'lodash';
 import GaiaDocument from './gaia_document';
 import { privateUserSession } from './blockstack_client';
 
 const version = 1;
 
-function parseDocuments(documents) {
-  return (documents || []).map(doc => new GaiaDocument(doc));
+function parseDocuments(rawDocuments) {
+  return (rawDocuments || []).map(raw => GaiaDocument.fromGaia(raw));
 }
 
 class GaiaIndex {
   constructor() {
     this.version = null;
-    this.documents = null;
+    this.documents = [];
+    this.onChangeCallbacks = [];
   }
 
-  load() {
-    const that = this;
-    return privateUserSession.getFile('index').then((indexJson) => {
-      const index = JSON.parse(indexJson);
+  async addDocuments(docs) {
+    // Upload files at a time and update index in the end
+    const groups = chunk(docs, 5);
 
-      if (index) {
-        that.version = index.version || 1;
-        that.documents = parseDocuments(index.files);
-      } else {
-        that.version = version;
-        that.documents = [];
-      }
-
-      return true;
+    for (const group of groups) {
+      await Promise.all(group.map(doc => doc.save()));
+    }
+    await this._syncFile(that => {
+      that.setDocuments([...that.documents, ...docs])
     });
+    return this;
   }
 
-  addDocument(doc) {
-    return this._syncFile((that) => {
-      return that.documents.push(doc);
-    });
+  callOnChange() {
+    this.onChangeCallbacks.forEach((callback) => callback());
   }
 
-  removeDocument(doc) {
-    return this._syncFile((that) => {
-      return that.documents = that.documents.filter(d => d.id !== doc.id);
+  async deleteDocument(doc) {
+    await doc.delete();
+    await this._syncFile(that => {
+      that.setDocuments(that.documents.filter(d => d.id !== doc.id));
     });
+    return this;
+  }
+
+  async load() {
+    const indexJson = await privateUserSession.getFile('index');
+    const index = JSON.parse(indexJson);
+
+    if (index) {
+      this.version = index.version || 1;
+      this.setDocuments(index.files);
+    } else {
+      this.version = version;
+      this.setDocuments([]);
+    }
+
+    return this;
+  }
+
+  onChange(callback) {
+    if (typeof callback !== 'function') {
+      throw(`Callback must be a function. Received ${typeof callback}`);
+    }
+    this.onChangeCallbacks.push(callback);
   }
 
   serialize() {
     return { files: this.documents, version: this.version };
   }
 
+  setDocuments(documents) {
+    this.documents = parseDocuments(documents);
+    this.callOnChange();
+  }
+
   toJSON() {
     return this.serialize();
   }
 
-  _syncFile(callback) {
-    return this.load()
-      .then(() => callback(this))
-      .then(() => privateUserSession.putFile('index', JSON.stringify(this)));
+  async _syncFile(callback) {
+    await this.load();
+    callback(this);
+    await privateUserSession.putFile('index', JSON.stringify(this));
+    return this;
   }
 }
 
