@@ -60,12 +60,17 @@ $document-list-gutter: 10px;
 }
 
 .ev-document-card__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   background-color: $gray-light;
+  min-height: 200px;
 }
 
 .ev-document-card__media-image {
-  max-width: 100%;
+  height: 85px;
+  width: 85px;
 }
 
 .ev-document-card__media-kebab {
