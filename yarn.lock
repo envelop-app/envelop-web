@@ -733,6 +733,19 @@
   dependencies:
     tslib "^1.9.3"
 
+"@material/button@^1.1.0":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@material/button/-/button-1.1.1.tgz#35af0d295f6ce6e3df9d4978485b5294d794f682"
+  integrity sha512-03aEyzZBIeqpgZkqLjro/enz8ORUnfQslBUdAgkPqdjh1X0oIEugr3UaFyC5QlSBTU3j3GIsnKIxWaggkRenpQ==
+  dependencies:
+    "@material/elevation" "^1.1.0"
+    "@material/feature-targeting" "^0.44.1"
+    "@material/ripple" "^1.1.0"
+    "@material/rtl" "^0.42.0"
+    "@material/shape" "^1.1.1"
+    "@material/theme" "^1.1.0"
+    "@material/typography" "^1.0.0"
+
 "@material/button@^2.3.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@material/button/-/button-2.3.0.tgz#eff1349babf3f929bd99f86742df988185247d43"
@@ -800,6 +813,24 @@
     "@material/shape" "^1.1.1"
     "@material/theme" "^1.1.0"
     "@material/typography" "^2.3.0"
+    tslib "^1.9.3"
+
+"@material/dialog@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@material/dialog/-/dialog-1.1.0.tgz#62f6bf31a7329ff4948609fb0e377ea336654972"
+  integrity sha512-XbFTTdzzRhjClLMDFxz8SR/mwwCBpQL6N7Z7UzX7SgD51UJmd19SsXPItFquRKk3mkNuoFBBcR4KJ6julAW+Fg==
+  dependencies:
+    "@material/animation" "^1.0.0"
+    "@material/base" "^1.0.0"
+    "@material/dom" "^1.1.0"
+    "@material/elevation" "^1.1.0"
+    "@material/feature-targeting" "^0.44.1"
+    "@material/ripple" "^1.1.0"
+    "@material/rtl" "^0.42.0"
+    "@material/shape" "^1.0.0"
+    "@material/theme" "^1.1.0"
+    "@material/typography" "^1.0.0"
+    focus-trap "^4.0.2"
     tslib "^1.9.3"
 
 "@material/dialog@^2.3.0":
@@ -1087,6 +1118,16 @@
     "@material/theme" "^1.1.0"
     tslib "^1.9.3"
 
+"@material/react-button@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@material/react-button/-/react-button-0.13.0.tgz#bf60c69d6f09339862d06f8402d63f52df042b80"
+  integrity sha512-CKrF0WlA65mZsZFupMHPkpj9CDeqIEQ5dPcTl7dl5UEoyEHg2oLBEEjxh/G209VdcwWKsArnM+Q2nvlYBooG7g==
+  dependencies:
+    "@material/button" "^1.1.0"
+    "@material/react-ripple" "^0.13.0"
+    classnames "^2.2.6"
+    react "^16.4.2"
+
 "@material/react-checkbox@^0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@material/react-checkbox/-/react-checkbox-0.13.0.tgz#b449d54b287a1d042de69b1f574412bc989bfe0a"
@@ -1096,6 +1137,18 @@
     "@material/react-ripple" "^0.13.0"
     classnames "^2.2.6"
     react "^16.3.2"
+
+"@material/react-dialog@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@material/react-dialog/-/react-dialog-0.13.0.tgz#e69c4c2eaa2d18e081d00a0baa17751c0db14d79"
+  integrity sha512-f8C1zTfD5RBm8PL/Xn2DQ9xrkFCIa1LD9hCz/vkh5gJutfbUy4XgOSMbCHCqTxp4YtsmHA0shR6n/LqRiQ2v9Q==
+  dependencies:
+    "@material/dialog" "1.1.0"
+    "@material/dom" "^1.0.0"
+    "@material/react-button" "^0.13.0"
+    classnames "^2.2.6"
+    focus-trap "^4.0.2"
+    react "^16.4.2"
 
 "@material/react-list@^0.13.2":
   version "0.13.2"
@@ -1232,7 +1285,7 @@
   dependencies:
     "@material/ripple" "^0.41.0"
 
-"@material/shape@^1.1.1":
+"@material/shape@^1.0.0", "@material/shape@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@material/shape/-/shape-1.1.1.tgz#7a5368694bc3555e69ea547950904b46fa1024bf"
   integrity sha512-Jge/h1XBLjdLlam4QMSzVgM99e/N8+elQROPkltqVP7eyLc17BwM3aP5cLVfZDgrJgvsjUxbgAP1H1j8sqmUyg==
@@ -4420,6 +4473,14 @@ flush-write-stream@^2.0.0:
   dependencies:
     inherits "^2.0.3"
     readable-stream "^3.1.1"
+
+focus-trap@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-4.0.2.tgz#4ee2b96547c9ea0e4252a2d4b2cca68944194663"
+  integrity sha512-HtLjfAK7Hp2qbBtLS6wEznID1mPT+48ZnP2nkHzgjpL4kroYHg0CdqJ5cTXk+UO5znAxF5fRUkhdyfgrhh8Lzw==
+  dependencies:
+    tabbable "^3.1.2"
+    xtend "^4.0.1"
 
 focus-trap@^5.0.0:
   version "5.0.1"
@@ -8730,6 +8791,11 @@ swap-case@^1.1.0:
   dependencies:
     lower-case "^1.1.1"
     upper-case "^1.1.1"
+
+tabbable@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-3.1.2.tgz#f2d16cccd01f400e38635c7181adfe0ad965a4a2"
+  integrity sha512-wjB6puVXTYO0BSFtCmWQubA/KIn7Xvajw0x0l6eJUudMG/EAiJvIUnyNX6xO4NpGrJ16lbD0eUseB9WxW0vlpQ==
 
 tabbable@^4.0.0:
   version "4.0.0"

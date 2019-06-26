@@ -1,8 +1,11 @@
+import { Random } from 'random-js'
+import prettyBytes from 'pretty-bytes';
+
 import { publicUserSession } from '../lib/blockstack_client'
 import DocumentRemover from '../lib/document_remover'
 import { privateUserSession } from '../lib/blockstack_client'
 import Constants from '../lib/constants'
-import prettyBytes from 'pretty-bytes';
+import DocumentUploader from '../lib/document_uploader';
 
 const types = {
   image:   ['png', 'gif', 'jpg', 'jpeg', 'svg', 'tif', 'tiff', 'ico'],
@@ -13,18 +16,47 @@ const types = {
 
 const version = 1;
 
+function generateHash(length) {
+  return new Random().string(length);
+}
+
 class GaiaDocument {
+  static fromFile(file) {
+    return new GaiaDocument({
+      name: file.name,
+      created_at: new Date(),
+      size: file.size,
+      content_type: file.type,
+      file: file
+    });
+  }
+
+  static fromGaia(raw) {
+    return new GaiaDocument(
+      Object.assign(raw, {
+        name: raw.name || raw.url.split('/').pop(),
+        created_at: new Date(raw.created_at)
+      })
+    );
+  }
+
   constructor(fields = {}) {
-    this.id = fields.id;
-    this.url = fields.url;
-    this.size = fields.size;
     this.content_type = fields.content_type;
     this.created_at = fields.created_at;
+    this.file = fields.file;
+    this.id = fields.id;
+    this.name = fields.name;
+    this.size = fields.size;
+    this.url = fields.url;
     this.version = fields.version || version;
   }
 
+  delete() {
+    return new DocumentRemover(this).remove();
+  }
+
   getName() {
-    return this.url.split('/').pop();
+    return this.name;
   }
 
   getSizePretty() {
@@ -42,17 +74,31 @@ class GaiaDocument {
     return this._type = 'file';
   }
 
-  delete() {
-    return new DocumentRemover(this).remove();
+  isSynced() {
+    return !!this.id;
+  }
+
+  async save() {
+    const payload = this.serialize();
+    payload.file = this.file;
+    payload.id = this.id || generateHash(6);
+    payload.url = this.url || `${generateHash(14)}/${this.name}`;
+    payload.content_type = this.content_type || this.name.split('.').pop();
+    payload.created_at = new Date();
+
+    const documentUploader = new DocumentUploader(payload)
+    await documentUploader.upload();
+
+    return Object.assign(this, payload);
   }
 
   serialize() {
     return {
+      content_type: this.content_type || null,
+      created_at: this.created_at || null,
       id: this.id || null,
       url: this.url || null,
       size: this.size || null,
-      content_type: this.content_type || null,
-      created_at: this.created_at || null,
       version: this.version || null
     };
   }
@@ -65,6 +111,10 @@ class GaiaDocument {
 
   toJSON() {
     return this.serialize();
+  }
+
+  uniqueKey() {
+    return `${this.getName()}/${this.created_at.getTime()}`;
   }
 }
 

@@ -5,13 +5,14 @@ import copy from 'copy-to-clipboard';
 import Menu, {MenuList, MenuListItem, MenuListItemText, MenuListItemGraphic} from '@material/react-menu';
 import MaterialIcon from '@material/react-material-icon';
 import { Corner } from '@material/menu';
+
 import Toast from '../lib/toast.jsx'
 import GaiaDocument from '../lib/gaia_document'
 
 class DocumentCardComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { coordinates: undefined, open: false, deleting: false };
+    this.state = { open: false };
   }
 
   setAnchorElement = (element) => {
@@ -35,14 +36,8 @@ class DocumentCardComponent extends Component {
     this.setState({open: false});
   }
 
-  onDelete = () => {
-    this.setState({ deleting: true });
-    if (window.confirm('Delete this file?')) {
-      const that = this;
-      this.props.doc.delete().then(() => {
-        that.props.syncDocuments();
-      });
-    }
+  onDelete = async () => {
+    this.props.onDelete(this.props.doc);
   }
 
   formatDate(dateStr) {
@@ -53,11 +48,11 @@ class DocumentCardComponent extends Component {
   }
 
   isDisabled() {
-    return this.props.uploading || this.state.deleting;
+    return !this.props.doc.isSynced() || this.props.deleting;
   }
 
   renderButtonText() {
-    if (this.props.uploading) {
+    if (!this.props.doc.isSynced()) {
       return 'uploading ...'
     }
     else if (this.props.deleting) {
@@ -69,8 +64,7 @@ class DocumentCardComponent extends Component {
   }
 
   render() {
-    const {doc, uploading} = this.props;
-    const deleting = this.state.deleting;
+    const {deleting, doc} = this.props;
 
     return (
       <div className={`ev-document-card ${this.isDisabled() && 'ev-document-card__disabled'}`}>
@@ -127,8 +121,9 @@ class DocumentCardComponent extends Component {
 }
 
 DocumentCardComponent.propTypes = {
+  deleting: PropTypes.bool,
   doc: PropTypes.instanceOf(GaiaDocument).isRequired,
-  uploading: PropTypes.bool
+  onDelete: PropTypes.func.isRequired
 };
 
 export default DocumentCardComponent;

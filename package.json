@@ -26,12 +26,15 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@material/layout-grid": "^0.41.0",
     "@material/menu": "^2.3.0",
+    "@material/react-dialog": "^0.13.0",
     "@material/react-material-icon": "^0.13.0",
     "@material/react-menu": "^0.13.2",
     "@material/snackbar": "^2.3.0",
     "blockstack": "^19.1.0",
     "copy-to-clipboard": "^3.2.0",
+    "lodash": "^4.17.11",
     "material-components-web": "^2.3.1",
     "pretty-bytes": "^5.2.0",
     "prop-types": "^15.7.2",
