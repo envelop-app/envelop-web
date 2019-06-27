@@ -6,6 +6,7 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   watchOptions: {
     aggregateTimeout: 600,
-    poll: 1000
+    poll: 1000,
+    ignored: /node_modules/
   }
 });
