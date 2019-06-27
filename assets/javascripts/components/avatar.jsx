@@ -42,10 +42,12 @@ class AvatarComponent extends Component {
   }
 
   displayName() {
-    return this.state.person.name() ||
-      this.state.user.username.replace('.id.blockstack', '') ||
-      this.state.user.email ||
-      this.state.user.decentralizedID;
+    const {person, user} = this.state;
+
+    return person.name() ||
+      user.username && username.replace('.id.blockstack', '') ||
+      user.email ||
+      user.decentralizedID;
   }
 
   onOpen = () => {
