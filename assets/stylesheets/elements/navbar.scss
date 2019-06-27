@@ -2,6 +2,7 @@
 @import "@material/menu-surface/mdc-menu-surface";
 @import "@material/menu/mdc-menu";
 @import '@material/react-menu/index.scss';
+@import "@material/layout-grid/mdc-layout-grid";
 
 $logo-height: 30px;
 
@@ -63,3 +64,10 @@ $logo-height: 30px;
   }
 }
 
+.ev-navbar__username {
+  padding-right: 10px;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    display: none;
+  }
+}
