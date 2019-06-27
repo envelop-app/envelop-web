@@ -1,6 +1,6 @@
 # Envelop
 
-## Contribute
+## Contributing
 
 ### Setup
 
