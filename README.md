@@ -35,3 +35,11 @@ http://localhost:3000
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
 5. Create a new Pull Request
+
+## License
+
+Envelop is under MIT License.
+
+---
+
+Created by [bloco.io](https://www.bloco.io) and [@joaodiogocosta](https://twitter.com/joaodiogocosta).
