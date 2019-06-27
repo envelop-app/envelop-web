@@ -36,6 +36,10 @@ helpers do
     options[:src] = nil
     image_tag(nil, options)
   end
+
+  def image_url(*args)
+    "#{config[:host]}/#{image_path(*args)}"
+  end
 end
 
 # Asset configuration
