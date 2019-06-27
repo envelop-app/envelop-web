@@ -2,6 +2,7 @@
 
 // Overrides must exist before imports
 $mdc-theme-primary: $ev-yellow;
+$mdc-typography-font-family: unquote("Questrial, sans-serif") !default;
 
 @import "./reset";
 @import "@material/snackbar/mdc-snackbar";
