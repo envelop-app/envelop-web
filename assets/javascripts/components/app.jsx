@@ -20,7 +20,7 @@ class AppComponent extends Component {
     this.gaiaIndex = new GaiaIndex();
     this.state = Object.assign({},
       Dialogs.initState(),
-      { documents: [], deleting: null }
+      { documents: [], deleting: null, loading: true }
     );
   }
 
@@ -33,11 +33,13 @@ class AppComponent extends Component {
 
     if (this.localIndex.tempDocuments.length > 0) {
       this.setState({ documents: this.localIndex.tempDocuments });
-      this.gaiaIndex.addDocuments(this.localIndex.tempDocuments);
+      await this.gaiaIndex.addDocuments(this.localIndex.tempDocuments);
       this.localIndex.setTempDocuments([]);
     } else {
-      this.gaiaIndex.load();
+      await this.gaiaIndex.load();
     }
+
+    this.setState({ loading: false });
   }
 
   handleInputChange = async (evt) => {
@@ -69,27 +71,54 @@ class AppComponent extends Component {
     this.gaiaIndex.deleteDocument(doc);
   }
 
-  render() {
+  showEmptyState() {
+    return !this.state.loading && this.state.documents.length === 0;
+  }
+
+  renderUpload() {
     return (
-      <div>
-        <div className="ev-upload-btn__wrapper">
+      <div className="ev-upload__wrapper">
+        {this.showEmptyState() && (
+          <div className="ev-upload__arrow-wrapper">
+            <div className="ev-upload__arrow-text">Start here</div>
+            <img className="ev-upload__arrow-image" src="/images/arrow.svg" />
+          </div>
+        )}
+        <div className="ev-upload__btn-wrapper">
           <label className="ev-upload__btn" htmlFor="file-upload">
             <MaterialIcon icon="add" />
             <span>UPLOAD</span>
           </label>
-          <input
-            ref={this.inputRef}
-            className="ev-upload__input"
-            id="file-upload"
-            onChange={this.handleInputChange}
-            type="file"
-            name="file-upload" />
         </div>
-        <DocumentListComponent
-          deleting={this.state.deleting}
-          documents={this.state.documents}
-          onDelete={this.onDocumentDelete}
-        />
+        <input
+          ref={this.inputRef}
+          className="ev-upload__input"
+          id="file-upload"
+          onChange={this.handleInputChange}
+          type="file"
+          name="file-upload" />
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className="ev-app__container">
+        {this.renderUpload()}
+        {this.showEmptyState() ?
+            <div className="ev-app__empty-state">
+              <img className="ev-app__empty-state-image" src="/images/bg-empty-state.svg" />
+              <div className="ev-app__empty-state-text">
+                Looking a little empty? Share your files, music, images, videos ...
+              </div>
+            </div>
+            :
+            <DocumentListComponent
+              deleting={this.state.deleting}
+              documents={this.state.documents}
+              onDelete={this.onDocumentDelete}
+            />
+        }
         <DropZoneComponent onDroppedFile={(files) => this.uploadFiles(files)} />
         <MainDialogComponent {...this.state.dialog} />
       </div>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="51px" height="63px" viewBox="0 0 51 63" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Arrow</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Web" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD---Empty-State" transform="translate(-1058.000000, -911.000000)" stroke="#000000" stroke-width="2">
+            <g id="Arrow" transform="translate(1083.500000, 942.000000) rotate(-180.000000) translate(-1083.500000, -942.000000) translate(1059.000000, 911.000000)">
+                <g id="Group" transform="translate(3.000000, 8.000000)">
+                    <path d="M0.866,0.816 C0.866,0.816 1.402,0.844 2.357,0.939" id="Path"></path>
+                    <path d="M5.428,1.324 C18.366,3.24 53.772,12.054 44.402,50.663" id="Path" stroke-dasharray="3.097,3.097"></path>
+                    <path d="M44.016,52.174 C43.888,52.651 43.754,53.132 43.613,53.619" id="Path"></path>
+                </g>
+                <path d="M13.427,0.381 L0.148,8.436 L11.125,19" id="Path" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3"></path>
+            </g>
+        </g>
+    </g>
+</svg>
