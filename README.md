@@ -1,4 +1,19 @@
-# Envelop
+![Envelop](https://envelop.app/images/logo.svg)
+
+# Web app 🌐
+
+![Envelop - Share and upload private files easily](https://envelop.app/images/og-image.png)
+
+Share private files easily, without losing their ownership.
+
+With [Blockstack](https://blockstack.org), you decide where your files are stored.
+Use the default storage (infinite space with a 25MB file limit), or setup your own storage.
+
+## Features
+
+- Upload a file (from the file browser or from other apps)
+- Get a short URL to share, so other can download your file
+- Delete files you no longer need or want to share
 
 ## Contributing
 
