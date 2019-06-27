@@ -23,7 +23,7 @@ class GaiaIndex {
       await Promise.all(group.map(doc => doc.save()));
     }
     await this._syncFile(that => {
-      that.setDocuments([...that.documents, ...docs])
+      that._setDocuments([...that.documents, ...docs])
     });
     return this;
   }
@@ -35,7 +35,7 @@ class GaiaIndex {
   async deleteDocument(doc) {
     await doc.delete();
     await this._syncFile(that => {
-      that.setDocuments(that.documents.filter(d => d.id !== doc.id));
+      that._setDocuments(that.documents.filter(d => d.id !== doc.id));
     });
     return this;
   }
@@ -46,10 +46,10 @@ class GaiaIndex {
 
     if (index) {
       this.version = index.version || 1;
-      this.setDocuments(index.files);
+      this._setDocuments(index.files);
     } else {
       this.version = version;
-      this.setDocuments([]);
+      this._setDocuments([]);
     }
 
     return this;
@@ -66,7 +66,7 @@ class GaiaIndex {
     return { files: this.documents, version: this.version };
   }
 
-  setDocuments(documents) {
+  _setDocuments(documents) {
     this.documents = parseDocuments(documents);
     this.callOnChange();
   }

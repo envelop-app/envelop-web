@@ -3,8 +3,10 @@ import ReactDOM from "react-dom";
 import MaterialIcon from '@material/react-material-icon';
 
 import Constants from '../lib/constants';
+import Dialogs from '../lib/dialogs';
 import GaiaDocument from '../lib/gaia_document';
 import GaiaIndex from '../lib/gaia_index';
+import LocalIndex from '../lib/local_index';
 
 import DocumentListComponent from './document_list.jsx';
 import DropZoneComponent from './drop_zone.jsx';
@@ -14,15 +16,28 @@ class AppComponent extends Component {
   constructor() {
     super();
     this.inputRef = React.createRef();
+    this.localIndex = new LocalIndex();
     this.gaiaIndex = new GaiaIndex();
-    this.state = { documents: [], deleting: null, dialog: {} };
+    this.state = Object.assign({},
+      Dialogs.initState(),
+      { documents: [], deleting: null }
+    );
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.gaiaIndex.onChange(() => {
       this.setState({ documents: this.gaiaIndex.documents });
     });
-    this.gaiaIndex.load();
+
+    await this.localIndex.load();
+
+    if (this.localIndex.tempDocuments.length > 0) {
+      this.setState({ documents: this.localIndex.tempDocuments });
+      this.gaiaIndex.addDocuments(this.localIndex.tempDocuments);
+      this.localIndex.setTempDocuments([]);
+    } else {
+      this.gaiaIndex.load();
+    }
   }
 
   handleInputChange = async (evt) => {
@@ -32,7 +47,7 @@ class AppComponent extends Component {
 
   uploadFiles(files) {
     if (files.some(file => file.size > Constants.FILE_SIZE_LIMIT)) {
-      this.maximumFileSizeDialog('open');
+      Dialogs.open((state) => this.setState(state), Dialogs.MAXIMUM_FILE_SIZE);
       return;
     }
 
@@ -42,47 +57,16 @@ class AppComponent extends Component {
   }
 
   onDocumentDelete = (doc, callback) => {
-    this.deleteConfirmationDialog('open', doc)
+    Dialogs.open(
+      (state) => this.setState(state),
+      Dialogs.DELETE_CONFIRMATION,
+      { onAccept: () => this.onConfirmDelete(doc) }
+    );
   }
 
   onConfirmDelete = (doc) => {
     this.setState({ deleting: doc });
     this.gaiaIndex.deleteDocument(doc);
-  }
-
-  dialog(status, dialogState = {}) {
-    if (status === 'open') {
-      const openState = Object.assign(
-        dialogState,
-        { open: true, onClose: (() => this.dialog('close'))}
-      );
-      this.setState({ dialog: openState });
-    }
-    else if (status === 'close') {
-      this.setState({ dialog: {} });
-    }
-    else {
-      throw("Missing argument 'status'")
-    }
-  }
-
-  deleteConfirmationDialog(status, doc) {
-    const dialogState = {
-      acceptText: 'Delete',
-      content: <p>Delete this file?</p>,
-      dismissText: 'Cancel',
-      onAccept: () => this.onConfirmDelete(doc)
-    }
-    this.dialog('open', dialogState);
-  }
-
-  maximumFileSizeDialog(status) {
-    const dialogState = {
-      title: 'File size over limit',
-      acceptText: 'Ok, got it',
-      content: <p>File size limit is <strong>25Mb</strong>, try again with a smaller file.</p>
-    }
-    this.dialog('open', dialogState);
   }
 
   render() {

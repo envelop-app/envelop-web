@@ -22,7 +22,8 @@ const Constants = {
   BLOCKSTACK_REDIRECT_URI: isProduction() ? redirectUri('/app') : redirectUri('/app.html'),
   SHARE_URI: SHARE_URI,
   PREVIEW: __PREVIEW__,
-  FILE_SIZE_LIMIT: 25000000
+  FILE_SIZE_LIMIT: 25000000,
+  TEMP_DOCUMENTS_PREFIX: 'tempDocuments'
 };
 
 export default Constants;
