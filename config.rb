@@ -40,7 +40,7 @@ helpers do
   end
 
   def image_url(*args)
-    "#{config[:host]}/#{image_path(*args)}"
+    File.join(config[:host], image_path(*args))
   end
 end
 
