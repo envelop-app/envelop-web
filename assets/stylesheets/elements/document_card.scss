@@ -1,8 +1,9 @@
 .ev-document-card {
-  max-width: 260px;
+  max-width: $document-card-max-width;
   border: 1px solid $gray-light;
   border-radius: 4px;
   box-shadow: 0px 1px 3px 1px rgba(209,209,209,0.81);
+  background-color: white;
 }
 
 .ev-document-card__disabled {
@@ -95,7 +96,7 @@
 // Modifications for the download version of the card
 
 .ev-document-card--download {
-  width: 260px;
+  width: $document-card-max-width;
 }
 
 .ev-document-card__media--download {

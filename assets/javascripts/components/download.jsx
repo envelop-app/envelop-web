@@ -42,16 +42,20 @@ class DownloadComponent extends Component {
   }
 
   render() {
-    if (this.state.document) {
-      return (
-        <div className="ev-download__container">
-          <DocumentDownloadCardComponent doc={this.state.document} />
+    const doc = this.state.document;
+
+    return (
+      <div className="ev-download__container">
+        <div className="ev-download__card-wrapper">
+          {doc && <DocumentDownloadCardComponent doc={doc} />}
         </div>
-      );
-    }
-    else {
-      return '';
-    }
+        <div className="ev-download__text">
+          Share private files from your phone. Get Envelop App<br/>
+          <a href="#">Try Envelop</a>
+        </div>
+        <img className="ev-download__image" src="/images/bg-empty-state.svg"/>
+      </div>
+    );
   }
 }
 

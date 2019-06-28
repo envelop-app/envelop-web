@@ -10,11 +10,53 @@ html, body {
 .ev-download {
   height: 100%;
 }
-
 .ev-download__main {
   height: calc(100% - #{$ev-navbar-height});
   display: flex;
   align-items: center;
   width: 80%;
   margin: auto;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    height: auto;
+    margin-top: 40px;
+  }
+}
+
+.ev-download__container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ev-download__card-wrapper {
+  min-width: $document-card-max-width;
+}
+
+.ev-download__text {
+  font-size: 40px;
+  max-width: 500px;
+  margin-left: 20px;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    font-size: 20px;
+    margin: 20px 0px 0px 0px;
+    max-width: $document-card-max-width;
+  }
+}
+
+.ev-download__image {
+  position: absolute;
+  z-index: -1;
+  left: 20%;
+  max-width: 320px;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    font-size: 20px;
+    margin: 20px 0px 0px 0px;
+    max-width: $document-card-max-width;
+    position: absolute;
+    max-width: 200px;
+    bottom: 160px;
+  }
 }
