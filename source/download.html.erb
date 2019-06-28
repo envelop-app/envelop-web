@@ -1,42 +1,11 @@
 ---
 name: download
-title: Download file – envelop
-description: Share private files easily with envelop
+title: Download file - Envelop
+description: Download this file shared with Envelop
 ---
 
-<div class="download">
-  <header class="header">
-    <h1 class="logo">
-      <a href="/">
-        <%= image_tag('logo.svg', alt: 'envelop') %>
-      </a>
-    </h1>
-  </header>
+<div class="ev-download">
+  <%= partial :navbar %>
 
-  <section class="file-header">
-    <div class="icon">
-      <%= placeholder_image_tag(class: 'ev-filetype') %>
-    </div>
-    <div class="ev-filename"></div>
-    <div class="ev-filesize"></div>
-  </section>
-
-  <main>
-    <div class="file">
-      <div class="icon">
-        <%= placeholder_image_tag(class: 'ev-filetype') %>
-      </div>
-      <div class="ev-filename"></div>
-      <div class="ev-filesize"></div>
-    </div>
-    <p>
-      <a href="" class="ev-fileurl button hide">Download</a>
-    </p>
-  </main>
-
-  <footer>
-    <p>
-      Share private files easily, without losing their ownership. <a href="/" class="try-link">Try Envelop</a>
-    </p>
-  </footer>
+  <main class="ev-download__main js-download-container"></main>
 </div>
