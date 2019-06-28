@@ -29,6 +29,7 @@
     "@material/layout-grid": "^0.41.0",
     "@material/menu": "^2.3.0",
     "@material/react-dialog": "^0.13.0",
+    "@material/react-linear-progress": "^0.14.0",
     "@material/react-material-icon": "^0.13.0",
     "@material/react-menu": "^0.13.2",
     "@material/snackbar": "^2.3.0",
