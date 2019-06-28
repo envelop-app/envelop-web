@@ -43,6 +43,11 @@ html, body {
     margin: 20px 0px 0px 0px;
     max-width: $document-card-max-width;
   }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    font-size: 30px;
+    max-width: 400px;
+  }
 }
 
 .ev-download__image {
