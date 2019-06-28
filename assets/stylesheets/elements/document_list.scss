@@ -2,20 +2,6 @@
   width: 100%;
 }
 
-.ev-document-card {
-  max-width: 260px;
-  border: 1px solid $gray-light;
-  border-radius: 4px;
-  box-shadow: 0px 1px 3px 1px rgba(209,209,209,0.81);
-}
-
-.ev-document-card__disabled {
-  opacity: 0.5;
-}
-
-$document-card-max-width: 260px;
-$document-list-gutter: 10px;
-
 .ev-document-list-grid {
   @extend .mdc-layout-grid;
   @extend .mdc-layout-grid--fixed-column-width;
@@ -54,87 +40,4 @@ $document-list-gutter: 10px;
   @media(min-width: mdc-layout-grid-breakpoint-min('desktop')) {
     @include mdc-layout-grid-cell('desktop', 3, 10px);
   }
-}
-
-.ev-document-card__media {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  background-color: $gray-light;
-  min-height: 180px;
-}
-
-.ev-document-card__media-image {
-  height: 85px;
-  width: 85px;
-}
-
-.ev-document-card__media-kebab {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 24px;
-  width: 24px;
-  margin: 10px;
-  background-image: url('/images/baseline-more_vert-24px.svg');
-}
-
-.ev-document-card__body {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-}
-
-.ev-document-card__body-left {
-  width: 80%;
-}
-
-.ev-document-card__body-right {
-  text-align: right;
-  align-self: flex-start;
-}
-
-.ev-document-card__text-title {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  font-size: 21px;
-  color: $text-primary;
-  padding-bottom: 4px;
-}
-
-.ev-document-card__open {
-  display: block;
-  height: 24px;
-  width: 24px;
-  background-image: url("/images/baseline-open_in_new-24px.svg");
-}
-
-.ev-document-card__text-primary {
-  font-size: 15px;
-  color: $text-primary;
-  padding-bottom: 4px;
-}
-
-.ev-document-card__text-secondary {
-  font-size: 15px;
-  color: $text-secondary;
-  padding-bottom: 4px;
-}
-
-.ev-document-card__controls {
-  display: flex;
-  alignt-items: center;
-  justify-content: space-around;
-  padding: 8px;
-}
-
-.ev-document-card__btn {
-  @extend .mdc-button, .mdc-button--outlined;
-  height: 36px;
-  width: 100%;
-  color: black !important;
-  border-color: rgba(0, 0, 0, 0.12) !important;
 }

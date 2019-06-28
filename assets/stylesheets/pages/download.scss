@@ -1,0 +1,20 @@
+@import "@material/button/mdc-button";
+
+@import '../elements/navbar';
+@import '../elements/document_card';
+
+html, body {
+  height: 100%;
+}
+
+.ev-download {
+  height: 100%;
+}
+
+.ev-download__main {
+  height: calc(100% - #{$ev-navbar-height});
+  display: flex;
+  align-items: center;
+  width: 80%;
+  margin: auto;
+}

@@ -5,14 +5,7 @@ description: Share private files easily with envelop
 ---
 
 <div class="ev-app">
-  <nav class="ev-navbar">
-    <a class="ev-navbar__logo" href="/">
-      <%= image_tag('logo.svg', alt: 'envelop') %>
-    </a>
-    <ul class="ev-navbar__items">
-      <li class="ev-navbar__item js-navbar-user"></li>
-    </ul>
-  </nav>
+  <%= partial :navbar %>
 
   <main class="ev-app__main">
     <div class="js-app-container"></div>
