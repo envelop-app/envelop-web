@@ -11,17 +11,13 @@ function mountComponents() {
 
 document.addEventListener("DOMContentLoaded", event => {
   const loginControlsNode = document.querySelector('.ev-login-controls');
-  const loginBtn = document.querySelector('.ev-login-btn');
-  const goToAppBtn = document.querySelector('.ev-go-to-app-btn');
-  const logoutBtn = document.querySelector('.ev-logout-btn');
+  const loginBtn = document.querySelector('.js-login-btn');
+  const goToAppBtn = document.querySelector('.js-go-to-app-btn');
+  const logoutBtn = document.querySelector('.js-logout-btn');
 
   mountComponents();
 
   function initAuthentication() {
-    if (window.location.href.indexOf('?dev') != -1) {
-      loginControlsNode.classList.remove('hide');
-    }
-
     loginBtn.addEventListener('click', event => {
       event.preventDefault();
       privateUserSession.redirectToSignIn(Constants.BLOCKSTACK_REDIRECT_URI);
