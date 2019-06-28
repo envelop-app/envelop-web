@@ -26,7 +26,7 @@ $ev-index__cell-padding: 25px;
 
 .ev-index__section-cell {
   width: calc(50% - #{$ev-index__cell-padding*2});
-  padding: 75px $ev-index__cell-padding;
+  padding: 100px $ev-index__cell-padding;
   margin: auto;
 
   @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
@@ -51,8 +51,8 @@ $ev-index__cell-padding: 25px;
 
 .ev-index__section-cell--text {
   @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
-    font-size: 20px;
-    text-align: center;
+    font-size: 30px;
+    text-align: center !important;
   }
 
   @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
