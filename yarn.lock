@@ -987,6 +987,16 @@
     "@material/theme" "^1.1.0"
     tslib "^1.9.3"
 
+"@material/linear-progress@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@material/linear-progress/-/linear-progress-1.1.0.tgz#559921d4274fce0131fdf146698582d292855d6a"
+  integrity sha512-MIK0cD/o1rTLREtAfTK3v60h7A0/wAu8/3v9dPTMlAPe+Y5gOarAizYWM3r/bp88sGO4gU8nPK0X9/daD28pNw==
+  dependencies:
+    "@material/animation" "^1.0.0"
+    "@material/base" "^1.0.0"
+    "@material/theme" "^1.1.0"
+    tslib "^1.9.3"
+
 "@material/linear-progress@^2.3.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@material/linear-progress/-/linear-progress-2.3.0.tgz#07ab97443e04a8075b2ca8d38bc97a7d60a4bd4a"
@@ -1149,6 +1159,14 @@
     classnames "^2.2.6"
     focus-trap "^4.0.2"
     react "^16.4.2"
+
+"@material/react-linear-progress@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@material/react-linear-progress/-/react-linear-progress-0.14.0.tgz#b2bc0a6d43583d4b1954ece407d5c2dadb13eca1"
+  integrity sha512-eRtVwMEZiH0VauAWjGqgg0dqtbP8nN0nopv6B4aiodw8nrSz+6GPlBQG693sP+AD/BdJoU4FtNibozldiooBug==
+  dependencies:
+    "@material/linear-progress" "^1.1.0"
+    classnames "^2.2.6"
 
 "@material/react-list@^0.13.2":
   version "0.13.2"
