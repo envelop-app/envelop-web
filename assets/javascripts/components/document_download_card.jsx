@@ -12,17 +12,19 @@ const DocumentDownloadCardComponent = (props) =>{
       <div className="ev-document-card__media ev-document-card__media--download">
         <img
           className="ev-document-card__media-image"
-          src={`/images/${doc.getType()}.svg`}
+          src={`/images/${(doc && doc.getType()) || 'file'}.svg`}
         />
       </div>
       <div className="ev-document-card__body ev-document-card__body--download">
-        <div className="ev-document-card__text-title ev-document-card__text-title--download">
-          {doc.getName()}
+        <div className={`ev-document-card__text-title ev-document-card__text-title--download ${!doc && 'ev-document-card__text-title--download-loading'}`}>
+          {doc && doc.getName()}
         </div>
-        <div className="ev-document-card__text-primary">{doc.getSizePretty()}</div>
+        <div className={`ev-document-card__text-primary ${!doc && 'ev-document-card__text-primary--download-loading'}`}>
+          {doc && doc.getSizePretty()}
+        </div>
       </div>
       <div className="ev-document-card__controls">
-        <a href={doc.url} className="ev-document-card__btn--download">
+        <a href={doc && doc.url || '#'} className={`ev-document-card__btn--download ${!doc && 'ev-document-card__btn--download-loading'}`}>
           download
         </a>
       </div>
@@ -31,7 +33,7 @@ const DocumentDownloadCardComponent = (props) =>{
 }
 
 DocumentDownloadCardComponent.propTypes = {
-  doc: PropTypes.instanceOf(GaiaDocument).isRequired,
+  doc: PropTypes.instanceOf(GaiaDocument),
 };
 
 export default DocumentDownloadCardComponent;
