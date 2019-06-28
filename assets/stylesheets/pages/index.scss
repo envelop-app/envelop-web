@@ -1,0 +1,101 @@
+@import "@material/button/mdc-button";
+
+$ev-index__cell-padding: 25px;
+
+.ev-index {
+  min-width: 320px;
+}
+
+.ev-index__main {
+  width: 90%;
+  margin: auto;
+  padding-bottom: 50px;
+  margin-top: 50px;
+
+  @media(max-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    width: 100%;
+  }
+}
+
+.ev-index__section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.ev-index__section-cell {
+  width: calc(50% - #{$ev-index__cell-padding*2});
+  padding: 75px $ev-index__cell-padding;
+  margin: auto;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    width: 100%;
+    padding: 75px 10px;
+  }
+}
+
+.ev-index__section-cell--image {
+  text-align: center;
+
+  img {
+    max-width: 100%;
+  }
+}
+
+.ev-index__section-cell--image-double {
+  img {
+    max-width: 49%;
+  }
+}
+
+.ev-index__section-cell--text {
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    font-size: 30px;
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('desktop')) {
+    font-size: 50px;
+  }
+}
+
+.ev-index__section-cell--text-center {
+  text-align: center;
+}
+
+.ev-index__section-cell--text-right {
+  text-align: right;
+}
+
+.ev-index__section-cell--text-small {
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    font-size: 20px;
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    font-size: 20px;
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('desktop')) {
+    font-size: 30px;
+  }
+}
+
+.ev-index__sign-in-btn {
+  @extend .mdc-button, .mdc-button--raised;
+  @include mdc-button-filled-accessible(black)
+  text-decoration: none;
+  margin-top: 15px;
+  height: 48px;
+  width: 280px;
+}
+
+.ev-google-play-logo {
+  width: 180px;
+}
