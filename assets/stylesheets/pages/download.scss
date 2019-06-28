@@ -24,6 +24,7 @@ html, body {
 }
 
 .ev-download__container {
+  width: 100%;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -40,24 +41,22 @@ html, body {
 }
 
 .ev-download__text {
-  font-size: 40px;
-  max-width: 500px;
-  margin-left: 20px;
-
   @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
-    font-size: 20px;
     margin: 20px 0px 0px 0px;
     max-width: $document-card-max-width;
+    font-size: 20px;
   }
 
   @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
-    font-size: 30px;
-    max-width: 400px;
-  }
-
-  @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
-    font-size: 40px;
+    margin: 20px 0px 0px 0px;
     max-width: 500px;
+    font-size: 30px;
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('desktop')) {
+    margin: 0px 0px 0px 20px;
+    max-width: 390px;
+    font-size: 30px;
   }
 }
 
