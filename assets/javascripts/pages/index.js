@@ -23,6 +23,11 @@ document.addEventListener("DOMContentLoaded", event => {
       privateUserSession.redirectToSignIn(Constants.BLOCKSTACK_REDIRECT_URI);
     })
 
+    goToAppBtn.addEventListener('click', event => {
+      event.preventDefault();
+      window.location = window.location.origin + '/app';
+    })
+
     logoutBtn.addEventListener('click', event => {
       event.preventDefault();
       privateUserSession.signUserOut();
