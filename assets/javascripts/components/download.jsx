@@ -37,6 +37,7 @@ class DownloadComponent extends Component {
       .download()
       .then((gaiaDocument) => {
         this.setState({ document: gaiaDocument })
+        window.document.title = `${gaiaDocument.getName()} - Envelop`;
       });
       // TODO: .catch(() => /* do something when file doesn't exist */);
   }
