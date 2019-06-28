@@ -45,7 +45,7 @@ class AvatarComponent extends Component {
     const {person, user} = this.state;
 
     return person.name() ||
-      user.username && username.replace('.id.blockstack', '') ||
+      user.username && user.username.replace('.id.blockstack', '') ||
       user.email ||
       user.decentralizedID;
   }
