@@ -27,6 +27,12 @@ html, body {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    width: min-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .ev-download__card-wrapper {
