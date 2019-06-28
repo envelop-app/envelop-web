@@ -119,3 +119,26 @@
   height: 36px;
   width: 100%;
 }
+
+.ev-document-card__btn--download-loading {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  color: rgba(0, 0, 0, 0.37) !important;
+  box-shadow: none !important;
+}
+
+.ev-document-card__text-title--download-loading {
+  height: 20px;
+  background-color: #e8e6e6;
+  border-radius: 4px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.ev-document-card__text-primary--download-loading {
+  height: 20px;
+  background-color: #e8e6e6;
+  border-radius: 4px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 30%;
+}

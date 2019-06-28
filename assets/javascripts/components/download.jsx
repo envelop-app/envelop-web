@@ -48,7 +48,7 @@ class DownloadComponent extends Component {
     return (
       <div className="ev-download__container">
         <div className="ev-download__card-wrapper">
-          {doc && <DocumentDownloadCardComponent doc={doc} />}
+          <DocumentDownloadCardComponent doc={doc} />
         </div>
         <div className="ev-download__text">
           Share private files easily, without losing their ownership<br/>
