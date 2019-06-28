@@ -2,6 +2,10 @@
 
 # Web app 🌐
 
+---
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/84718080-fc42-4011-acab-9d891c514d0c/deploy-status)](https://app.netlify.com/sites/envelop-web/deploys)
+
 ![Envelop - Share and upload private files easily](https://envelop.app/images/og-image.png)
 
 Share private files easily, without losing their ownership.
