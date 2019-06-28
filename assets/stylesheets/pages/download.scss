@@ -48,6 +48,11 @@ html, body {
     font-size: 30px;
     max-width: 400px;
   }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    font-size: 40px;
+    max-width: 500px;
+  }
 }
 
 .ev-download__image {
