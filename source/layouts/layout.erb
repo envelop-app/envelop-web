@@ -8,7 +8,7 @@
     <title><%= current_page.data.title %></title>
     <meta name="description" content="<%= current_page.data.description %>">
     <meta property="og:title" content="<%= current_page.data.title %>">
-    <meta property="og:image" content="<%= image_url('og-image.png') %>">
+    <meta property="og:image" content="<%= image_url(yield_content(:og_image) || 'og-image.png') %>">
 
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
