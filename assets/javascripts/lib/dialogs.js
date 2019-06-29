@@ -8,7 +8,7 @@ const DELETE_CONFIRMATION = {
 }
 
 const MAXIMUM_FILE_SIZE = {
-  title: 'File size over limit',
+  title: 'File size over limit (25Mb)',
   acceptText: 'Ok, got it',
   content: <p>File size limit is <strong>25Mb</strong>, try again with a smaller file.</p>
 }

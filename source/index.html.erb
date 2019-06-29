@@ -29,7 +29,14 @@ description: Share private files easily with envelop
         Try it right now!
       </div>
       <div class="ev-index__section-cell ev-index__section-cell--image">
-        <img src="/images/card-upload.svg" draggable="false"/>
+        <label class="ev-index__upload-label" htmlFor="index-file-upload">
+          <img src="/images/card-upload.svg" draggable="false"/>
+          <input
+            class="ev-index__upload-input js-upload-input"
+            id="index-file-upload"
+            type="file"
+            name="file-upload" />
+        </label>
       </div>
     </section>
 
