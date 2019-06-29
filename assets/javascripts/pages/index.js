@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", event => {
   const loginControlsNode = document.querySelector('.ev-login-controls');
   const loginBtn = document.querySelector('.js-login-btn');
   const goToAppBtn = document.querySelector('.js-go-to-app-btn');
-  const logoutBtn = document.querySelector('.js-logout-btn');
 
   mountComponents();
 
@@ -27,19 +26,12 @@ document.addEventListener("DOMContentLoaded", event => {
       event.preventDefault();
       window.location = window.location.origin + '/app';
     })
-
-    logoutBtn.addEventListener('click', event => {
-      event.preventDefault();
-      privateUserSession.signUserOut();
-      window.location = window.location.href;
-    });
   }
 
   initAuthentication();
 
   if (privateUserSession.isUserSignedIn()) {
     goToAppBtn.classList.remove('hide');
-    logoutBtn.classList.remove('hide');
   } else if (privateUserSession.isSignInPending()) {
     privateUserSession.handlePendingSignIn().then(userData => {
       window.location = Constants.BLOCKSTACK_REDIRECT_URI;
