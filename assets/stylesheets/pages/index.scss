@@ -1,0 +1,175 @@
+@import "@material/button/mdc-button";
+
+$ev-index__cell-padding: 25px;
+
+.ev-index {
+  width: 100%;
+  max-width: 1280px;
+  min-width: 320px;
+  margin: auto;
+}
+
+.ev-index .ev-navbar {
+  width: calc(100% - 20px);
+  margin: 20px;
+}
+
+.ev-index__main {
+  padding-bottom: 30px;
+  margin-top: 30px;
+}
+
+.ev-index__section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0 60px;
+  @media(max-width: mdc-layout-grid-breakpoint-max('tablet')) {
+    padding: 0 20px;
+  }
+}
+
+.ev-index__section--reverse {
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    flex-direction: column-reverse;
+  }
+}
+
+.ev-index__section-cell {
+  width: calc(50% - #{$ev-index__cell-padding*2});
+  padding: 100px $ev-index__cell-padding;
+  margin: auto;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    width: 100%;
+    padding: 75px 10px;
+  }
+}
+
+.ev-index__section-cell--image {
+  text-align: center;
+
+  img {
+    max-width: 100%;
+  }
+}
+
+.ev-index__section-cell--image-double {
+  img {
+    max-width: 49%;
+  }
+}
+
+.ev-index__section-cell--text {
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    font-size: 24px;
+    text-align: center !important;
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    font-size: 24px;
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('desktop')) {
+    font-size: 36px;
+  }
+}
+
+.ev-index__section-cell--text-center {
+  text-align: center;
+}
+
+.ev-index__section-cell--text-right {
+  text-align: right;
+}
+
+.ev-index__section-cell--text-small {
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    font-size: 20px;
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    font-size: 20px;
+  }
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('desktop')) {
+    font-size: 24px;
+  }
+}
+
+.ev-index__sign-in-btn {
+  @extend .mdc-button, .mdc-button--raised;
+  @include mdc-button-filled-accessible(black)
+  text-decoration: none;
+  margin-top: 30px;
+  height: 48px;
+  width: 280px;
+
+  @media(max-width: mdc-layout-grid-breakpoint-min('desktop')) {
+    width: 200px;
+  }
+}
+
+.ev-index__go-to-app-btn {
+  @extend .ev-index__sign-in-btn;
+  width: 140px;
+}
+
+.ev-google-play-logo {
+  width: 180px;
+  margin-top: 20px;
+}
+
+.ev-index__footer {
+  display: flex;
+  align-items: center;
+  padding: 60px 30px 40px;
+
+  @media(max-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    display: block;
+    padding: 20px;
+  }
+}
+
+.ev-index__links {
+  flex-grow: 1;
+
+  @media(max-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    text-align: center;
+  }
+
+  ul li {
+    line-height: 1.5rem;
+  }
+
+  ul li:before {
+    content: '\2198';
+    margin: 10px;
+  }
+}
+
+.ev-index__made {
+  flex-grow: 1;
+  text-align: right;
+  margin: 30px 0;
+
+  @media(max-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    text-align: center;
+  }
+
+  .ev-index__bloco {
+    width: 100px;
+    margin: 0 5px -6px 5px;
+  }
+}
+
+.ev-index__upload-input {
+  position: absolute;
+  opacity: 0;
+}
+
+.ev-index__upload-label {
+  cursor: pointer;
+}

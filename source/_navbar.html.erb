@@ -1,4 +1,4 @@
-<nav class="ev-navbar">
+<nav class="ev-navbar <%= defined?(hide_shadow) && hide_shadow && 'ev-navbar--no-shadow' %>">
   <a class="ev-navbar__logo" href="/">
     <%= image_tag('logo.svg', alt: 'envelop') %>
   </a>

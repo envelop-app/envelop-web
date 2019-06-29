@@ -4,64 +4,89 @@ title: envelop – share private files easily
 description: Share private files easily with envelop
 ---
 
-<div class="homepage">
-  <header class="header">
-    <h1 class="logo">
-      <a href="/">
-        <%= image_tag('logo.svg', alt: 'envelop') %>
-      </a>
-    </h1>
-    <div class="cta">
-      <a href="https://play.google.com/store/apps/details?id=app.envelop" class="google-play">
-        <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" />
-      </a>
-    </div>
-  </header>
+<div class="ev-index">
+  <%= partial(:navbar, locals: { hide_shadow: true }) %>
 
-  <div class="ev-login-controls hide">
-    <a href="" class="button ev-login-btn hide">Sign in</a>
-    <a href="/app" class="button ev-go-to-app-btn hide">Go to app</a>
-    <a href="" class="button ev-logout-btn hide">Sign out</a>
-  </div>
+  <main class="ev-index__main">
 
-  <main>
-    <div class="content">
-      <p class="screenshot">
+    <section class="ev-index__section">
+      <div class="ev-index__section-cell ev-index__section-cell--image">
+        <img src="/images/Placeholder-web-landing.png" draggable="false"/>
+      </div>
+      <div class="ev-index__section-cell ev-index__section-cell--text">
+        <div>Share private files easily, without losing their ownership</div>
+        <button class="js-login-btn ev-index__sign-in-btn hide">Sign In</button>
+        <button class="js-go-to-app-btn ev-index__go-to-app-btn hide">Open App</button>
+      </div>
+    </section>
+
+    <section class="ev-index__section ev-index__section--reverse">
+      <div class="ev-index__section-cell ev-index__section-cell--text ev-index__section-cell--text-right">
+        Upload a file,<br>
+        get a download link,<br>
+        and share it<br>
+        <br>
+        Try it right now!
+      </div>
+      <div class="ev-index__section-cell ev-index__section-cell--image">
+        <label class="ev-index__upload-label" htmlFor="index-file-upload">
+          <img src="/images/card-upload.svg" draggable="false"/>
+          <input
+            class="ev-index__upload-input js-upload-input"
+            id="index-file-upload"
+            type="file"
+            name="file-upload" />
+        </label>
+      </div>
+    </section>
+
+    <section class="ev-index__section">
+      <div class="ev-index__section-cell ev-index__section-cell--image">
+        <img src="/images/graphic-lock.svg" draggable="false"/>
+      </div>
+      <div class="ev-index__section-cell ev-index__section-cell--text">
+        <div>
+          Envelop runs on blockstack.<br>
+          You decide where your files are stored.
+        </div>
+        <br>
+        <div class="ev-index__section-cell--text-small">
+          Use the defaule storage (infinite space with a 25MB file limit), or setup your own storage.
+        </div>
+      </div>
+    </section>
+
+    <section class="ev-index__section ev-index__section--reverse">
+      <div class="ev-index__section-cell ev-index__section-cell--text ev-index__section-cell--text-right">
+        <div>
+          Upload, share and manage files on the go.<br>
+          Try our Android app
+        </div>
         <a href="https://play.google.com/store/apps/details?id=app.envelop">
-          <%= image_tag('screenshot-share.png', alt: 'App screenshot') %>
+          <img class="ev-google-play-logo" src="/images/google-play-badge.png" draggable="false"/>
         </a>
-      </p>
-
-      <h2 class="tagline">
-        Share private files easily,<br/>without losing their ownership.
-      </h2>
-      <p class="description">
-        Upload a file, get a download link and share it.
-      </p>
-      <p class="description">
-        With <a href="https://blockstack.org" target="_blank">Blockstack</a>,
-        you decide where your files are stored.<br/>
-        Use the default storage (infinite space with a 25MB file limit),<br/>
-        or <a href="https://docs.blockstack.org/storage/overview.html" target="_blank">setup your own storage</a>.
-      </p>
-    </div>
-    <div class="js-homepage-uploader-container"></div>
+      </div>
+      <div class="ev-index__section-cell ev-index__section-cell--image-double">
+        <img src="/images/placeholder-landing-mobile1.png" draggable="false"/>
+        <img src="/images/placeholder-landing-mobile2.png" draggable="false"/>
+      </div>
+    </section>
   </main>
 
-  <footer>
-    <div class="links">
+  <footer class="ev-index__footer">
+    <div class="ev-index__links">
       <ul>
         <li><a href="https://twitter.com/envelopapp" target="_blank">Twitter</a></li>
         <li><a href="https://github.com/envelop-app" target="_blank">Github</a></li>
-        <li><a href="https://commerce.coinbase.com/charges/GL789L69" target="_blank">Donate</a></li>
+        <li><a href="https://commerce.coinbase.com/charges/AVJKC77T" target="_blank">Donate</a></li>
       </ul>
     </div>
-    <div class="made">
+    <div class="ev-index__made">
       Made by 
-      <a href="https://bloco.io">
-        <%= image_tag('bloco.svg', alt: 'Bloco', class: 'bloco') %>
-      </a>
+      <a href="https://bloco.io"><%= image_tag('bloco.svg', alt: 'Bloco', class: 'ev-index__bloco') %></a>
       & friends
     </div>
   </footer>
+
+  <div class="js-homepage-uploader-container"></div>
 </div>

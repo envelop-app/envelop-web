@@ -2,7 +2,6 @@
 @import "@material/menu-surface/mdc-menu-surface";
 @import "@material/menu/mdc-menu";
 @import '@material/react-menu/index.scss';
-@import "@material/layout-grid/mdc-layout-grid";
 
 .ev-navbar {
   display: flex;
@@ -12,6 +11,10 @@
   height: $ev-navbar-height;
   background-color: $ev-yellow;
   box-shadow: 0px 1px 2px 0.5px rgba(0,0,0,0.2);
+}
+
+.ev-navbar--no-shadow {
+  box-shadow: none;
 }
 
 .ev-navbar__logo {
