@@ -3,19 +3,20 @@
 $ev-index__cell-padding: 25px;
 
 .ev-index {
+  width: 100%;
+  max-width: 1280px;
   min-width: 320px;
+  margin: auto;
+}
+
+.ev-index .ev-navbar {
+  width: calc(100% - 20px);
+  margin: 20px;
 }
 
 .ev-index__main {
-  width: 90%;
-  margin: auto;
-  padding-bottom: 50px;
-  margin-top: 50px;
-  max-width: 1200px;
-
-  @media(max-width: mdc-layout-grid-breakpoint-min('tablet')) {
-    width: 100%;
-  }
+  padding-bottom: 30px;
+  margin-top: 30px;
 }
 
 .ev-index__section {
@@ -23,6 +24,10 @@ $ev-index__cell-padding: 25px;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
+  padding: 0 60px;
+  @media(max-width: mdc-layout-grid-breakpoint-max('tablet')) {
+    padding: 0 20px;
+  }
 }
 
 .ev-index__section--reverse {
@@ -98,16 +103,64 @@ $ev-index__cell-padding: 25px;
   @extend .mdc-button, .mdc-button--raised;
   @include mdc-button-filled-accessible(black)
   text-decoration: none;
-  margin-top: 15px;
+  margin-top: 30px;
   height: 48px;
   width: 280px;
+
+  @media(max-width: mdc-layout-grid-breakpoint-min('desktop')) {
+    width: 200px;
+  }
 }
 
-.ev-index__sign-out-btn, .ev-index__go-to-app-btn {
+.ev-index__go-to-app-btn {
   @extend .ev-index__sign-in-btn;
   width: 140px;
 }
 
 .ev-google-play-logo {
   width: 180px;
+  margin-top: 20px;
+}
+
+.ev-index__footer {
+  display: flex;
+  align-items: center;
+  padding: 60px 30px 40px;
+
+  @media(max-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    display: block;
+    padding: 20px;
+  }
+}
+
+.ev-index__links {
+  flex-grow: 1;
+
+  @media(max-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    text-align: center;
+  }
+
+  ul li {
+    line-height: 1.5rem;
+  }
+
+  ul li:before {
+    content: '\2198';
+    margin: 10px;
+  }
+}
+
+.ev-index__made {
+  flex-grow: 1;
+  text-align: right;
+  margin: 30px 0;
+
+  @media(max-width: mdc-layout-grid-breakpoint-min('tablet')) {
+    text-align: center;
+  }
+
+  .ev-index__bloco {
+    width: 100px;
+    margin: 0 5px -6px 5px;
+  }
 }

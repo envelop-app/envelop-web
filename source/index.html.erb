@@ -11,13 +11,12 @@ description: Share private files easily with envelop
 
     <section class="ev-index__section">
       <div class="ev-index__section-cell ev-index__section-cell--image">
-        <img src="/images/Placeholder-web-landing.png" />
+        <img src="/images/Placeholder-web-landing.png" draggable="false"/>
       </div>
       <div class="ev-index__section-cell ev-index__section-cell--text">
         <div>Share private files easily, without losing their ownership</div>
         <button class="js-login-btn ev-index__sign-in-btn hide">Sign In</button>
-        <button class="js-logout-btn ev-index__sign-out-btn hide">sign out</button>
-        <button class="js-go-to-app-btn ev-index__go-to-app-btn hide">go to app</button>
+        <button class="js-go-to-app-btn ev-index__go-to-app-btn hide">Open App</button>
       </div>
     </section>
 
@@ -30,13 +29,13 @@ description: Share private files easily with envelop
         Try it right now!
       </div>
       <div class="ev-index__section-cell ev-index__section-cell--image">
-        <img src="/images/card-upload.svg" />
+        <img src="/images/card-upload.svg" draggable="false"/>
       </div>
     </section>
 
     <section class="ev-index__section">
       <div class="ev-index__section-cell ev-index__section-cell--image">
-        <img src="/images/graphic-lock.svg" />
+        <img src="/images/graphic-lock.svg" draggable="false"/>
       </div>
       <div class="ev-index__section-cell ev-index__section-cell--text">
         <div>
@@ -57,32 +56,30 @@ description: Share private files easily with envelop
           Try our Android app
         </div>
         <a href="https://play.google.com/store/apps/details?id=app.envelop">
-          <img class="ev-google-play-logo" src="/images/google-play-badge.png" />
+          <img class="ev-google-play-logo" src="/images/google-play-badge.png" draggable="false"/>
         </a>
       </div>
       <div class="ev-index__section-cell ev-index__section-cell--image-double">
-        <img src="/images/placeholder-landing-mobile1.png" />
-        <img src="/images/placeholder-landing-mobile2.png" />
+        <img src="/images/placeholder-landing-mobile1.png" draggable="false"/>
+        <img src="/images/placeholder-landing-mobile2.png" draggable="false"/>
       </div>
     </section>
   </main>
 
-  <div class="js-homepage-uploader-container"></div>
-</div>
-
-<div class="homepage">
-  <footer>
-    <div class="links">
+  <footer class="ev-index__footer">
+    <div class="ev-index__links">
       <ul>
         <li><a href="https://twitter.com/envelopapp" target="_blank">Twitter</a></li>
         <li><a href="https://github.com/envelop-app" target="_blank">Github</a></li>
-        <li><a href="https://commerce.coinbase.com/charges/GL789L69" target="_blank">Donate</a></li>
+        <li><a href="https://commerce.coinbase.com/charges/AVJKC77T" target="_blank">Donate</a></li>
       </ul>
     </div>
-    <div class="made">
+    <div class="ev-index__made">
       Made by 
-      <a href="https://bloco.io"><%= image_tag('bloco.svg', alt: 'Bloco', class: 'bloco') %></a>
+      <a href="https://bloco.io"><%= image_tag('bloco.svg', alt: 'Bloco', class: 'ev-index__bloco') %></a>
       & friends
     </div>
   </footer>
+
+  <div class="js-homepage-uploader-container"></div>
 </div>
