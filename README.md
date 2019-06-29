@@ -19,6 +19,7 @@ Use the default storage (infinite space with a 25MB file limit), or setup your o
 
 ### Setup
 
+- Make sure `ruby` is available. Recommended version is `2.5.3`.
 - Make sure `node` is available. Recommended version is `v12.3.0`.
 - Make sure `docker` and `docker-compose` is available.
 
@@ -27,7 +28,12 @@ Run containers
 docker-compose up
 ```
 
-Install dependencies:
+Install ruby dependencies (for [middleman](https://middlemanapp.com/)):
+```
+bundle install
+```
+
+Install javascript dependencies:
 ```
 yarn install
 ```
