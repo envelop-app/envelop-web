@@ -27,7 +27,7 @@ class GaiaDocument {
       name: file.name,
       created_at: new Date(),
       size: file.size,
-      content_type: file.type,
+      content_type: file.name.split('.').pop(),
       file: file
     });
   }
