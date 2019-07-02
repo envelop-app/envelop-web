@@ -32,7 +32,7 @@ $ev-index__cell-padding: 25px;
 
 .ev-index__section--reverse {
   @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
-    flex-direction: column-reverse;
+    flex-direction: wrap-reverse;
   }
 }
 
