@@ -7,7 +7,7 @@ function putPublicFile(name, contents) {
   return privateUserSession.putFile(name, contents, publicFileOptions);
 }
 
-class LargeDocumentUploader {
+class PartitionedDocumentUploader {
   constructor(gaiaDocument) {
     this.partSize = gaiaDocument.partSize || Constants.FILE_PART_SIZE;
     this.numParts = Math.ceil(gaiaDocument.size / this.partSize);
@@ -70,4 +70,4 @@ class LargeDocumentUploader {
   }
 }
 
-export default LargeDocumentUploader;
+export default PartitionedDocumentUploader;

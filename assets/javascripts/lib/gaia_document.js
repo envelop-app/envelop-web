@@ -9,7 +9,7 @@ import {
 } from '../lib/blockstack_client';
 import Constants from '../lib/constants';
 import DocumentUploader from '../lib/document_uploader';
-import LargeDocumentUploader from '../lib/large_document_uploader';
+import PartitionedDocumentUploader from '../lib/partitioned_document_uploader';
 import LocalDocumentUploader from '../lib/local_document_uploader';
 import PartitionedDocumentDownloader from '../lib/partitioned_document_downloader';
 
@@ -33,7 +33,7 @@ function getUploader(payload) {
     uploader = new DocumentUploader(payload)
   }
   else if (payload.file.size > Constants.SINGLE_FILE_SIZE_LIMIT) {
-    uploader = new LargeDocumentUploader(payload)
+    uploader = new PartitionedDocumentUploader(payload)
   }
   else {
     throw("Cant get uploader - missing 'size'")
