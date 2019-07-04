@@ -1,5 +1,6 @@
-import { publicUserSession } from '../lib/blockstack_client';
 import Bottleneck from 'bottleneck';
+
+import { publicUserSession } from '../lib/blockstack_client';
 
 class PartitionedDocumentDownloader {
   constructor(gaiaDocument) {
@@ -14,9 +15,7 @@ class PartitionedDocumentDownloader {
     const partBuffers = await Promise.all(getPartBuffers);
     const blobOptions = { name: this.gaiaDocument.getName(), type: this.gaiaDocument.getMimeType() };
     const blob = new Blob(partBuffers, blobOptions);
-    const url = URL.createObjectURL(blob);
-
-    return url;
+    return URL.createObjectURL(blob);
   }
 
   async downloadPart(partUrl) {
