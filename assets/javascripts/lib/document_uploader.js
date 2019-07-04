@@ -23,6 +23,11 @@ class DocumentUploader {
           .all([rawFilePromise, documentPromise])
           .then(() => resolve(this.gaiaDocument));
       }
+
+      this.reader.onerror = (evt) => {
+        reject(evt.target.error);
+      }
+
       this.reader.readAsArrayBuffer(this.gaiaDocument.file);
     });
   }

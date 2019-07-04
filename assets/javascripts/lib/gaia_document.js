@@ -6,6 +6,7 @@ import DocumentRemover from '../lib/document_remover'
 import { privateUserSession } from '../lib/blockstack_client'
 import Constants from '../lib/constants'
 import DocumentUploader from '../lib/document_uploader';
+import LargeDocumentUploader from '../lib/large_document_uploader';
 import LocalDocumentUploader from '../lib/local_document_uploader';
 
 const types = {
@@ -19,6 +20,22 @@ const version = 1;
 
 function generateHash(length) {
   return new Random().string(length);
+}
+
+function getUploader(payload) {
+  let uploader = null;
+
+  if (payload.file.size <= Constants.SINGLE_FILE_SIZE_LIMIT) {
+    uploader = new DocumentUploader(payload)
+  }
+  else if (payload.file.size > Constants.SINGLE_FILE_SIZE_LIMIT) {
+    uploader = new LargeDocumentUploader(payload)
+  }
+  else {
+    throw("Cant get uploader - missing 'size'")
+  }
+
+  return uploader;
 }
 
 class GaiaDocument {
@@ -50,13 +67,16 @@ class GaiaDocument {
     this.created_at = fields.created_at;
     this.file = fields.file;
     this.id = fields.id;
+    this.localContents = null;
     this.localId = fields.localId;
     this.name = fields.name;
     this.name = fields.name;
+    this.numParts = fields.numParts || null;
+    this.partSize = fields.partSize || null;
     this.size = fields.size;
+    this.storageType = fields.storageType || 'normal';
     this.url = fields.url;
     this.version = fields.version || version;
-    this.localContents = null;
   }
 
   delete() {
@@ -100,7 +120,7 @@ class GaiaDocument {
     const payload = this._prepareForSave();
     payload.id = this.id || generateHash(6);
 
-    const uploader = new DocumentUploader(payload)
+    const uploader = getUploader(payload);
     await uploader.upload();
 
     return Object.assign(this, payload);
@@ -111,9 +131,9 @@ class GaiaDocument {
     payload.localId = this.localId || generateHash(20);
 
     const uploader = new LocalDocumentUploader(payload)
-    await uploader.upload();
+    const uploadedDoc = await uploader.upload();
 
-    return Object.assign(this, payload);
+    return Object.assign(this, payload, uploadedDoc);
   }
 
   serialize() {
@@ -122,8 +142,11 @@ class GaiaDocument {
       created_at: this.created_at || null,
       id: this.id || null,
       localId: this.id || null,
+      numParts: this.numParts || null,
+      partSize: this.partSize || null,
       url: this.url || null,
       size: this.size || null,
+      storageType: this.storageType || null,
       version: this.version || null
     };
   }
