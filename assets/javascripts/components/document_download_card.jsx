@@ -5,33 +5,55 @@ import LinearProgress from '@material/react-linear-progress';
 
 import GaiaDocument from '../lib/gaia_document'
 
-const DocumentDownloadCardComponent = (props) =>{
-  const doc = props.doc;
+class DocumentDownloadCardComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { rawFileUrl: null };
+  }
 
-  return (
-    <div className={"ev-document-card ev-document-card--download"}>
-      <div className="ev-document-card__media ev-document-card__media--download">
-        {doc && <img
+  isReady() {
+    return this.props.doc && this.state.rawFileUrl;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.rawFileUrl || !nextProps.doc) { return; }
+
+    const rawFileUrl = nextProps.doc
+      .getRawFileUrl()
+      .then((rawFileUrl) => this.setState({ rawFileUrl }));
+  }
+
+  render() {
+    const doc = this.props.doc;
+    const ready = this.isReady();
+
+    return (
+      <div className={"ev-document-card ev-document-card--download"}>
+        <div className="ev-document-card__media ev-document-card__media--download">
+          {ready && <img
           className="ev-document-card__media-image"
-          src={`/images/${(doc && doc.getType()) || 'file'}.svg`}
+          src={`/images/${(ready && doc.getType()) || 'file'}.svg`}
         />}
       </div>
-      {!doc && <LinearProgress indeterminate={true} />}
+      {!ready && <LinearProgress indeterminate={true} />}
       <div className="ev-document-card__body ev-document-card__body--download">
-        <div className={`ev-document-card__text-title ev-document-card__text-title--download ${!doc && 'ev-document-card__text-title--download-loading'}`}>
-          {doc && doc.getName()}
+        <div className={`ev-document-card__text-title ev-document-card__text-title--download ${!ready && 'ev-document-card__text-title--download-loading'}`}>
+          {ready && doc.getName()}
         </div>
-        <div className={`ev-document-card__text-primary ${!doc && 'ev-document-card__text-primary--download-loading'}`}>
-          {doc && doc.getSizePretty()}
+        <div className={`ev-document-card__text-primary ${!ready && 'ev-document-card__text-primary--download-loading'}`}>
+          {ready && doc.getSizePretty()}
         </div>
       </div>
       <div className="ev-document-card__controls">
-        <a href={doc && doc.url || '#'} className={`ev-document-card__btn--download ${!doc && 'ev-document-card__btn--download-loading'}`}>
+        <a
+          href={ready && this.state.rawFileUrl || '#'}
+          className={`ev-document-card__btn--download ${!ready && 'ev-document-card__btn--download-loading'}`}>
           download
         </a>
       </div>
     </div>
-  );
+    );
+  }
 }
 
 DocumentDownloadCardComponent.propTypes = {

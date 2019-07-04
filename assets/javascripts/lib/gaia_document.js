@@ -1,10 +1,12 @@
-import { Random } from 'random-js'
+import { Random } from 'random-js';
 import prettyBytes from 'pretty-bytes';
 
-import { publicUserSession } from '../lib/blockstack_client'
-import DocumentRemover from '../lib/document_remover'
-import { privateUserSession } from '../lib/blockstack_client'
-import Constants from '../lib/constants'
+import DocumentRemover from '../lib/document_remover';
+import {
+  privateUserSession,
+  publicUserSession as publicSession
+} from '../lib/blockstack_client';
+import Constants from '../lib/constants';
 import DocumentUploader from '../lib/document_uploader';
 import LargeDocumentUploader from '../lib/large_document_uploader';
 import LocalDocumentUploader from '../lib/local_document_uploader';
@@ -62,6 +64,13 @@ class GaiaDocument {
     return new GaiaDocument(raw);
   }
 
+  static get = async (username, filename) => {
+    const options = { username, decrypt: false, verify: false };
+    const json = await publicSession.getFile(filename, options);
+    const payload = JSON.parse(json);
+    return GaiaDocument.fromGaia(Object.assign(payload, { username: username }));
+  }
+
   constructor(fields = {}) {
     this.content_type = fields.content_type;
     this.created_at = fields.created_at;
@@ -70,12 +79,12 @@ class GaiaDocument {
     this.localContents = null;
     this.localId = fields.localId;
     this.name = fields.name;
-    this.name = fields.name;
     this.numParts = fields.numParts || null;
     this.partSize = fields.partSize || null;
     this.size = fields.size;
     this.storageType = fields.storageType || 'normal';
     this.url = fields.url;
+    this._username = fields.username;
     this.version = fields.version || version;
   }
 
@@ -85,6 +94,11 @@ class GaiaDocument {
 
   getName() {
     return this.name;
+  }
+
+  async getRawFileUrl() {
+    const options = { username: this._username, decrypt: false, verify: false };
+    return await publicSession.getFileUrl(this.url, options);
   }
 
   getSizePretty() {

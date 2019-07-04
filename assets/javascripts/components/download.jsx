@@ -2,12 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import MaterialIcon from '@material/react-material-icon';
 
-import Constants from '../lib/constants';
-import Dialogs from '../lib/dialogs';
 import GaiaDocument from '../lib/gaia_document';
-import GaiaIndex from '../lib/gaia_index';
-import FileDownloader from '../lib/file_downloader';
-import LocalIndex from '../lib/local_index';
 
 import DocumentDownloadCardComponent from './document_download_card.jsx';
 
@@ -33,8 +28,8 @@ class DownloadComponent extends Component {
       username += '.id.blockstack';
     }
 
-    new FileDownloader(username, urlData.hash)
-      .download()
+    GaiaDocument
+      .get(username, urlData.hash)
       .then((gaiaDocument) => {
         this.setState({ document: gaiaDocument })
         window.document.title = `${gaiaDocument.getName()} - Envelop`;
