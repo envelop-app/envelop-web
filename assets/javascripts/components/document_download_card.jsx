@@ -8,19 +8,19 @@ import GaiaDocument from '../lib/gaia_document'
 class DocumentDownloadCardComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { rawFileUrl: null };
+    this.state = { downloadUrl: null };
   }
 
   isReady() {
-    return this.props.doc && this.state.rawFileUrl;
+    return this.props.doc && this.state.downloadUrl;
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.rawFileUrl || !nextProps.doc) { return; }
+    if (this.state.downloadUrl || !nextProps.doc) { return; }
 
-    const rawFileUrl = nextProps.doc
-      .getRawFileUrl()
-      .then((rawFileUrl) => this.setState({ rawFileUrl }));
+    const downloadUrl = nextProps.doc
+      .download()
+      .then((downloadUrl) => this.setState({ downloadUrl }));
   }
 
   render() {
@@ -46,8 +46,9 @@ class DocumentDownloadCardComponent extends Component {
       </div>
       <div className="ev-document-card__controls">
         <a
-          href={ready && this.state.rawFileUrl || '#'}
-          className={`ev-document-card__btn--download ${!ready && 'ev-document-card__btn--download-loading'}`}>
+          href={ready && this.state.downloadUrl || '#'}
+          className={`ev-document-card__btn--download ${!ready && 'ev-document-card__btn--download-loading'}`}
+          download={ready && doc.getName()}>
           download
         </a>
       </div>

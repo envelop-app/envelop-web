@@ -1,7 +1,5 @@
 import { privateUserSession } from './blockstack_client';
 import Constants from './constants';
-import GaiaDocument from './gaia_document';
-import GaiaIndex from './gaia_index';
 import Bottleneck from 'bottleneck';
 
 const publicFileOptions = { encrypt: false, verify: false };

@@ -1,5 +1,6 @@
-import { Random } from 'random-js';
+import mime from 'mime-types';
 import prettyBytes from 'pretty-bytes';
+import { Random } from 'random-js';
 
 import DocumentRemover from '../lib/document_remover';
 import {
@@ -10,6 +11,7 @@ import Constants from '../lib/constants';
 import DocumentUploader from '../lib/document_uploader';
 import LargeDocumentUploader from '../lib/large_document_uploader';
 import LocalDocumentUploader from '../lib/local_document_uploader';
+import PartitionedDocumentDownloader from '../lib/partitioned_document_downloader';
 
 const types = {
   image:   ['png', 'gif', 'jpg', 'jpeg', 'svg', 'tif', 'tiff', 'ico'],
@@ -92,13 +94,29 @@ class GaiaDocument {
     return new DocumentRemover(this).remove();
   }
 
+  async download() {
+    if (this.numParts && this.numParts > 1) {
+      const downloader = new PartitionedDocumentDownloader(this);
+      return await downloader.download();
+    }
+    else {
+      const options = { username: this._username, decrypt: false, verify: false };
+      return await publicSession.getFileUrl(this.url, options);
+    }
+  }
+
+  getMimeType() {
+    return mime.lookup(this.getName()) || null;
+  }
+
   getName() {
     return this.name;
   }
 
-  async getRawFileUrl() {
-    const options = { username: this._username, decrypt: false, verify: false };
-    return await publicSession.getFileUrl(this.url, options);
+  getPartUrls() {
+    return new Array(this.numParts)
+      .fill(null)
+      .map((_, index) => `${this.url}.part${index}`);
   }
 
   getSizePretty() {
