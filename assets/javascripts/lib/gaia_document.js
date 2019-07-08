@@ -141,7 +141,7 @@ class GaiaDocument {
   _prepareForSave() {
     const payload = this.serialize();
     payload.file = this.file;
-    payload.url = this.url || `${generateHash(14)}/${this.name}`;
+    payload.url = this.url || `${generateHash(24)}/${this.name}`;
     payload.content_type = this.content_type || this.name.split('.').pop();
     payload.created_at = new Date();
 
