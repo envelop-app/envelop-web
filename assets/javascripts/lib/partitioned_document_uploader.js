@@ -12,52 +12,65 @@ class PartitionedDocumentUploader {
     this.partSize = gaiaDocument.partSize || Constants.FILE_PART_SIZE;
     this.numParts = Math.ceil(gaiaDocument.size / this.partSize);
     this.gaiaDocument = gaiaDocument;
-    this.limiter = new Bottleneck({ maxConcurrent: 3 });
+    this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
+    this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
   }
 
-  async upload() {
-    const buffers = await this.readAndSplitFile();
-    const results = buffers.map((buffer, partNumber) => {
-      return this.limiter.schedule(() => this.uploadPart(partNumber, buffer));
-    });
-    await Promise.all(results);
-
-    await this.uploadDocument();
-
-    return this.gaiaDocument;
+  cleanupLimiters() {
+    this.readLimiter.disconnect();
+    this.uploadLimiter.disconnect();
   }
 
-  readAndSplitFile(callback) {
-    const that = this;
+  getFileSlice(partNumber) {
+    const startAt = partNumber * this.partSize;
+    const endAt = (partNumber + 1) * this.partSize;
+    return this.gaiaDocument.file.slice(startAt, endAt);
+  }
 
+  readFileSlice(fileSlice) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
       reader.onload = (evt) => {
-        const buffers = this.assembleBuffers(evt.target.result);
-        resolve(buffers);
+        resolve(evt.target.result);
       };
 
       reader.onerror = (evt) => {
         reject(evt.target.error);
       }
 
-      reader.readAsArrayBuffer(that.gaiaDocument.file);
+      reader.readAsArrayBuffer(fileSlice);
     });
   }
 
-  assembleBuffers(mainBuffer) {
-    return new Array(this.numParts).fill(null).map((_, idx) => {
-      const startAt = idx * this.partSize;
-      const endAt = (idx + 1) * this.partSize;
-      return mainBuffer.slice(startAt, endAt);
+  scheduleRead(fileSlice) {
+    return this.readLimiter.schedule(() => {
+      return this.readFileSlice(fileSlice);
     });
   }
 
-  uploadPart(partNumber, partBuffer) {
-    const options = { contentType: ',application/octet-stream' };
-    const partUrl = `${this.gaiaDocument.url}.part${partNumber}`;
-    return putPublicFile(partUrl, partBuffer, options);
+  scheduleUpload(partNumber, bufferPromise) {
+    return this.uploadLimiter.schedule(async () => {
+      const partBuffer = await bufferPromise;
+      return this.uploadPart(partNumber, partBuffer)
+    });
+  }
+
+  async upload() {
+    const uploadPromises = Array(this.numParts).fill(null)
+      .map((_, partNumber) => {
+        const fileSlice = this.getFileSlice(partNumber);
+        const bufferPromise = this.scheduleRead(fileSlice);
+        return this.scheduleUpload(partNumber, bufferPromise);
+      });
+
+    await Promise.all(uploadPromises);
+
+    this.cleanupLimiters();
+
+    await this.uploadDocument();
+
+    return this.gaiaDocument;
   }
 
   uploadDocument() {
@@ -67,6 +80,12 @@ class PartitionedDocumentUploader {
 
     const contents = JSON.stringify(this.gaiaDocument)
     return putPublicFile(this.gaiaDocument.id, contents);
+  }
+
+  uploadPart(partNumber, partBuffer) {
+    const options = { contentType: 'application/octet-stream' };
+    const partUrl = `${this.gaiaDocument.url}.part${partNumber}`;
+    return putPublicFile(partUrl, partBuffer, options);
   }
 }
 
