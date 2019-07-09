@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import { privateUserSession } from '../lib/blockstack_client';
-import LocalDatabase from '../lib/local_database';
 
 import App from '../components/app.jsx'
 import AvatarComponent from '../components/avatar.jsx'
