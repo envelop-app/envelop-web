@@ -8,24 +8,39 @@ import GaiaDocument from '../lib/gaia_document'
 class DocumentDownloadCardComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { downloadUrl: null };
+    this.state = { downloading: false, progress: 0 };
   }
 
-  isReady() {
-    return this.props.doc && this.state.downloadUrl;
+  isDocReady() {
+    return this.props.doc;
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.state.downloadUrl || !nextProps.doc) { return; }
+  onProgress(progress) {
+    this.setState({ progress });
+  }
 
-    const downloadUrl = nextProps.doc
-      .download()
-      .then((downloadUrl) => this.setState({ downloadUrl }));
+  triggerBrowserDownload(url) {
+    const link = document.createElement('a')
+    link.href = url;
+    link.download = this.props.doc.getName();
+    link.click()
+  }
+
+  handleDownload() {
+    this.setState({ downloading: true });
+
+    this.props.doc
+      .download({ onProgress: (progress) => this.onProgress(progress) })
+      .then((downloadUrl) => {
+        this.triggerBrowserDownload(downloadUrl);
+        this.setState({ downloading: false });
+      });
   }
 
   render() {
     const doc = this.props.doc;
-    const ready = this.isReady();
+    const { downloading, progress } = this.state;
+    const ready = this.isDocReady();
 
     return (
       <div className={"ev-document-card ev-document-card--download"}>
@@ -35,7 +50,7 @@ class DocumentDownloadCardComponent extends Component {
           src={`/images/${(ready && doc.getType()) || 'file'}.svg`}
         />}
       </div>
-      {!ready && <LinearProgress indeterminate={true} />}
+      {downloading && <LinearProgress progress={progress} buffer={0} />}
       <div className="ev-document-card__body ev-document-card__body--download">
         <div className={`ev-document-card__text-title ev-document-card__text-title--download ${!ready && 'ev-document-card__text-title--download-loading'}`}>
           {ready && doc.getName()}
@@ -45,12 +60,11 @@ class DocumentDownloadCardComponent extends Component {
         </div>
       </div>
       <div className="ev-document-card__controls">
-        <a
-          href={ready && this.state.downloadUrl || '#'}
-          className={`ev-document-card__btn--download ${!ready && 'ev-document-card__btn--download-loading'}`}
-          download={ready && doc.getName()}>
+        <button
+          onClick={() => this.handleDownload()}
+          className={`ev-document-card__btn--download ${(!ready || downloading) && 'ev-document-card__btn--download-loading'}`}>
           download
-        </a>
+        </button>
       </div>
     </div>
     );

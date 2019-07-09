@@ -94,9 +94,9 @@ class GaiaDocument {
     return new DocumentRemover(this).remove();
   }
 
-  async download() {
+  async download(options = {}) {
     if (this.numParts && this.numParts > 1) {
-      const downloader = new PartitionedDocumentDownloader(this);
+      const downloader = new PartitionedDocumentDownloader(this, options);
       return await downloader.download();
     }
     else {
