@@ -100,7 +100,22 @@
 }
 
 .ev-document-card__media--download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  background-color: $gray-light;
   min-height: 200px;
+}
+
+.ev-document-card__media-percentage {
+  padding: 20%;
+  font-size: 25px;
+}
+
+.ev-document-card__media-bytes {
+  font-size: 15px;
 }
 
 .ev-document-card__body--download {

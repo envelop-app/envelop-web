@@ -1,6 +1,5 @@
 import { privateUserSession } from './blockstack_client';
-import GaiaDocument from './gaia_document';
-import GaiaIndex from './gaia_index';
+import ProgressRegister from './progress_register';
 
 const publicFileOptions = { encrypt: false, verify: false };
 function putPublicFile(name, contents) {
@@ -11,6 +10,7 @@ class DocumentUploader {
   constructor(gaiaDocument) {
     this.gaiaDocument = gaiaDocument;
     this.reader = new FileReader();
+    this.progress = new ProgressRegister(gaiaDocument.size);
   }
 
   upload() {
@@ -21,7 +21,10 @@ class DocumentUploader {
 
         Promise
           .all([rawFilePromise, documentPromise])
-          .then(() => resolve(this.gaiaDocument));
+          .then(() => {
+            this.progress.add(this.gaiaDocument.size);
+            resolve(this.gaiaDocument);
+          });
       }
 
       this.reader.onerror = (evt) => {
@@ -30,6 +33,10 @@ class DocumentUploader {
 
       this.reader.readAsArrayBuffer(this.gaiaDocument.file);
     });
+  }
+
+  onProgress(callback) {
+    this.progress.onChange(callback);
   }
 
   uploadRawFile(contents) {

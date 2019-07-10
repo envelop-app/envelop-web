@@ -104,7 +104,9 @@ class GaiaDocument {
     }
     else {
       const options = { username: this._username, decrypt: false, verify: false };
-      return await publicSession.getFileUrl(this.url, options);
+      const fileUrl = await publicSession.getFileUrl(this.url, options);
+      this.downloadProgressCallbacks.forEach((callback) => callback(1));
+      return fileUrl;
     }
   }
 
