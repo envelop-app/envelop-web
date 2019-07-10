@@ -14,6 +14,8 @@ class PartitionedDocumentUploader {
     this.gaiaDocument = gaiaDocument;
     this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
     this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
+    this.progressCallbacks = [];
+    this.bytesUploaded = 0;
   }
 
   cleanupLimiters() {
@@ -58,10 +60,12 @@ class PartitionedDocumentUploader {
 
   async upload() {
     const uploadPromises = Array(this.numParts).fill(null)
-      .map((_, partNumber) => {
+      .map(async (_, partNumber) => {
         const fileSlice = this.getFileSlice(partNumber);
         const bufferPromise = this.scheduleRead(fileSlice);
-        return this.scheduleUpload(partNumber, bufferPromise);
+        await this.scheduleUpload(partNumber, bufferPromise);
+        this.addBytesUploaded(fileSlice.size);
+        return true;
       });
 
     await Promise.all(uploadPromises);
@@ -71,6 +75,28 @@ class PartitionedDocumentUploader {
     await this.uploadDocument();
 
     return this.gaiaDocument;
+  }
+
+  addBytesUploaded(bytes) {
+    this.bytesUploaded += bytes;
+    this.triggerOnProgress();
+  }
+
+  onProgress(callback) {
+    if (callback && typeof callback === 'function') {
+      this.progressCallbacks.push(callback);
+    }
+  }
+
+  triggerOnProgress() {
+    this.progressCallbacks.forEach((callback) => {
+      callback(this.getProgress());
+    });
+  }
+
+  getProgress() {
+    const ratio = this.bytesUploaded / this.gaiaDocument.size;
+    return Math.round(ratio * 100) / 100;
   }
 
   uploadDocument() {

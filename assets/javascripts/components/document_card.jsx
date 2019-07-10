@@ -5,6 +5,7 @@ import copy from 'copy-to-clipboard';
 import Menu, {MenuList, MenuListItem, MenuListItemText, MenuListItemGraphic} from '@material/react-menu';
 import MaterialIcon from '@material/react-material-icon';
 import { Corner } from '@material/menu';
+import LinearProgress from '@material/react-linear-progress';
 
 import Toast from '../lib/toast.jsx'
 import GaiaDocument from '../lib/gaia_document'
@@ -12,7 +13,13 @@ import GaiaDocument from '../lib/gaia_document'
 class DocumentCardComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { open: false };
+    this.state = { open: false, progress: 0 };
+  }
+
+  componentDidMount() {
+    this.props.doc.onUploadProgress((progress) => {
+      this.setState({ progress });
+    });
   }
 
   setAnchorElement = (element) => {
@@ -65,6 +72,7 @@ class DocumentCardComponent extends Component {
 
   render() {
     const {deleting, doc} = this.props;
+    const progress = this.state.progress;
 
     return (
       <div className={`ev-document-card ${this.isDisabled() && 'ev-document-card__disabled'}`}>
@@ -96,6 +104,7 @@ class DocumentCardComponent extends Component {
             </MenuList>
           </Menu>
         </div>
+        {!doc.isSynced() && <LinearProgress progress={progress} buffer={1} />}
         <div className="ev-document-card__body">
           <div className="ev-document-card__body-left">
             <div className="ev-document-card__text-title">{doc.getName()}</div>

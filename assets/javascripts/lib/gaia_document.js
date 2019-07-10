@@ -76,6 +76,8 @@ class GaiaDocument {
   constructor(fields = {}) {
     this.content_type = fields.content_type;
     this.created_at = fields.created_at;
+    this.downloadProgress = 0;
+    this.downloadProgressCallbacks = [];
     this.file = fields.file;
     this.id = fields.id;
     this.localContents = null;
@@ -85,6 +87,8 @@ class GaiaDocument {
     this.partSize = fields.partSize || null;
     this.size = fields.size;
     this.storageType = fields.storageType || 'normal';
+    this.uploadProgress = 0;
+    this.uploadProgressCallbacks = [];
     this.url = fields.url;
     this._username = fields.username;
     this.version = fields.version || version;
@@ -94,9 +98,10 @@ class GaiaDocument {
     return new DocumentRemover(this).remove();
   }
 
-  async download(options = {}) {
+  async download() {
     if (this.numParts && this.numParts > 1) {
-      const downloader = new PartitionedDocumentDownloader(this, options);
+      const downloader = new PartitionedDocumentDownloader(this);
+      this.downloadProgressCallbacks.forEach((callback) => downloader.onProgress(callback));
       return await downloader.download();
     }
     else {
@@ -138,6 +143,18 @@ class GaiaDocument {
     return !!this.id;
   }
 
+  onDownloadProgress(callback) {
+    if (callback && typeof callback === 'function') {
+      this.downloadProgressCallbacks.push(callback);
+    }
+  }
+
+  onUploadProgress(callback) {
+    if (callback && typeof callback === 'function') {
+      this.uploadProgressCallbacks.push(callback);
+    }
+  }
+
   _prepareForSave() {
     const payload = this.serialize();
     payload.file = this.file;
@@ -153,6 +170,7 @@ class GaiaDocument {
     payload.id = this.id || generateHash(6);
 
     const uploader = getUploader(payload);
+    this.uploadProgressCallbacks.forEach((callback) => uploader.onProgress(callback));
     await uploader.upload();
 
     return Object.assign(this, payload);

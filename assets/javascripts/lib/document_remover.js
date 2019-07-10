@@ -1,12 +1,11 @@
 import Bottleneck from 'bottleneck';
 
 import { privateUserSession } from './blockstack_client';
-import GaiaDocument from './gaia_document';
 
 class DocumentRemover {
   constructor(gaiaDocument) {
     this.gaiaDocument = gaiaDocument;
-    this.limiter = new Bottleneck({ maxConcurrent: 3 });
+    this.limiter = new Bottleneck({ maxConcurrent: 1, minTime: 1000 });
   }
 
   async remove() {

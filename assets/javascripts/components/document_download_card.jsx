@@ -15,10 +15,6 @@ class DocumentDownloadCardComponent extends Component {
     return this.props.doc;
   }
 
-  onProgress(progress) {
-    this.setState({ progress });
-  }
-
   triggerBrowserDownload(url) {
     const link = document.createElement('a')
     link.href = url;
@@ -29,8 +25,12 @@ class DocumentDownloadCardComponent extends Component {
   handleDownload() {
     this.setState({ downloading: true });
 
+    this.props.doc.onDownloadProgress((progress) => {
+      this.setState({ progress });
+    });
+
     this.props.doc
-      .download({ onProgress: (progress) => this.onProgress(progress) })
+      .download()
       .then((downloadUrl) => {
         this.triggerBrowserDownload(downloadUrl);
         this.setState({ downloading: false });
@@ -50,7 +50,7 @@ class DocumentDownloadCardComponent extends Component {
           src={`/images/${(ready && doc.getType()) || 'file'}.svg`}
         />}
       </div>
-      {downloading && <LinearProgress progress={progress} buffer={0} />}
+      {downloading && <LinearProgress progress={progress} buffer={1} />}
       <div className="ev-document-card__body ev-document-card__body--download">
         <div className={`ev-document-card__text-title ev-document-card__text-title--download ${!ready && 'ev-document-card__text-title--download-loading'}`}>
           {ready && doc.getName()}

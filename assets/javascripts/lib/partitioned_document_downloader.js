@@ -9,10 +9,6 @@ class PartitionedDocumentDownloader {
     this.limiter = new Bottleneck({ maxConcurrent: 3 });
     this.progressCallbacks = [];
     this.bytesDownloaded = 0;
-
-    if (options.onProgress && typeof options.onProgress === 'function') {
-      this.progressCallbacks.push(options.onProgress);
-    }
   }
 
   async download() {
@@ -42,6 +38,12 @@ class PartitionedDocumentDownloader {
   addBytesDownloaded(bytes) {
     this.bytesDownloaded += bytes;
     this.triggerOnProgress();
+  }
+
+  onProgress(callback) {
+    if (callback && typeof callback === 'function') {
+      this.progressCallbacks.push(callback);
+    }
   }
 
   triggerOnProgress() {
