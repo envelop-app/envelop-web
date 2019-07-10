@@ -34,6 +34,29 @@
   background-image: url('/images/baseline-more_vert-24px.svg');
 }
 
+.ev-document-card__media--transferring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  background-color: $gray-light;
+}
+
+.ev-document-card__media-percentage {
+  padding: 20%;
+  font-size: 25px;
+}
+
+.ev-document-card__media-bytes {
+  font-size: 15px;
+}
+
+.ev-document-card__media-linear-progress {
+  position: absolute;
+  bottom: 0;
+}
+
 .ev-document-card__body {
   display: flex;
   align-items: center;
@@ -100,22 +123,7 @@
 }
 
 .ev-document-card__media--download {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  position: relative;
-  background-color: $gray-light;
   min-height: 200px;
-}
-
-.ev-document-card__media-percentage {
-  padding: 20%;
-  font-size: 25px;
-}
-
-.ev-document-card__media-bytes {
-  font-size: 15px;
 }
 
 .ev-document-card__body--download {

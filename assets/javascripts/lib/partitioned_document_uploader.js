@@ -10,11 +10,11 @@ function putPublicFile(name, contents) {
 }
 
 class PartitionedDocumentUploader {
-  constructor(gaiaDocument) {
-    this.partSize = gaiaDocument.partSize || Constants.FILE_PART_SIZE;
-    this.numParts = Math.ceil(gaiaDocument.size / this.partSize);
-    this.gaiaDocument = gaiaDocument;
-    this.progress = new ProgressRegister(gaiaDocument.size);
+  constructor(serializedDocument) {
+    this.partSize = serializedDocument.partSize || Constants.FILE_PART_SIZE;
+    this.numParts = Math.ceil(serializedDocument.size / this.partSize);
+    this.serializedDocument = serializedDocument;
+    this.progress = new ProgressRegister(serializedDocument.size);
     this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
     this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
   }
@@ -27,7 +27,7 @@ class PartitionedDocumentUploader {
   getFileSlice(partNumber) {
     const startAt = partNumber * this.partSize;
     const endAt = (partNumber + 1) * this.partSize;
-    return this.gaiaDocument.file.slice(startAt, endAt);
+    return this.serializedDocument.file.slice(startAt, endAt);
   }
 
   readFileSlice(fileSlice) {
@@ -75,7 +75,7 @@ class PartitionedDocumentUploader {
 
     await this.uploadDocument();
 
-    return this.gaiaDocument;
+    return this.serializedDocument;
   }
 
   onProgress(callback) {
@@ -83,17 +83,18 @@ class PartitionedDocumentUploader {
   }
 
   uploadDocument() {
-    this.gaiaDocument.storageType = 'partitioned';
-    this.gaiaDocument.numParts = this.numParts;
-    this.gaiaDocument.partSize = this.partSize;
+    this.serializedDocument.storageType = 'partitioned';
+    this.serializedDocument.numParts = this.numParts;
+    this.serializedDocument.partSize = this.partSize;
+    this.serializedDocument.uploaded = true;
 
-    const contents = JSON.stringify(this.gaiaDocument)
-    return putPublicFile(this.gaiaDocument.id, contents);
+    const contents = JSON.stringify(this.serializedDocument)
+    return putPublicFile(this.serializedDocument.id, contents);
   }
 
   uploadPart(partNumber, partBuffer) {
     const options = { contentType: 'application/octet-stream' };
-    const partUrl = `${this.gaiaDocument.url}.part${partNumber}`;
+    const partUrl = `${this.serializedDocument.url}.part${partNumber}`;
     return putPublicFile(partUrl, partBuffer, options);
   }
 }

@@ -86,6 +86,7 @@ class GaiaDocument {
     this.partSize = fields.partSize || null;
     this.size = fields.size;
     this.storageType = fields.storageType || 'normal';
+    this.uploaded = fields.uploaded || false;
     this.uploadProgressCallbacks = [];
     this.url = fields.url;
     this._username = fields.username;
@@ -203,6 +204,7 @@ class GaiaDocument {
       url: this.url || null,
       size: this.size || null,
       storageType: this.storageType || null,
+      uploaded: this.uploaded || null,
       version: this.version || null
     };
   }

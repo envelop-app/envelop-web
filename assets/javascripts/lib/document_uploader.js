@@ -7,10 +7,10 @@ function putPublicFile(name, contents) {
 }
 
 class DocumentUploader {
-  constructor(gaiaDocument) {
-    this.gaiaDocument = gaiaDocument;
+  constructor(serializedDocument) {
+    this.serializedDocument = serializedDocument;
     this.reader = new FileReader();
-    this.progress = new ProgressRegister(gaiaDocument.size);
+    this.progress = new ProgressRegister(serializedDocument.size);
   }
 
   upload() {
@@ -22,8 +22,8 @@ class DocumentUploader {
         Promise
           .all([rawFilePromise, documentPromise])
           .then(() => {
-            this.progress.add(this.gaiaDocument.size);
-            resolve(this.gaiaDocument);
+            this.progress.add(this.serializedDocument.size);
+            resolve(this.serializedDocument);
           });
       }
 
@@ -31,7 +31,7 @@ class DocumentUploader {
         reject(evt.target.error);
       }
 
-      this.reader.readAsArrayBuffer(this.gaiaDocument.file);
+      this.reader.readAsArrayBuffer(this.serializedDocument.file);
     });
   }
 
@@ -41,12 +41,13 @@ class DocumentUploader {
 
   uploadRawFile(contents) {
     const options = { contentType: 'application/octet-stream' };
-    return putPublicFile(this.gaiaDocument.url, contents, options);
+    return putPublicFile(this.serializedDocument.url, contents, options);
   }
 
   uploadDocument() {
-    const contents = JSON.stringify(this.gaiaDocument)
-    return putPublicFile(this.gaiaDocument.id, contents);
+    this.serializedDocument.uploaded = true;
+    const contents = JSON.stringify(this.serializedDocument);
+    return putPublicFile(this.serializedDocument.id, contents);
   }
 }
 

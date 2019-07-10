@@ -7,8 +7,9 @@ import MaterialIcon from '@material/react-material-icon';
 import { Corner } from '@material/menu';
 import LinearProgress from '@material/react-linear-progress';
 
-import Toast from '../lib/toast.jsx'
-import GaiaDocument from '../lib/gaia_document'
+import Toast from '../lib/toast.jsx';
+import GaiaDocument from '../lib/gaia_document';
+import DocumentCardMediaComponent from './document_card_media.jsx';
 
 class DocumentCardComponent extends Component {
   constructor(props) {
@@ -70,41 +71,47 @@ class DocumentCardComponent extends Component {
     }
   }
 
+  renderMenu() {
+    return [
+      !this.isDisabled() &&
+        <a
+          key="1"
+          href=""
+          onClick={this.handleKebabOpen}
+          className="ev-document-card__media-kebab mdc-menu-surface--anchor"
+          ref={this.setAnchorElement}
+        />,
+        <Menu
+          key="2"
+          anchorCorner={Corner.BOTTOM_START}
+          anchorElement={this.state.anchorElement}
+          open={this.state.open}
+          onClose={this.handleKebabClose}
+          onSelected={this.onDelete}
+        >
+          <MenuList>
+            <MenuListItem>
+              <MenuListItemGraphic graphic={<MaterialIcon icon="delete" />} />
+              <MenuListItemText primaryText={'Delete'} />
+            </MenuListItem>
+          </MenuList>
+        </Menu>
+    ];
+  }
+
   render() {
     const {deleting, doc} = this.props;
     const progress = this.state.progress;
 
     return (
       <div className={`ev-document-card ${this.isDisabled() && 'ev-document-card__disabled'}`}>
-        <div className="ev-document-card__media">
-          <img
-            className="ev-document-card__media-image"
-            src={`/images/${doc.getType()}.svg`}
-          />
-          {!this.isDisabled() &&
-              <a
-                href=""
-                onClick={this.handleKebabOpen}
-                className="ev-document-card__media-kebab mdc-menu-surface--anchor"
-                ref={this.setAnchorElement}
-              />
-          }
-          <Menu
-            anchorCorner={Corner.BOTTOM_START}
-            anchorElement={this.state.anchorElement}
-            open={this.state.open}
-            onClose={this.handleKebabClose}
-            onSelected={this.onDelete}
-          >
-            <MenuList>
-              <MenuListItem>
-                <MenuListItemGraphic graphic={<MaterialIcon icon="delete" />} />
-                <MenuListItemText primaryText={'Delete'} />
-              </MenuListItem>
-            </MenuList>
-          </Menu>
-        </div>
-        {!doc.isSynced() && <LinearProgress progress={progress} buffer={1} />}
+        <DocumentCardMediaComponent
+          doc={doc}
+          action="upload"
+          showProgress={!doc.isSynced()}
+          progress={progress}>
+          {this.renderMenu()}
+        </DocumentCardMediaComponent>
         <div className="ev-document-card__body">
           <div className="ev-document-card__body-left">
             <div className="ev-document-card__text-title">{doc.getName()}</div>
