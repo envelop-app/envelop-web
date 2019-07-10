@@ -1,14 +1,14 @@
 import Bottleneck from 'bottleneck';
 
 import LocalDatabase from '../lib/local_database';
+import ProgressRegister from '../lib/progress_register';
 import { publicUserSession } from '../lib/blockstack_client';
 
 class PartitionedDocumentDownloader {
-  constructor(gaiaDocument, options = {}) {
+  constructor(gaiaDocument) {
     this.gaiaDocument = gaiaDocument;
     this.limiter = new Bottleneck({ maxConcurrent: 3 });
-    this.progressCallbacks = [];
-    this.bytesDownloaded = 0;
+    this.progress = new ProgressRegister(gaiaDocument.size);
   }
 
   async download() {
@@ -28,33 +28,15 @@ class PartitionedDocumentDownloader {
     const promises = this.mapPartUrls(async (partUrl) => {
       const part = await this.scheduleDownload(partUrl);
       await LocalDatabase.setItem(this.localUrl(partUrl), part);
-      this.addBytesDownloaded(part.byteLength);
+      this.progress.add(part.byteLength);
       return true;
     });
 
     return Promise.all(promises);
   }
 
-  addBytesDownloaded(bytes) {
-    this.bytesDownloaded += bytes;
-    this.triggerOnProgress();
-  }
-
   onProgress(callback) {
-    if (callback && typeof callback === 'function') {
-      this.progressCallbacks.push(callback);
-    }
-  }
-
-  triggerOnProgress() {
-    this.progressCallbacks.forEach((callback) => {
-      callback(this.getProgress());
-    });
-  }
-
-  getProgress() {
-    const ratio = this.bytesDownloaded / this.gaiaDocument.size;
-    return Math.round(ratio * 100) / 100;
+    this.progress.onChange(callback);
   }
 
   localUrl(partUrl) {

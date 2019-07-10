@@ -33,7 +33,7 @@ class DocumentDownloadCardComponent extends Component {
       .download()
       .then((downloadUrl) => {
         this.triggerBrowserDownload(downloadUrl);
-        this.setState({ downloading: false });
+        this.setState({ downloading: false, progress: 0 });
       });
   }
 
