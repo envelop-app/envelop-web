@@ -76,7 +76,6 @@ class GaiaDocument {
   constructor(fields = {}) {
     this.content_type = fields.content_type;
     this.created_at = fields.created_at;
-    this.downloadProgress = 0;
     this.downloadProgressCallbacks = [];
     this.file = fields.file;
     this.id = fields.id;
@@ -87,7 +86,6 @@ class GaiaDocument {
     this.partSize = fields.partSize || null;
     this.size = fields.size;
     this.storageType = fields.storageType || 'normal';
-    this.uploadProgress = 0;
     this.uploadProgressCallbacks = [];
     this.url = fields.url;
     this._username = fields.username;
@@ -147,11 +145,17 @@ class GaiaDocument {
     if (callback && typeof callback === 'function') {
       this.downloadProgressCallbacks.push(callback);
     }
+    else {
+      throw "Progress callback must be of type 'function'";
+    }
   }
 
   onUploadProgress(callback) {
     if (callback && typeof callback === 'function') {
       this.uploadProgressCallbacks.push(callback);
+    }
+    else {
+      throw "Progress callback must be of type 'function'";
     }
   }
 

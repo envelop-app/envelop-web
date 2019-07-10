@@ -1,6 +1,8 @@
-import { privateUserSession } from './blockstack_client';
-import Constants from './constants';
 import Bottleneck from 'bottleneck';
+
+import Constants from './constants';
+import { privateUserSession } from './blockstack_client';
+import ProgressRegister from '../lib/progress_register';
 
 const publicFileOptions = { encrypt: false, verify: false };
 function putPublicFile(name, contents) {
@@ -12,10 +14,9 @@ class PartitionedDocumentUploader {
     this.partSize = gaiaDocument.partSize || Constants.FILE_PART_SIZE;
     this.numParts = Math.ceil(gaiaDocument.size / this.partSize);
     this.gaiaDocument = gaiaDocument;
+    this.progress = new ProgressRegister(gaiaDocument.size);
     this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
     this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
-    this.progressCallbacks = [];
-    this.bytesUploaded = 0;
   }
 
   cleanupLimiters() {
@@ -64,7 +65,7 @@ class PartitionedDocumentUploader {
         const fileSlice = this.getFileSlice(partNumber);
         const bufferPromise = this.scheduleRead(fileSlice);
         await this.scheduleUpload(partNumber, bufferPromise);
-        this.addBytesUploaded(fileSlice.size);
+        this.progress.add(fileSlice.size);
         return true;
       });
 
@@ -77,26 +78,8 @@ class PartitionedDocumentUploader {
     return this.gaiaDocument;
   }
 
-  addBytesUploaded(bytes) {
-    this.bytesUploaded += bytes;
-    this.triggerOnProgress();
-  }
-
   onProgress(callback) {
-    if (callback && typeof callback === 'function') {
-      this.progressCallbacks.push(callback);
-    }
-  }
-
-  triggerOnProgress() {
-    this.progressCallbacks.forEach((callback) => {
-      callback(this.getProgress());
-    });
-  }
-
-  getProgress() {
-    const ratio = this.bytesUploaded / this.gaiaDocument.size;
-    return Math.round(ratio * 100) / 100;
+    this.progress.onChange(callback);
   }
 
   uploadDocument() {
