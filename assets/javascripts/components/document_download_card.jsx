@@ -63,7 +63,7 @@ class DocumentDownloadCardComponent extends Component {
         <button
           onClick={() => this.handleDownload()}
           className={`ev-document-card__btn--download ${(!ready || downloading) && 'ev-document-card__btn--download-loading'}`}>
-          {downloading ? 'loading ...' : 'download'}
+          {downloading ? 'downloading ...' : 'download'}
         </button>
       </div>
     </div>
