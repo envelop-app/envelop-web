@@ -69,7 +69,7 @@ class DocumentCardMediaComponent extends Component {
 DocumentCardMediaComponent.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node,
-  doc: PropTypes.instanceOf(GaiaDocument).isRequired,
+  doc: PropTypes.instanceOf(GaiaDocument),
   showProgress: PropTypes.bool,
   progress: PropTypes.number,
   action: PropTypes.oneOf(['download', 'upload'])

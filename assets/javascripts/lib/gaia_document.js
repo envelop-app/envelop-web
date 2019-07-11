@@ -26,7 +26,7 @@ function generateHash(length) {
   return new Random().string(length);
 }
 
-function getUploader(payload) {
+function getUploader(payload, callbacks) {
   let uploader = null;
 
   if (payload.file.size <= Constants.SINGLE_FILE_SIZE_LIMIT) {
@@ -38,6 +38,8 @@ function getUploader(payload) {
   else {
     throw("Cant get uploader - missing 'size'")
   }
+
+  callbacks.forEach((callback) => uploader.onProgress(callback));
 
   return uploader;
 }
@@ -176,8 +178,7 @@ class GaiaDocument {
     const payload = this._prepareForSave();
     payload.id = this.id || generateHash(6);
 
-    const uploader = getUploader(payload);
-    this.uploadProgressCallbacks.forEach((callback) => uploader.onProgress(callback));
+    const uploader = getUploader(payload, this.uploadProgressCallbacks);
     await uploader.upload();
 
     return Object.assign(this, payload);

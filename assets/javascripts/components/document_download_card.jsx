@@ -4,6 +4,8 @@ import ReactDOM from "react-dom";
 import LinearProgress from '@material/react-linear-progress';
 
 import GaiaDocument from '../lib/gaia_document'
+import Page from '../lib/page';
+
 import DocumentCardMediaComponent from './document_card_media.jsx'
 
 class DocumentDownloadCardComponent extends Component {
@@ -24,17 +26,20 @@ class DocumentDownloadCardComponent extends Component {
   }
 
   handleDownload() {
-    this.setState({ downloadState: 'downloading', progress: 0 });
-    this.props.doc.onDownloadProgress((progress) => {
-      this.setState({ progress });
-    });
-
-    this.props.doc
-      .download()
-      .then((downloadUrl) => {
-        this.triggerBrowserDownload(downloadUrl);
-        this.setState({ downloadState: 'downloaded' });
+    Page.preventClose(() => {
+      this.setState({ downloadState: 'downloading', progress: 0 });
+      this.props.doc.onDownloadProgress((progress) => {
+        this.setState({ progress });
       });
+
+      return this.props.doc
+        .download()
+        .then((downloadUrl) => {
+          this.triggerBrowserDownload(downloadUrl);
+          this.setState({ downloadState: 'downloaded' });
+          return true;
+        });
+    });
   }
 
   render() {
