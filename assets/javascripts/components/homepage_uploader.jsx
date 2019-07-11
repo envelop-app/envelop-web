@@ -27,6 +27,11 @@ class HomepageUploaderComponent extends Component {
       return;
     }
 
+    if (files.some(file => file.size === 0)) {
+      Dialogs.open((state) => this.setState(state), Dialogs.EMPTY_FILE)
+      return;
+    }
+
     const gaiaDocuments = files.map(file => GaiaDocument.fromFile(file));
     await this.localIndex.setTempDocuments(gaiaDocuments)
 

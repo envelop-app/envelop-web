@@ -35,6 +35,11 @@ function initUploadInput(inputElement) {
       return;
     }
 
+    if (file.size === 0) {
+      alert(Dialogs.EMPTY_FILE.title);
+      return;
+    }
+
     const gaiaDocument = GaiaDocument.fromFile(file);
     const localIndex = new LocalIndex();
     localIndex

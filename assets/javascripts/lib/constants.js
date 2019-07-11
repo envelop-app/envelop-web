@@ -24,7 +24,7 @@ const Constants = {
   PREVIEW: __PREVIEW__,
   FILE_SIZE_LIMIT: 2 * (10 ** 9), // 2 GB
   FILE_PART_SIZE: 9 * (10 ** 6), // 9 MB
-  SINGLE_FILE_SIZE_LIMIT: 10 * (10 ** 6), // 25 MB
+  SINGLE_FILE_SIZE_LIMIT: 9 * (10 ** 6), // 9 MB
   TEMP_DOCUMENTS_PREFIX: 'tempDocuments'
 };
 
