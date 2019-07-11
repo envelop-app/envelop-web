@@ -88,7 +88,7 @@ class GaiaDocument {
     this.partSize = fields.partSize || null;
     this.size = fields.size;
     this.storageType = fields.storageType || 'normal';
-    this.uploaded = fields.uploaded || false;
+    this.uploaded = fields.uploaded;
     this.uploadProgressCallbacks = [];
     this.url = fields.url;
     this._username = fields.username;
@@ -148,6 +148,15 @@ class GaiaDocument {
 
   isSynced() {
     return !!this.id;
+  }
+
+  isUploading() {
+    if (this.isSynced() && typeof this.uploaded === 'boolean' && this.uploaded === false) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   onDownloadProgress(callback) {

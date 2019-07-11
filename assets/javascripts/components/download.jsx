@@ -34,7 +34,7 @@ class DownloadComponent extends Component {
         this.setState({ document: gaiaDocument });
         window.document.title = `${gaiaDocument.getName()} - Envelop`;
 
-        if (gaiaDocument.uploaded === false) {
+        if (gaiaDocument.isUploading()) {
           setTimeout(() => this.fetchDocument(), Constants.DOWNLOAD_FILE_REFRESH);
         }
       });
