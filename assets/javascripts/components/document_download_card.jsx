@@ -47,7 +47,9 @@ class DocumentDownloadCardComponent extends Component {
 
   isUploading() {
     const doc = this.props.doc;
-    return doc && doc.uploaded === false;
+
+    // FIXME: do this in GaiaDocument, during parsing:
+    return doc && (typeof doc.uploaded === 'boolean') && doc.uploaded === false;
   }
 
   isDownloading() {
