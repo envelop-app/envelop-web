@@ -31,7 +31,7 @@ class DocumentCardMediaComponent extends Component {
 
     return [
       <div key="1" className="ev-document-card__media-percentage">
-        {(progress * 100).toFixed(2)}%
+        {Math.round(progress * 100)}%
       </div>,
       <div key="2" className="ev-document-card__media-bytes">
         {prettyBytes(downloadedBytes)} of {prettyBytes(doc.size)} {action}ed
