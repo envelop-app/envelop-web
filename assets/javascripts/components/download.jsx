@@ -54,7 +54,7 @@ class DownloadComponent extends Component {
           <DocumentDownloadCardComponent doc={doc} />
         </div>
         <div className="ev-download__text">
-          Share private files easily, without losing their ownership<br/>
+          Share private files easily, without losing their ownership.<br/>
           <a href="/">Try Envelop</a>
         </div>
         <img className="ev-download__image" src="/images/bg-empty-state.svg"/>
