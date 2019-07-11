@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import ReactDOM from "react-dom";
-import LinearProgress from '@material/react-linear-progress';
 
 import GaiaDocument from '../lib/gaia_document'
 import Page from '../lib/page';
@@ -22,7 +21,7 @@ class DocumentDownloadCardComponent extends Component {
     const link = document.createElement('a')
     link.href = url;
     link.download = this.props.doc.getName();
-    link.click()
+    link.click();
   }
 
   handleDownload() {
@@ -42,12 +41,48 @@ class DocumentDownloadCardComponent extends Component {
     });
   }
 
+  isFetching() {
+    return !this.props.doc;
+  }
+
+  isUploading() {
+    const doc = this.props.doc;
+    return doc && doc.uploaded === false;
+  }
+
+  isDownloading() {
+    return this.state.downloadState === 'downloading';
+  }
+
+  isDownloaded() {
+    return this.state.downloadState === 'downloaded';
+  }
+
+  isButtonDisabled() {
+    return this.isFetching() || this.isUploading() || this.isDownloading();
+  }
+
+  renderButtonText() {
+    if (this.isFetching()) {
+      return '';
+    }
+    else if (this.isUploading()) {
+      return 'waiting for upload';
+    }
+    else if (this.isDownloading()) {
+      return 'downloading ...';
+    }
+    else if (this.isDownloaded()) {
+      return 'download again';
+    }
+    else {
+      return 'download';
+    }
+  }
+
   render() {
     const doc = this.props.doc;
-    const { downloadState, progress } = this.state;
-    const downloading = downloadState === 'downloading';
-    const downloaded = downloadState === 'downloaded';
-    const ready = this.isDocReady();
+    const { progress } = this.state;
 
     return (
       <div className="ev-document-card ev-document-card--download">
@@ -55,22 +90,23 @@ class DocumentDownloadCardComponent extends Component {
           className="ev-document-card__media--download"
           doc={doc}
           action="download"
-          showProgress={downloading || downloaded}
+          showProgress={this.isDownloading() || this.isDownloaded()}
           progress={progress}
         />
         <div className="ev-document-card__body ev-document-card__body--download">
-          <div className={`ev-document-card__text-title ev-document-card__text-title--download ${!ready && 'ev-document-card__text-title--download-loading'}`}>
-            {ready && doc.getName()}
+          <div className={`ev-document-card__text-title ev-document-card__text-title--download ${!doc && 'ev-document-card__text-title--download-loading'}`}>
+            {doc && doc.getName()}
           </div>
-          <div className={`ev-document-card__text-primary ${!ready && 'ev-document-card__text-primary--download-loading'}`}>
-            {ready && doc.getSizePretty()}
+          <div className={`ev-document-card__text-primary ${!doc && 'ev-document-card__text-primary--download-loading'}`}>
+            {doc && doc.getSizePretty()}
           </div>
         </div>
         <div className="ev-document-card__controls">
           <button
             onClick={() => this.handleDownload()}
-            className={`ev-document-card__btn--download ${(!ready || downloading) && 'ev-document-card__btn--download-loading'}`}>
-            {downloading ? 'downloading ...' : (downloaded ? 'download again' : 'download')}
+            disabled={this.isButtonDisabled()}
+            className="ev-document-card__btn--download">
+            {this.renderButtonText()}
           </button>
         </div>
       </div>

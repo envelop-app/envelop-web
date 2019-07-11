@@ -11,8 +11,7 @@ class ProgressRegister {
   }
 
   get() {
-    const ratio = this.currentSize / this.totalSize;
-    return Math.round(ratio * 100) / 100;
+    return this.currentSize / this.totalSize;
   }
 
   onChange(callback) {

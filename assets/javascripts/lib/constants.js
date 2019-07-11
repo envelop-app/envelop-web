@@ -24,6 +24,7 @@ const Constants = {
   PREVIEW: __PREVIEW__,
   FILE_SIZE_LIMIT: Infinity,
   FILE_PART_SIZE: 9 * (10 ** 6), // 9 MB
+  DOWNLOAD_FILE_REFRESH: 10 * 1000, // 10 seconds
   SINGLE_FILE_SIZE_LIMIT: 9 * (10 ** 6), // 9 MB
   TEMP_DOCUMENTS_PREFIX: 'tempDocuments'
 };

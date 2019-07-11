@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import MaterialIcon from '@material/react-material-icon';
 
+import Constants from '../lib/constants';
 import GaiaDocument from '../lib/gaia_document';
 
 import DocumentDownloadCardComponent from './document_download_card.jsx';
@@ -20,7 +20,7 @@ class DownloadComponent extends Component {
     this.state = { document: null };
   }
 
-  componentDidMount() {
+  fetchDocument() {
     const urlData = parseUrl();
 
     var username = urlData.username;
@@ -31,10 +31,18 @@ class DownloadComponent extends Component {
     GaiaDocument
       .get(username, urlData.hash)
       .then((gaiaDocument) => {
-        this.setState({ document: gaiaDocument })
+        this.setState({ document: gaiaDocument });
         window.document.title = `${gaiaDocument.getName()} - Envelop`;
+
+        if (gaiaDocument.uploaded === false) {
+          setTimeout(() => this.fetchDocument(), Constants.DOWNLOAD_FILE_REFRESH);
+        }
       });
-      // TODO: .catch(() => /* do something when file doesn't exist */);
+    // TODO: .catch(() => /* do something when file doesn't exist */);
+  }
+
+  componentDidMount() {
+    this.fetchDocument();
   }
 
   render() {
