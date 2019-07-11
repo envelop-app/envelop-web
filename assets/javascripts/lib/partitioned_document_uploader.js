@@ -84,8 +84,7 @@ class PartitionedDocumentUploader {
 
   uploadDocument() {
     this.serializedDocument.storageType = 'partitioned';
-    this.serializedDocument.numParts = this.numParts;
-    this.serializedDocument.partSize = this.partSize;
+    this.serializedDocument.num_parts = this.numParts;
     this.serializedDocument.uploaded = true;
 
     const contents = JSON.stringify(this.serializedDocument)

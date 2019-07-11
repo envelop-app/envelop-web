@@ -9,7 +9,7 @@ class DocumentRemover {
   }
 
   async remove() {
-    if (this.gaiaDocument.numParts > 1) {
+    if (this.gaiaDocument.getNumParts() > 1) {
       await this.removeParts();
     } else {
       await this.removeRawFile(this.gaiaDocument.url);

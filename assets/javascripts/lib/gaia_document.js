@@ -84,7 +84,7 @@ class GaiaDocument {
     this.localContents = null;
     this.localId = fields.localId;
     this.name = fields.name;
-    this.numParts = fields.numParts || null;
+    this.num_parts = fields.num_parts || null;
     this.partSize = fields.partSize || null;
     this.size = fields.size;
     this.storageType = fields.storageType || 'normal';
@@ -100,7 +100,7 @@ class GaiaDocument {
   }
 
   async download() {
-    if (this.numParts && this.numParts > 1) {
+    if (this.getNumParts() && this.getNumParts() > 1) {
       const downloader = new PartitionedDocumentDownloader(this);
       this.downloadProgressCallbacks.forEach((callback) => downloader.onProgress(callback));
       return await downloader.download();
@@ -121,8 +121,12 @@ class GaiaDocument {
     return this.name;
   }
 
+  getNumParts() {
+    return this.num_parts;
+  }
+
   getPartUrls() {
-    return new Array(this.numParts)
+    return new Array(this.getNumParts())
       .fill(null)
       .map((_, index) => `${this.url}.part${index}`);
   }
@@ -200,8 +204,7 @@ class GaiaDocument {
       created_at: this.created_at || null,
       id: this.id || null,
       localId: this.id || null,
-      numParts: this.numParts || null,
-      partSize: this.partSize || null,
+      num_parts: this.num_parts || null,
       url: this.url || null,
       size: this.size || null,
       storageType: this.storageType || null,
