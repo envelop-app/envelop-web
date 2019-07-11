@@ -34,7 +34,7 @@ class DocumentDownloadCardComponent extends Component {
       return this.props.doc
         .download()
         .then((downloadUrl) => {
-          this.triggerBrowserDownload(downloadUrl);
+          setTimeout(() => this.triggerBrowserDownload(downloadUrl), 200);
           this.setState({ downloadState: 'downloaded' });
           return true;
         });
