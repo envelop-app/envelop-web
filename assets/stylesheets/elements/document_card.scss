@@ -34,6 +34,29 @@
   background-image: url('/images/baseline-more_vert-24px.svg');
 }
 
+.ev-document-card__media--transferring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  background-color: $gray-light;
+}
+
+.ev-document-card__media-percentage {
+  padding: 20%;
+  font-size: 25px;
+}
+
+.ev-document-card__media-bytes {
+  font-size: 15px;
+}
+
+.ev-document-card__media-linear-progress {
+  position: absolute;
+  bottom: 0;
+}
+
 .ev-document-card__body {
   display: flex;
   align-items: center;
@@ -111,6 +134,7 @@
   text-overflow: clip;
   overflow: auto;
   white-space: normal;
+  word-break: break-all;
 }
 
 .ev-document-card__btn--download {
@@ -118,12 +142,6 @@
   text-decoration: none;
   height: 36px;
   width: 100%;
-}
-
-.ev-document-card__btn--download-loading {
-  background-color: rgba(0, 0, 0, 0.12) !important;
-  color: rgba(0, 0, 0, 0.37) !important;
-  box-shadow: none !important;
 }
 
 .ev-document-card__text-title--download-loading {

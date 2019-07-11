@@ -7,6 +7,7 @@ import Dialogs from '../lib/dialogs';
 import GaiaDocument from '../lib/gaia_document';
 import GaiaIndex from '../lib/gaia_index';
 import LocalIndex from '../lib/local_index';
+import Page from '../lib/page';
 
 import DocumentListComponent from './document_list.jsx';
 import DropZoneComponent from './drop_zone.jsx';
@@ -24,22 +25,26 @@ class AppComponent extends Component {
     );
   }
 
-  async componentDidMount() {
-    this.gaiaIndex.onChange(() => {
-      this.setState({ documents: this.gaiaIndex.documents });
+  componentDidMount() {
+    Page.preventClose(async () => {
+      this.gaiaIndex.onChange(() => {
+        this.setState({ documents: this.gaiaIndex.documents });
+      });
+
+      await this.localIndex.load();
+
+      if (this.localIndex.tempDocuments.length > 0) {
+        this.setState({ documents: this.localIndex.tempDocuments });
+        await this.gaiaIndex.addDocuments(this.localIndex.tempDocuments);
+        this.localIndex.setTempDocuments([]);
+      } else {
+        await this.gaiaIndex.load();
+      }
+
+      this.setState({ loading: false });
+
+      return true;
     });
-
-    await this.localIndex.load();
-
-    if (this.localIndex.tempDocuments.length > 0) {
-      this.setState({ documents: this.localIndex.tempDocuments });
-      await this.gaiaIndex.addDocuments(this.localIndex.tempDocuments);
-      this.localIndex.setTempDocuments([]);
-    } else {
-      await this.gaiaIndex.load();
-    }
-
-    this.setState({ loading: false });
   }
 
   handleInputChange = async (evt) => {
@@ -53,9 +58,16 @@ class AppComponent extends Component {
       return;
     }
 
-    const gaiaDocuments = files.map(file => GaiaDocument.fromFile(file));
-    this.setState({ documents: [...gaiaDocuments, ...this.state.documents] });
-    return this.gaiaIndex.addDocuments(gaiaDocuments);
+    if (files.some(file => file.size === 0)) {
+      Dialogs.open((state) => this.setState(state), Dialogs.EMPTY_FILE);
+      return;
+    }
+
+    Page.preventClose(() => {
+      const gaiaDocuments = files.map(file => GaiaDocument.fromFile(file));
+      this.setState({ documents: [...gaiaDocuments, ...this.state.documents] });
+      return this.gaiaIndex.addDocuments(gaiaDocuments);
+    });
   }
 
   onDocumentDelete = (doc, callback) => {

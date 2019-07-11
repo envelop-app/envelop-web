@@ -1,12 +1,17 @@
-import { Random } from 'random-js'
+import mime from 'mime-types';
 import prettyBytes from 'pretty-bytes';
+import randomstring from 'randomstring';
 
-import { publicUserSession } from '../lib/blockstack_client'
-import DocumentRemover from '../lib/document_remover'
-import { privateUserSession } from '../lib/blockstack_client'
-import Constants from '../lib/constants'
+import DocumentRemover from '../lib/document_remover';
+import {
+  privateUserSession,
+  publicUserSession as publicSession
+} from '../lib/blockstack_client';
+import Constants from '../lib/constants';
 import DocumentUploader from '../lib/document_uploader';
+import PartitionedDocumentUploader from '../lib/partitioned_document_uploader';
 import LocalDocumentUploader from '../lib/local_document_uploader';
+import PartitionedDocumentDownloader from '../lib/partitioned_document_downloader';
 
 const types = {
   image:   ['png', 'gif', 'jpg', 'jpeg', 'svg', 'tif', 'tiff', 'ico'],
@@ -18,7 +23,25 @@ const types = {
 const version = 1;
 
 function generateHash(length) {
-  return new Random().string(length);
+  return randomstring.generate(length);
+}
+
+function getUploader(payload, callbacks) {
+  let uploader = null;
+
+  if (payload.file.size <= Constants.SINGLE_FILE_SIZE_LIMIT) {
+    uploader = new DocumentUploader(payload)
+  }
+  else if (payload.file.size > Constants.SINGLE_FILE_SIZE_LIMIT) {
+    uploader = new PartitionedDocumentUploader(payload)
+  }
+  else {
+    throw("Cant get uploader - missing 'size'")
+  }
+
+  callbacks.forEach((callback) => uploader.onProgress(callback));
+
+  return uploader;
 }
 
 class GaiaDocument {
@@ -45,26 +68,67 @@ class GaiaDocument {
     return new GaiaDocument(raw);
   }
 
+  static get = async (username, filename) => {
+    const options = { username, decrypt: false, verify: false };
+    const json = await publicSession.getFile(filename, options);
+    const payload = JSON.parse(json);
+    return GaiaDocument.fromGaia(Object.assign(payload, { username: username }));
+  }
+
   constructor(fields = {}) {
     this.content_type = fields.content_type;
     this.created_at = fields.created_at;
+    this.downloadProgressCallbacks = [];
     this.file = fields.file;
     this.id = fields.id;
+    this.localContents = null;
     this.localId = fields.localId;
     this.name = fields.name;
-    this.name = fields.name;
+    this.num_parts = fields.num_parts || null;
+    this.partSize = fields.partSize || null;
     this.size = fields.size;
+    this.storageType = fields.storageType || 'normal';
+    this.uploaded = fields.uploaded || false;
+    this.uploadProgressCallbacks = [];
     this.url = fields.url;
+    this._username = fields.username;
     this.version = fields.version || version;
-    this.localContents = null;
   }
 
   delete() {
     return new DocumentRemover(this).remove();
   }
 
+  async download() {
+    if (this.getNumParts() && this.getNumParts() > 1) {
+      const downloader = new PartitionedDocumentDownloader(this);
+      this.downloadProgressCallbacks.forEach((callback) => downloader.onProgress(callback));
+      return await downloader.download();
+    }
+    else {
+      const options = { username: this._username, decrypt: false, verify: false };
+      const fileUrl = await publicSession.getFileUrl(this.url, options);
+      this.downloadProgressCallbacks.forEach((callback) => callback(1));
+      return fileUrl;
+    }
+  }
+
+  getMimeType() {
+    return mime.lookup(this.getName()) || null;
+  }
+
   getName() {
     return this.name;
+  }
+
+  getNumParts() {
+    return this.num_parts;
+  }
+
+  getPartUrls() {
+    return new Array(this.getNumParts())
+      .fill(null)
+      .map((_, index) => `${this.url}.part${index}`);
   }
 
   getSizePretty() {
@@ -86,10 +150,28 @@ class GaiaDocument {
     return !!this.id;
   }
 
+  onDownloadProgress(callback) {
+    if (callback && typeof callback === 'function') {
+      this.downloadProgressCallbacks.push(callback);
+    }
+    else {
+      throw "Progress callback must be of type 'function'";
+    }
+  }
+
+  onUploadProgress(callback) {
+    if (callback && typeof callback === 'function') {
+      this.uploadProgressCallbacks.push(callback);
+    }
+    else {
+      throw "Progress callback must be of type 'function'";
+    }
+  }
+
   _prepareForSave() {
     const payload = this.serialize();
     payload.file = this.file;
-    payload.url = this.url || `${generateHash(14)}/${this.name}`;
+    payload.url = this.url || `${generateHash(24)}/${this.name}`;
     payload.content_type = this.content_type || this.name.split('.').pop();
     payload.created_at = new Date();
 
@@ -100,7 +182,7 @@ class GaiaDocument {
     const payload = this._prepareForSave();
     payload.id = this.id || generateHash(6);
 
-    const uploader = new DocumentUploader(payload)
+    const uploader = getUploader(payload, this.uploadProgressCallbacks);
     await uploader.upload();
 
     return Object.assign(this, payload);
@@ -111,9 +193,9 @@ class GaiaDocument {
     payload.localId = this.localId || generateHash(20);
 
     const uploader = new LocalDocumentUploader(payload)
-    await uploader.upload();
+    const uploadedDoc = await uploader.upload();
 
-    return Object.assign(this, payload);
+    return Object.assign(this, payload, uploadedDoc);
   }
 
   serialize() {
@@ -122,8 +204,11 @@ class GaiaDocument {
       created_at: this.created_at || null,
       id: this.id || null,
       localId: this.id || null,
+      num_parts: this.num_parts || null,
       url: this.url || null,
       size: this.size || null,
+      storageType: this.storageType || null,
+      uploaded: this.uploaded || null,
       version: this.version || null
     };
   }

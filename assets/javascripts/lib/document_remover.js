@@ -1,22 +1,31 @@
-import { Random } from 'random-js'
+import Bottleneck from 'bottleneck';
+
 import { privateUserSession } from './blockstack_client';
-import GaiaDocument from './gaia_document';
 
 class DocumentRemover {
   constructor(gaiaDocument) {
     this.gaiaDocument = gaiaDocument;
+    this.limiter = new Bottleneck({ maxConcurrent: 1, minTime: 1000 });
   }
 
   async remove() {
-    return Promise.all([
-      this.removeRawFile(),
-      this.removeDocument()
-    ]);
+    if (this.gaiaDocument.getNumParts() > 1) {
+      await this.removeParts();
+    } else {
+      await this.removeRawFile(this.gaiaDocument.url);
+    }
+    return this.removeDocument();
   }
 
+  removeParts() {
+    const removeJobs = this.gaiaDocument.getPartUrls().map((partUrl) => {
+      return this.limiter.schedule(() => this.removeRawFile(partUrl));
+    });
+    return Promise.all(removeJobs);
+  }
 
-  removeRawFile() {
-    return privateUserSession.deleteFile(this.gaiaDocument.url);
+  removeRawFile(url) {
+    return privateUserSession.deleteFile(url);
   }
 
   removeDocument() {

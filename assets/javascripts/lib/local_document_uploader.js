@@ -1,15 +1,16 @@
 import LocalDatabase from '../lib/local_database';
 import Constants from '../lib/constants';
-import GaiaDocument from './gaia_document';
+import ProgressRegister from '../lib/progress_register';
 
 class LocalDocumentUploader {
   constructor(serializedDocument) {
     this.serializedDocument = serializedDocument;
     this.reader = new FileReader();
+    this.progress = new ProgressRegister(serializedDocument.size);
   }
 
   async upload() {
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
       this.reader.onload = (evt) => {
         const payload = Object.assign({}, this.serializedDocument, {
           localContents: evt.target.result
@@ -18,10 +19,17 @@ class LocalDocumentUploader {
 
         LocalDatabase
           .setItem(documentKey, payload)
-          .then(() => resolve(this.serializedDocument)) ;
+          .then(() =>{
+            this.progress.add(this.serializedDocument.size);
+            resolve(this.serializedDocument);
+          }) ;
       }
       this.reader.readAsArrayBuffer(this.serializedDocument.file);
     });
+  }
+
+  onProgress(callback) {
+    this.progress.onChange(callback);
   }
 }
 

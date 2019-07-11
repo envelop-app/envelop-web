@@ -13,6 +13,12 @@ const MAXIMUM_FILE_SIZE = {
   content: <p>File size limit is <strong>25Mb</strong>, try again with a smaller file.</p>
 }
 
+const EMPTY_FILE = {
+  title: "Empty file",
+  acceptText: 'Ok, got it',
+  content: <p>Sorry, you can't upload empty files.</p>
+}
+
 function initState() {
   return { dialog: {} };
 }
@@ -41,6 +47,7 @@ function set(setState, status, dialogState = {}) {
 const Dialogs = {
   DELETE_CONFIRMATION,
   MAXIMUM_FILE_SIZE,
+  EMPTY_FILE,
   initState,
   open
 };

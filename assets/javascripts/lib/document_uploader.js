@@ -1,6 +1,5 @@
 import { privateUserSession } from './blockstack_client';
-import GaiaDocument from './gaia_document';
-import GaiaIndex from './gaia_index';
+import ProgressRegister from './progress_register';
 
 const publicFileOptions = { encrypt: false, verify: false };
 function putPublicFile(name, contents) {
@@ -8,9 +7,10 @@ function putPublicFile(name, contents) {
 }
 
 class DocumentUploader {
-  constructor(gaiaDocument) {
-    this.gaiaDocument = gaiaDocument;
+  constructor(serializedDocument) {
+    this.serializedDocument = serializedDocument;
     this.reader = new FileReader();
+    this.progress = new ProgressRegister(serializedDocument.size);
   }
 
   upload() {
@@ -21,20 +21,33 @@ class DocumentUploader {
 
         Promise
           .all([rawFilePromise, documentPromise])
-          .then(() => resolve(this.gaiaDocument));
+          .then(() => {
+            this.progress.add(this.serializedDocument.size);
+            resolve(this.serializedDocument);
+          });
       }
-      this.reader.readAsArrayBuffer(this.gaiaDocument.file);
+
+      this.reader.onerror = (evt) => {
+        reject(evt.target.error);
+      }
+
+      this.reader.readAsArrayBuffer(this.serializedDocument.file);
     });
+  }
+
+  onProgress(callback) {
+    this.progress.onChange(callback);
   }
 
   uploadRawFile(contents) {
     const options = { contentType: 'application/octet-stream' };
-    return putPublicFile(this.gaiaDocument.url, contents, options);
+    return putPublicFile(this.serializedDocument.url, contents, options);
   }
 
   uploadDocument() {
-    const contents = JSON.stringify(this.gaiaDocument)
-    return putPublicFile(this.gaiaDocument.id, contents);
+    this.serializedDocument.uploaded = true;
+    const contents = JSON.stringify(this.serializedDocument);
+    return putPublicFile(this.serializedDocument.id, contents);
   }
 }
 
