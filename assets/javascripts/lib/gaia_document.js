@@ -1,6 +1,6 @@
 import mime from 'mime-types';
 import prettyBytes from 'pretty-bytes';
-import { Random } from 'random-js';
+import randomstring from 'randomstring';
 
 import DocumentRemover from '../lib/document_remover';
 import {
@@ -23,7 +23,7 @@ const types = {
 const version = 1;
 
 function generateHash(length) {
-  return new Random().string(length);
+  return randomstring.generate(length);
 }
 
 function getUploader(payload, callbacks) {
