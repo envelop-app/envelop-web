@@ -8,6 +8,11 @@ description: Share private files easily with envelop
   <%= partial(:navbar, locals: { hide_shadow: true, product_hunt: true }) %>
 
   <main class="ev-index__main">
+    <section class="ev-index__section ev-index__section--only-phone">
+      <div class="ev-index__section-cell--product-hunt">
+        <%= partial :product_hunt %>
+      </div>
+    </section>
 
     <section class="ev-index__section">
       <div class="ev-index__section-cell ev-index__section-cell--image">
