@@ -10,7 +10,7 @@
 
 .ev-app__main {
   margin: auto;
-  padding-top: 50px;
+  padding-top: 50px + $ev-navbar-height;
   padding-bottom: 120px;
 }
 
