@@ -19,13 +19,15 @@ class DocumentDownloadCardComponent extends Component {
   }
 
   triggerBrowserDownload(url) {
+    const link = document.createElement('a')
+    link.href = url;
+    link.download = this.props.doc.getName();
+
     if (detectBrowser().name === 'firefox') {
-      window.location = url;
+      const event = new MouseEvent('click', {bubbles: true, cancelable: true, view: window});
+      link.dispatchEvent(event);
     }
     else {
-      const link = document.createElement('a')
-      link.href = url;
-      link.download = this.props.doc.getName();
       link.click();
     }
   }
