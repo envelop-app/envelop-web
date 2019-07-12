@@ -12,6 +12,7 @@ import DocumentUploader from '../lib/document_uploader';
 import PartitionedDocumentUploader from '../lib/partitioned_document_uploader';
 import LocalDocumentUploader from '../lib/local_document_uploader';
 import PartitionedDocumentDownloader from '../lib/partitioned_document_downloader';
+import Record from './records/record';
 
 const types = {
   image:   ['png', 'gif', 'jpg', 'jpeg', 'svg', 'tif', 'tiff', 'ico'],
@@ -44,7 +45,7 @@ function getUploader(payload, callbacks) {
   return uploader;
 }
 
-class GaiaDocument {
+class GaiaDocument extends Record {
   static fromFile(file) {
     return new GaiaDocument({
       name: file.name,
@@ -76,11 +77,12 @@ class GaiaDocument {
   }
 
   constructor(fields = {}) {
+    super(fields);
+
     this.content_type = fields.content_type;
     this.created_at = fields.created_at;
     this.downloadProgressCallbacks = [];
     this.file = fields.file;
-    this.id = fields.id;
     this.localContents = null;
     this.localId = fields.localId;
     this.name = fields.name;
@@ -95,8 +97,10 @@ class GaiaDocument {
     this.version = fields.version || version;
   }
 
-  delete() {
-    return new DocumentRemover(this).remove();
+  async delete() {
+    const remover = new DocumentRemover(this)
+    await remover.remove();
+    return super.delete();
   }
 
   async download() {

@@ -8,13 +8,12 @@ class DocumentRemover {
     this.limiter = new Bottleneck({ maxConcurrent: 1, minTime: 1000 });
   }
 
-  async remove() {
+  remove() {
     if (this.gaiaDocument.getNumParts() > 1) {
-      await this.removeParts();
+      return this.removeParts();
     } else {
-      await this.removeRawFile(this.gaiaDocument.url);
+      return this.removeRawFile(this.gaiaDocument.url);
     }
-    return this.removeDocument();
   }
 
   removeParts() {
@@ -26,10 +25,6 @@ class DocumentRemover {
 
   removeRawFile(url) {
     return privateUserSession.deleteFile(url);
-  }
-
-  removeDocument() {
-    return privateUserSession.deleteFile(this.gaiaDocument.id);
   }
 }
 
