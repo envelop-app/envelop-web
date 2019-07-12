@@ -7,7 +7,7 @@
 Share private files easily, without losing their ownership.
 
 With [Blockstack](https://blockstack.org), you decide where your files are stored.
-Use the default storage (infinite space with a 25MB file limit), or setup your own storage.
+Use the default storage (unlimited), or setup your own storage.
 
 ![Product Hunt](https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=161086&theme=light)
 
