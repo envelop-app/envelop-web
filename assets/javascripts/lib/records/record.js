@@ -1,22 +1,27 @@
 import randomstring from 'randomstring';
 
-import { privateUserSession, publicUserSession } from '../blockstack_client';
-
-// TODO: Use Record.config({ blockstack: blockstack });
-
-const publicFileOptions = { encrypt: false, verify: false };
-function putPublicFile(name, contents) {
-  return privateUserSession.putFile(name, contents, publicFileOptions);
-}
-
 function generateHash(length) {
   return randomstring.generate(length);
 }
 
 class Record {
+  static config(options = {}) {
+    this.session = options.session;
+  }
+
+  static getSession() {
+    const session = Record.session;
+
+    if (!session) {
+      throw "Missing 'session'. Please provide using Record.config({ session: session })";
+    }
+
+    return session;
+  }
+
   static async get(id, options = {}) {
     const opts = { decrypt: false, verify: false, ...options };
-    const json = await publicUserSession.getFile(id, opts);
+    const json = await this.getSession().getFile(id, opts);
     const payload = JSON.parse(json);
 
     return new this({
@@ -31,7 +36,7 @@ class Record {
   }
 
   delete() {
-    return privateUserSession.deleteFile(this.id);
+    return Record.getSession().deleteFile(this.id);
   }
 
   isPersisted() {
@@ -53,7 +58,8 @@ class Record {
 
     // TODO: Maybe snakecase keys before upload? or camelize?
     const contents = JSON.stringify(payload);
-    await putPublicFile(payload.id, contents);
+    const fileOptions = { encrypt: false, verify: false };
+    await Record.getSession().putFile(payload.id, contents, fileOptions);
     return Object.assign(this, payload);
   }
 
