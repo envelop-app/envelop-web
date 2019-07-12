@@ -34,7 +34,8 @@ class DocumentDownloadCardComponent extends Component {
 
   handleDownload() {
     Page.preventClose(() => {
-      this.setState({ downloadState: 'downloading', progress: 0 });
+      const fakeInitialProgress = (Math.random() * 0.05) + 0.01;
+      this.setState({ downloadState: 'downloading', progress: fakeInitialProgress });
       this.props.doc.onDownloadProgress((progress) => {
         this.setState({ progress });
       });
