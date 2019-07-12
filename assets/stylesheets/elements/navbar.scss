@@ -80,4 +80,8 @@
 
 .ev-navbar__production-hunt {
   padding-right: 30px;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    display: none;
+  }
 }
