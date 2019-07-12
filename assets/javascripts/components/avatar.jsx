@@ -58,9 +58,16 @@ class AvatarComponent extends Component {
     this.setState({open: false});
   }
 
-  onSelect = () => {
-    privateUserSession.signUserOut();
-    window.location = window.location.origin;
+  onSelect = (item) => {
+    console.log(item);
+    if (item == 0) {
+      window.open('https://play.google.com/store/apps/details?id=app.envelop', '_blank');
+    } else if (item == 1) {
+      window.open('mailto:feedback@envelop.app?subject=Envelop Feedback', '_blank');
+    } else if (item == 2) {
+      privateUserSession.signUserOut();
+      window.location = window.location.origin;
+    }
   }
 
   render() {
@@ -79,6 +86,12 @@ class AvatarComponent extends Component {
           onSelected={this.onSelect}
         >
           <MenuList>
+            <MenuListItem>
+              <MenuListItemText primaryText={'Android app'} />
+            </MenuListItem>
+            <MenuListItem>
+              <MenuListItemText primaryText={'Send us feedback'} />
+            </MenuListItem>
             <MenuListItem>
               <MenuListItemText primaryText={'Log Out'} />
             </MenuListItem>

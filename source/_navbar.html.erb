@@ -1,8 +1,18 @@
-<nav class="ev-navbar <%= defined?(hide_shadow) && hide_shadow && 'ev-navbar--no-shadow' %>">
+<% hide_shaddow_class = defined?(hide_shadow) && hide_shadow && 'ev-navbar--no-shadow' %>
+<% fixed_class = defined?(fixed) && fixed && 'ev-navbar--fixed' %>
+
+<nav class="ev-navbar <%= hide_shaddow_class %> <%= fixed_class %>">
   <a class="ev-navbar__logo" href="/">
     <%= image_tag('logo.svg', alt: 'envelop') %>
   </a>
   <ul class="ev-navbar__items">
     <li class="ev-navbar__item js-navbar-user"></li>
   </ul>
+
+  <% if defined?(product_hunt) && product_hunt %>
+  <div class="ev-navbar__production-hunt">
+    <a href="https://www.producthunt.com/posts/envelop-2?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-envelop-2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=161086&theme=light" alt="Envelop - Share private files easily, without losing their ownership | Product Hunt Embed" style="width: 167px; height: 36px;" width="167px" height="36px" /></a>
+  </div>
+  <% end %>
+
 </nav>

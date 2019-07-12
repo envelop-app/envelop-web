@@ -5,7 +5,7 @@ description: Share private files easily with envelop
 ---
 
 <div class="ev-index">
-  <%= partial(:navbar, locals: { hide_shadow: true }) %>
+  <%= partial(:navbar, locals: { hide_shadow: true, product_hunt: true }) %>
 
   <main class="ev-index__main">
 
@@ -14,7 +14,7 @@ description: Share private files easily with envelop
         <img src="/images/Placeholder-web-landing.png" draggable="false"/>
       </div>
       <div class="ev-index__section-cell ev-index__section-cell--text">
-        <div>Share private files easily, without losing their ownership</div>
+        <div>Share private files easily,<br>without losing their ownership</div>
         <button class="js-login-btn ev-index__sign-in-btn hide">Sign In</button>
         <button class="js-go-to-app-btn ev-index__go-to-app-btn hide">Open App</button>
       </div>
@@ -46,12 +46,13 @@ description: Share private files easily with envelop
       </div>
       <div class="ev-index__section-cell ev-index__section-cell--text">
         <div>
-          Envelop runs on blockstack.<br>
+          Envelop runs on <a href="https://blockstack.org">blockstack</a>.<br>
           You decide where your files are stored.
         </div>
         <br>
         <div class="ev-index__section-cell--text-small">
-          Use the default storage (infinite space with a 25MB file limit), or <a href="https://docs.blockstack.org/storage/hub-choice.html" target="_blank">setup your own storage</a>.
+          Use the default storage or <a href="https://docs.blockstack.org/storage/hub-choice.html" target="_blank">setup your own storage</a>.
+          With no file limits and no tracking.
         </div>
       </div>
     </section>

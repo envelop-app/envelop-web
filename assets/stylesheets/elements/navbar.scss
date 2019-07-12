@@ -13,6 +13,11 @@
   box-shadow: 0px 1px 2px 0.5px rgba(0,0,0,0.2);
 }
 
+.ev-navbar--fixed {
+  position: fixed;
+  z-index: 1;
+}
+
 .ev-navbar--no-shadow {
   box-shadow: none;
 }
@@ -71,4 +76,8 @@
   @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
     display: none;
   }
+}
+
+.ev-navbar__production-hunt {
+  padding-right: 30px;
 }
