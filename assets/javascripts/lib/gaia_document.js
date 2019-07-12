@@ -69,18 +69,19 @@ class GaiaDocument extends Record {
     return new GaiaDocument(raw);
   }
 
-  static get = async (username, filename) => {
-    const options = { username, decrypt: false, verify: false };
-    const json = await publicSession.getFile(filename, options);
-    const payload = JSON.parse(json);
-    return GaiaDocument.fromGaia(Object.assign(payload, { username: username }));
+  static async get(id, options = {}) {
+    // FIXME: Use some kind of setters pattern like Rail's assign_attributes
+
+    const gaiaDocument = await super.get(id, options);
+    gaiaDocument._username = options.username;
+    gaiaDocument.name = gaiaDocument.name || gaiaDocument.url.split('/').pop();
+    return gaiaDocument;
   }
 
   constructor(fields = {}) {
     super(fields);
 
     this.content_type = fields.content_type;
-    this.created_at = fields.created_at;
     this.downloadProgressCallbacks = [];
     this.file = fields.file;
     this.localContents = null;
@@ -220,7 +221,6 @@ class GaiaDocument extends Record {
     return {
       ...super.serialize(),
       content_type: this.content_type || null,
-      created_at: this.created_at || null,
       localId: this.id || null,
       num_parts: this.num_parts || null,
       url: this.url || null,

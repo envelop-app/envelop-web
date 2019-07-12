@@ -1,6 +1,6 @@
 import randomstring from 'randomstring';
 
-import { privateUserSession } from '../blockstack_client';
+import { privateUserSession, publicUserSession } from '../blockstack_client';
 
 // TODO: Use Record.config({ blockstack: blockstack });
 
@@ -14,8 +14,33 @@ function generateHash(length) {
 }
 
 class Record {
+  static async get(id, options = {}) {
+    const opts = { decrypt: false, verify: false, ...options };
+    const json = await publicUserSession.getFile(id, opts);
+    const payload = JSON.parse(json);
+
+    return new this({
+      ...payload,
+      created_at: new Date(payload.created_at)
+    });
+  }
+
   constructor(fields = {}) {
+    this.created_at = fields.created_at;
     this.id = fields.id;
+  }
+
+  delete() {
+    return privateUserSession.deleteFile(this.id);
+  }
+
+  isPersisted() {
+    return !!this.id;
+  }
+
+  isSynced() {
+    // TODO: alias isPersisted
+    return this.isPersisted();
   }
 
   async save(payload = null) {
@@ -37,21 +62,9 @@ class Record {
     return Object.assign(this, payload);
   }
 
-  delete() {
-    return privateUserSession.deleteFile(this.id);
-  }
-
-  isPersisted() {
-    return !!this.id;
-  }
-
-  isSynced() {
-    // TODO: alias isPersisted
-    return this.isPersisted();
-  }
-
   serialize() {
     return {
+      created_at: this.created_at || null,
       id: this.id || null
     };
   }
