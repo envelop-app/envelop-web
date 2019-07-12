@@ -38,6 +38,7 @@
     "blockstack": "^19.1.0",
     "bottleneck": "^2.19.1",
     "copy-to-clipboard": "^3.2.0",
+    "detect-browser": "^4.6.0",
     "localforage": "^1.7.3",
     "lodash": "^4.17.13",
     "material-components-web": "^2.3.1",

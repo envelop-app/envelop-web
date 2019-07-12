@@ -1,3 +1,4 @@
+import { detect as detectBrowser } from 'detect-browser';
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import ReactDOM from "react-dom";
@@ -18,10 +19,15 @@ class DocumentDownloadCardComponent extends Component {
   }
 
   triggerBrowserDownload(url) {
-    const link = document.createElement('a')
-    link.href = url;
-    link.download = this.props.doc.getName();
-    link.click();
+    if (detectBrowser().name === 'firefox') {
+      window.location = url;
+    }
+    else {
+      const link = document.createElement('a')
+      link.href = url;
+      link.download = this.props.doc.getName();
+      link.click();
+    }
   }
 
   handleDownload() {
