@@ -2,97 +2,81 @@
 name: homepage
 title: envelop – share private files easily
 description: Share private files easily with envelop
+layout: public
 ---
 
-<div class="ev-index">
+<% content_for(:navbar) do %>
   <%= partial(:navbar, locals: { hide_shadow: true, product_hunt: true }) %>
+<% end %>
 
-  <main class="ev-index__main">
-    <section class="ev-index__section ev-index__section--only-phone">
-      <div class="ev-index__section-cell--product-hunt">
-        <%= partial :product_hunt %>
-      </div>
-    </section>
+<section class="ev-index__section ev-index__section--only-phone">
+  <div class="ev-index__section-cell--product-hunt">
+    <%= partial :product_hunt %>
+  </div>
+</section>
 
-    <section class="ev-index__section">
-      <div class="ev-index__section-cell ev-index__section-cell--image">
-        <img src="/images/Placeholder-web-landing.png" draggable="false"/>
-      </div>
-      <div class="ev-index__section-cell ev-index__section-cell--text">
-        <div>Share private files easily,<br>without losing their ownership</div>
-        <button class="js-login-btn ev-index__sign-in-btn hide">Sign In</button>
-        <button class="js-go-to-app-btn ev-index__go-to-app-btn hide">Open App</button>
-      </div>
-    </section>
+<section class="ev-index__section">
+  <div class="ev-index__section-cell ev-index__section-cell--image">
+    <img src="/images/Placeholder-web-landing.png" draggable="false"/>
+  </div>
+  <div class="ev-index__section-cell ev-index__section-cell--text">
+    <div>Share private files easily,<br>without losing their ownership</div>
+    <button class="js-login-btn ev-index__sign-in-btn hide">Sign In</button>
+    <button class="js-go-to-app-btn ev-index__go-to-app-btn hide">Open App</button>
+  </div>
+</section>
 
-    <section class="ev-index__section ev-index__section--reverse">
-      <div class="ev-index__section-cell ev-index__section-cell--text ev-index__section-cell--text-right">
-        Upload a file,<br>
-        get a download link,<br>
-        and share it<br>
-        <br>
-        Try it right now!
-      </div>
-      <div class="ev-index__section-cell ev-index__section-cell--image">
-        <label class="ev-index__upload-label" htmlFor="index-file-upload">
-          <img src="/images/card-upload.svg" draggable="false"/>
-          <input
-            class="ev-index__upload-input js-upload-input"
-            id="index-file-upload"
-            type="file"
-            name="file-upload" />
-        </label>
-      </div>
-    </section>
+<section class="ev-index__section ev-index__section--reverse">
+  <div class="ev-index__section-cell ev-index__section-cell--text ev-index__section-cell--text-right">
+    Upload a file,<br>
+    get a download link,<br>
+    and share it<br>
+    <br>
+    Try it right now!
+  </div>
+  <div class="ev-index__section-cell ev-index__section-cell--image">
+    <label class="ev-index__upload-label" htmlFor="index-file-upload">
+      <img src="/images/card-upload.svg" draggable="false"/>
+      <input
+        class="ev-index__upload-input js-upload-input"
+        id="index-file-upload"
+        type="file"
+        name="file-upload" />
+    </label>
+  </div>
+</section>
 
-    <section class="ev-index__section">
-      <div class="ev-index__section-cell ev-index__section-cell--image">
-        <img src="/images/graphic-lock.svg" draggable="false"/>
-      </div>
-      <div class="ev-index__section-cell ev-index__section-cell--text">
-        <div>
-          Envelop runs on <a href="https://blockstack.org">blockstack</a>.<br>
-          You decide where your files are stored.
-        </div>
-        <br>
-        <div class="ev-index__section-cell--text-small">
-          Use the default storage or <a href="https://docs.blockstack.org/storage/hub-choice.html" target="_blank">setup your own storage</a>.
-          With no file limits and no tracking.
-        </div>
-      </div>
-    </section>
-
-    <section class="ev-index__section ev-index__section--reverse">
-      <div class="ev-index__section-cell ev-index__section-cell--text ev-index__section-cell--text-right">
-        <div>
-          Upload, share and manage files on the go.<br>
-          Try our Android app
-        </div>
-        <a href="https://play.google.com/store/apps/details?id=app.envelop">
-          <img class="ev-google-play-logo" src="/images/google-play-badge.png" draggable="false"/>
-        </a>
-      </div>
-      <div class="ev-index__section-cell ev-index__section-cell--image-double">
-        <img src="/images/placeholder-landing-mobile1.png" draggable="false"/>
-        <img src="/images/placeholder-landing-mobile2.png" draggable="false"/>
-      </div>
-    </section>
-  </main>
-
-  <footer class="ev-index__footer">
-    <div class="ev-index__links">
-      <ul>
-        <li><a href="https://twitter.com/envelopapp" target="_blank">Twitter</a></li>
-        <li><a href="https://github.com/envelop-app" target="_blank">Github</a></li>
-        <li><a href="https://commerce.coinbase.com/checkout/6b9b0397-0481-483b-a08b-d46a915d99e6" target="_blank">Donate</a></li>
-      </ul>
+<section class="ev-index__section">
+  <div class="ev-index__section-cell ev-index__section-cell--image">
+    <img src="/images/graphic-lock.svg" draggable="false"/>
+  </div>
+  <div class="ev-index__section-cell ev-index__section-cell--text">
+    <div>
+      Envelop runs on <a href="https://blockstack.org">blockstack</a>.<br>
+      You decide where your files are stored.
     </div>
-    <div class="ev-index__made">
-      Made by 
-      <a href="https://bloco.io"><%= image_tag('bloco.svg', alt: 'Bloco', class: 'ev-index__bloco') %></a>
-      & friends
+    <br>
+    <div class="ev-index__section-cell--text-small">
+      Use the default storage or <a href="https://docs.blockstack.org/storage/hub-choice.html" target="_blank">setup your own storage</a>.
+      With no file limits and no tracking.
     </div>
-  </footer>
+  </div>
+</section>
 
-  <div class="js-homepage-uploader-container"></div>
-</div>
+<section class="ev-index__section ev-index__section--reverse">
+  <div class="ev-index__section-cell ev-index__section-cell--text ev-index__section-cell--text-right">
+    <div>
+      Upload, share and manage files on the go.<br>
+      Try our Android app
+    </div>
+    <a href="https://play.google.com/store/apps/details?id=app.envelop">
+      <img class="ev-google-play-logo" src="/images/google-play-badge.png" draggable="false"/>
+    </a>
+  </div>
+  <div class="ev-index__section-cell ev-index__section-cell--image-double">
+    <img src="/images/placeholder-landing-mobile1.png" draggable="false"/>
+    <img src="/images/placeholder-landing-mobile2.png" draggable="false"/>
+  </div>
+</section>
+
+<div class="js-homepage-uploader-container"></div>

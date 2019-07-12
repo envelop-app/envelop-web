@@ -6,7 +6,9 @@ $mdc-typography-font-family: unquote("Questrial, sans-serif") !default;
 
 @import "./reset";
 @import "@material/snackbar/mdc-snackbar";
+@import "@material/layout-grid/mdc-layout-grid";
 @import "./style";
+@import "./layouts/*";
 @import "./pages/*";
 
 html, body {
@@ -24,4 +26,8 @@ html, body {
   & > a {
     margin: 10px;
   }
+}
+
+.ev-h1 {
+  font-size: 30px;
 }

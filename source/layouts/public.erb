@@ -1,0 +1,29 @@
+<% wrap_layout :layout do %>
+  <div class="ev-layout-public">
+    <% if content_for?(:navbar) %>
+      <%= yield_content(:navbar) %>
+    <% else %>
+      <%= partial(:navbar, locals: { hide_shadow: true }) %>
+    <% end %>
+
+    <main class="ev-layout-public__main">
+      <%= yield %>
+    <footer class="ev-layout-public__footer">
+      <div class="ev-layout-public__links">
+        <ul>
+          <li><a href="https://twitter.com/envelopapp" target="_blank">Twitter</a></li>
+          <li><a href="https://github.com/envelop-app" target="_blank">Github</a></li>
+          <li><a href="https://commerce.coinbase.com/checkout/6b9b0397-0481-483b-a08b-d46a915d99e6" target="_blank">Donate</a></li>
+          <li><a href="/privacy_policy.html" target="_blank">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="ev-layout-public__made">
+        Made by 
+        <a href="https://bloco.io"><%= image_tag('bloco.svg', alt: 'Bloco', class: 'ev-layout-public__bloco') %></a>
+        & friends
+      </div>
+    </footer>
+    </main>
+
+  </div>
+<% end %>
