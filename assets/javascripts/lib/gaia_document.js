@@ -152,12 +152,8 @@ class GaiaDocument extends Record {
     return this._type = 'file';
   }
 
-  isSynced() {
-    return !!this.id;
-  }
-
   isUploading() {
-    if (this.isSynced() && typeof this.uploaded === 'boolean' && this.uploaded === false) {
+    if (this.isPersisted() && typeof this.uploaded === 'boolean' && this.uploaded === false) {
       return true;
     }
     else {
@@ -196,19 +192,18 @@ class GaiaDocument extends Record {
     payload.file = this.file;
     payload.url = this.url || `${generateHash(24)}/${this.name}`;
     payload.content_type = this.content_type || this.name.split('.').pop();
-    payload.created_at = new Date();
 
     return payload;
   }
 
   async save() {
     const payload = this._prepareForSave();
-    payload.id = this.id || generateHash(6);
 
     this._uploader = getUploader(payload, this.uploadProgressCallbacks);
-    await this._uploader.upload();
+    const modifiedPayload = await this._uploader.upload();
+    modifiedPayload.uploaded = true;
 
-    return Object.assign(this, payload);
+    return super.save(modifiedPayload);
   }
 
   async saveLocal() {
@@ -223,9 +218,9 @@ class GaiaDocument extends Record {
 
   serialize() {
     return {
+      ...super.serialize(),
       content_type: this.content_type || null,
       created_at: this.created_at || null,
-      id: this.id || null,
       localId: this.id || null,
       num_parts: this.num_parts || null,
       url: this.url || null,
@@ -240,10 +235,6 @@ class GaiaDocument extends Record {
     let username = privateUserSession.loadUserData().username;
     username = username.replace('.id.blockstack', '');
     return `${Constants.SHARE_URI}/${username}/${this.id}`;
-  }
-
-  toJSON() {
-    return this.serialize();
   }
 
   uniqueKey() {

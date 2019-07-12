@@ -16,11 +16,8 @@ class DocumentUploader {
   upload() {
     return new Promise((resolve, reject) => {
       this.reader.onload = (evt) => {
-        const rawFilePromise =  this.uploadRawFile(evt.target.result);
-        const documentPromise = this.uploadDocument();
-
-        Promise
-          .all([rawFilePromise, documentPromise])
+        const rawFilePromise = this.uploadRawFile(evt.target.result);
+        rawFilePromise
           .then(() => {
             this.progress.add(this.serializedDocument.size);
             resolve(this.serializedDocument);
@@ -42,12 +39,6 @@ class DocumentUploader {
   uploadRawFile(contents) {
     const options = { contentType: 'application/octet-stream' };
     return putPublicFile(this.serializedDocument.url, contents, options);
-  }
-
-  uploadDocument() {
-    this.serializedDocument.uploaded = true;
-    const contents = JSON.stringify(this.serializedDocument);
-    return putPublicFile(this.serializedDocument.id, contents);
   }
 }
 

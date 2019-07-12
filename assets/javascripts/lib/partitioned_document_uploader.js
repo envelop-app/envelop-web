@@ -73,22 +73,14 @@ class PartitionedDocumentUploader {
 
     this.cleanupLimiters();
 
-    await this.uploadDocument();
+    this.serializedDocument.storageType = 'partitioned';
+    this.serializedDocument.num_parts = this.numParts;
 
     return this.serializedDocument;
   }
 
   onProgress(callback) {
     this.progress.onChange(callback);
-  }
-
-  uploadDocument() {
-    this.serializedDocument.storageType = 'partitioned';
-    this.serializedDocument.num_parts = this.numParts;
-    this.serializedDocument.uploaded = true;
-
-    const contents = JSON.stringify(this.serializedDocument)
-    return putPublicFile(this.serializedDocument.id, contents);
   }
 
   uploadPart(partNumber, partBuffer) {
