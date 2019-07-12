@@ -55,11 +55,11 @@ class DocumentCardComponent extends Component {
   }
 
   isDisabled() {
-    return !this.props.doc.isSynced() || this.props.deleting;
+    return !this.props.doc.isPersisted() || this.props.deleting;
   }
 
   renderButtonText() {
-    if (!this.props.doc.isSynced()) {
+    if (!this.props.doc.isPersisted()) {
       return 'uploading ...'
     }
     else if (this.props.deleting) {
@@ -107,7 +107,7 @@ class DocumentCardComponent extends Component {
         <DocumentCardMediaComponent
           doc={doc}
           action="upload"
-          showProgress={!doc.isSynced()}
+          showProgress={!doc.isPersisted()}
           progress={progress}>
           {this.renderMenu()}
         </DocumentCardMediaComponent>

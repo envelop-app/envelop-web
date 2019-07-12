@@ -38,11 +38,6 @@ class Record {
     return !!this.id;
   }
 
-  isSynced() {
-    // TODO: alias isPersisted
-    return this.isPersisted();
-  }
-
   async save(payload = null) {
     if (!payload) {
       payload = this.serialize();
