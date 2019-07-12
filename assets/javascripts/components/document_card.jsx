@@ -5,7 +5,6 @@ import copy from 'copy-to-clipboard';
 import Menu, {MenuList, MenuListItem, MenuListItemText, MenuListItemGraphic} from '@material/react-menu';
 import MaterialIcon from '@material/react-material-icon';
 import { Corner } from '@material/menu';
-import LinearProgress from '@material/react-linear-progress';
 
 import Toast from '../lib/toast.jsx';
 import GaiaDocument from '../lib/gaia_document';

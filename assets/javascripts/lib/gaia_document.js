@@ -101,9 +101,11 @@ class GaiaDocument {
 
   async download() {
     if (this.getNumParts() && this.getNumParts() > 1) {
-      const downloader = new PartitionedDocumentDownloader(this);
-      this.downloadProgressCallbacks.forEach((callback) => downloader.onProgress(callback));
-      return await downloader.download();
+      this._downloader = new PartitionedDocumentDownloader(this);
+      this.downloadProgressCallbacks.forEach((callback) => {
+        this._downloader.onProgress(callback);
+      });
+      return await this._downloader.download();
     }
     else {
       const options = { username: this._username, decrypt: false, verify: false };
@@ -162,6 +164,10 @@ class GaiaDocument {
   onDownloadProgress(callback) {
     if (callback && typeof callback === 'function') {
       this.downloadProgressCallbacks.push(callback);
+
+      if (this._downloader) {
+        this._downloader.onProgress(callback);
+      }
     }
     else {
       throw "Progress callback must be of type 'function'";
@@ -171,6 +177,10 @@ class GaiaDocument {
   onUploadProgress(callback) {
     if (callback && typeof callback === 'function') {
       this.uploadProgressCallbacks.push(callback);
+
+      if (this._uploader) {
+        this._uploader.onProgress(callback);
+      }
     }
     else {
       throw "Progress callback must be of type 'function'";
@@ -191,8 +201,8 @@ class GaiaDocument {
     const payload = this._prepareForSave();
     payload.id = this.id || generateHash(6);
 
-    const uploader = getUploader(payload, this.uploadProgressCallbacks);
-    await uploader.upload();
+    this._uploader = getUploader(payload, this.uploadProgressCallbacks);
+    await this._uploader.upload();
 
     return Object.assign(this, payload);
   }
