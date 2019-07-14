@@ -65,7 +65,7 @@ class PartitionedDocumentDownloader {
   }
 
   createBlob(partBuffers) {
-    const blobOptions = { name: this.gaiaDocument.getName(), type: this.gaiaDocument.getMimeType() };
+    const blobOptions = { name: this.gaiaDocument.fileName, type: this.gaiaDocument.getMimeType() };
     return new Blob(partBuffers, blobOptions);
   }
 

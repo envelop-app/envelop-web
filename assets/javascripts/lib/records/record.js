@@ -27,7 +27,7 @@ class Record {
     return new this({
       ...payload,
       created_at: new Date(payload.created_at)
-    });
+    }, options);
   }
 
   constructor(fields = {}) {

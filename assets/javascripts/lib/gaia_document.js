@@ -12,7 +12,7 @@ import DocumentUploader from '../lib/document_uploader';
 import PartitionedDocumentUploader from '../lib/partitioned_document_uploader';
 import LocalDocumentUploader from '../lib/local_document_uploader';
 import PartitionedDocumentDownloader from '../lib/partitioned_document_downloader';
-import Record from './records/record';
+import FileRecord from './records/file_record';
 
 const types = {
   image:   ['png', 'gif', 'jpg', 'jpeg', 'svg', 'tif', 'tiff', 'ico'],
@@ -45,10 +45,10 @@ function getUploader(payload, callbacks) {
   return uploader;
 }
 
-class GaiaDocument extends Record {
+class GaiaDocument extends FileRecord {
   static fromFile(file) {
-    return new GaiaDocument({
-      name: file.name,
+    return new this({
+      fileName: file.name,
       created_at: new Date(),
       size: file.size,
       content_type: file.name.split('.').pop(),
@@ -57,49 +57,41 @@ class GaiaDocument extends Record {
   }
 
   static fromGaia(raw) {
-    return new GaiaDocument(
-      Object.assign(raw, {
-        name: raw.name || raw.url.split('/').pop(),
-        created_at: new Date(raw.created_at)
-      })
-    );
+    return new this({
+      ...raw,
+      fileName: (raw.filePath || raw.url).split('/').pop(),
+      filePath: (raw.filePath || raw.url),
+      created_at: new Date(raw.created_at)
+    });
   }
 
   static fromLocal(raw) {
-    return new GaiaDocument(raw);
+    return new this(raw);
   }
 
-  static async get(id, options = {}) {
-    // FIXME: Use some kind of setters pattern like Rail's assign_attributes
-
-    const gaiaDocument = await super.get(id, options);
-    gaiaDocument._username = options.username;
-    gaiaDocument.name = gaiaDocument.name || gaiaDocument.url.split('/').pop();
-    return gaiaDocument;
-  }
-
-  constructor(fields = {}) {
+  constructor(fields = {}, options = {}) {
     super(fields);
+
+    // Backwards compatibility
+    this.filePath = fields.filePath || fields.url;
+    this.fileName = fields.fileName || this.filePath.split('/').pop();
 
     this.content_type = fields.content_type;
     this.downloadProgressCallbacks = [];
     this.file = fields.file;
     this.localContents = null;
     this.localId = fields.localId;
-    this.name = fields.name;
     this.num_parts = fields.num_parts || null;
     this.partSize = fields.partSize || null;
     this.size = fields.size;
-    this.storageType = fields.storageType || 'normal';
     this.uploaded = fields.uploaded;
     this.uploadProgressCallbacks = [];
-    this.url = fields.url;
-    this._username = fields.username;
+    this._username = options.username;
     this.version = fields.version || version;
   }
 
   async delete() {
-    const remover = new DocumentRemover(this)
+    const remover = new DocumentRemover(this);
     await remover.remove();
     return super.delete();
   }
@@ -114,18 +106,14 @@ class GaiaDocument extends Record {
     }
     else {
       const options = { username: this._username, decrypt: false, verify: false };
-      const fileUrl = await publicSession.getFileUrl(this.url, options);
+      const fileUrl = await publicSession.getFileUrl(this.filePath, options);
       this.downloadProgressCallbacks.forEach((callback) => callback(1));
       return fileUrl;
     }
   }
 
   getMimeType() {
-    return mime.lookup(this.getName()) || null;
-  }
-
-  getName() {
-    return this.name;
+    return mime.lookup(this.fileName) || null;
   }
 
   getNumParts() {
@@ -135,7 +123,7 @@ class GaiaDocument extends Record {
   getPartUrls() {
     return new Array(this.getNumParts())
       .fill(null)
-      .map((_, index) => `${this.url}.part${index}`);
+      .map((_, index) => `${this.filePath}.part${index}`);
   }
 
   getSizePretty() {
@@ -191,8 +179,9 @@ class GaiaDocument extends Record {
   _prepareForSave() {
     const payload = this.serialize();
     payload.file = this.file;
-    payload.url = this.url || `${generateHash(24)}/${this.name}`;
-    payload.content_type = this.content_type || this.name.split('.').pop();
+    payload.filePath = this.filePath || `${generateHash(24)}/${this.fileName}`;
+    payload.url = payload.filePath; // backward compatibility
+    payload.content_type = this.content_type || this.fileName.split('.').pop();
 
     return payload;
   }
@@ -223,9 +212,8 @@ class GaiaDocument extends Record {
       content_type: this.content_type || null,
       localId: this.id || null,
       num_parts: this.num_parts || null,
-      url: this.url || null,
+      url: this.filePath || null,
       size: this.size || null,
-      storageType: this.storageType || null,
       uploaded: this.uploaded || null,
       version: this.version || null
     };
@@ -238,7 +226,7 @@ class GaiaDocument extends Record {
   }
 
   uniqueKey() {
-    return `${this.getName()}/${this.created_at.getTime()}`;
+    return `${this.fileName}/${this.created_at.getTime()}`;
   }
 }
 

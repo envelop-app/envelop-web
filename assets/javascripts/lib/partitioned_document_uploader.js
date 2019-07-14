@@ -73,7 +73,6 @@ class PartitionedDocumentUploader {
 
     this.cleanupLimiters();
 
-    this.serializedDocument.storageType = 'partitioned';
     this.serializedDocument.num_parts = this.numParts;
 
     return this.serializedDocument;
@@ -85,7 +84,7 @@ class PartitionedDocumentUploader {
 
   uploadPart(partNumber, partBuffer) {
     const options = { contentType: 'application/octet-stream' };
-    const partUrl = `${this.serializedDocument.url}.part${partNumber}`;
+    const partUrl = `${this.serializedDocument.filePath}.part${partNumber}`;
     return putPublicFile(partUrl, partBuffer, options);
   }
 }
