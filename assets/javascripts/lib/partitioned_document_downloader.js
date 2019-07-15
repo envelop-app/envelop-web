@@ -8,7 +8,7 @@ class PartitionedDocumentDownloader {
   constructor(gaiaDocument) {
     this.gaiaDocument = gaiaDocument;
     this.limiter = new Bottleneck({ maxConcurrent: 3 });
-    this.progress = new ProgressRegister(gaiaDocument.size);
+    this.progress = new ProgressRegister(gaiaDocument.fileSize);
   }
 
   async download() {

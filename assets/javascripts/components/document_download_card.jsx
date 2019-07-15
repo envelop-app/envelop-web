@@ -1,5 +1,6 @@
 import { detect as detectBrowser } from 'detect-browser';
 import React, { Component } from "react";
+import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import ReactDOM from "react-dom";
 
@@ -107,7 +108,7 @@ class DocumentDownloadCardComponent extends Component {
             {doc && doc.fileName}
           </div>
           <div className={`ev-document-card__text-primary ${!doc && 'ev-document-card__text-primary--download-loading'}`}>
-            {doc && doc.getSizePretty()}
+            {doc && prettyBytes(doc.fileSize)}
           </div>
         </div>
         <div className="ev-document-card__controls">

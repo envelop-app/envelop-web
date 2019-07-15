@@ -30,12 +30,35 @@ class Record {
     }, options);
   }
 
+  static hooks = {
+    beforeDelete: [],
+    beforeSave: []
+  }
+
+  static addHook(hookName, hook) {
+    if (hook && typeof hook === 'function') {
+      this.hooks[hookName].push(hook);
+    }
+    else {
+      throw `${hookName} hook must be of type 'function'`;
+    }
+  }
+
+  static beforeSave(callback) {
+    this.addHook('beforeSave', callback);
+  }
+
+  static beforeDelete(callback) {
+    this.addHook('beforeDelete', callback);
+  }
+
   constructor(fields = {}) {
     this.created_at = fields.created_at;
     this.id = fields.id;
   }
 
-  delete() {
+  async delete() {
+    await this.runHooks('beforeDelete');
     return Record.getSession().deleteFile(this.id);
   }
 
@@ -43,7 +66,17 @@ class Record {
     return !!this.id;
   }
 
+  async runHooks(hookName) {
+    const hooks = this.constructor.hooks[hookName];
+    return hooks.reduce(async (previous, current) => {
+      await previous;
+      return current(this);
+    }, Promise.resolve(this));
+  }
+
   async save(payload = null) {
+    await this.runHooks('beforeSave');
+
     if (!payload) {
       payload = this.serialize();
     }

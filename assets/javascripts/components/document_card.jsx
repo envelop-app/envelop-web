@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import copy from 'copy-to-clipboard';
 import Menu, {MenuList, MenuListItem, MenuListItemText, MenuListItemGraphic} from '@material/react-menu';
@@ -114,7 +115,7 @@ class DocumentCardComponent extends Component {
         <div className="ev-document-card__body">
           <div className="ev-document-card__body-left">
             <div className="ev-document-card__text-title">{doc.fileName}</div>
-            <div className="ev-document-card__text-primary">{doc.getSizePretty()}</div>
+            <div className="ev-document-card__text-primary">{prettyBytes(doc.fileSize)}</div>
             <div className="ev-document-card__text-secondary">{this.formatDate(doc.created_at)}</div>
           </div>
           <div className="ev-document-card__body-right">
