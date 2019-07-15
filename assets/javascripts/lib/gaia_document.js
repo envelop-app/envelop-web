@@ -78,11 +78,11 @@ class GaiaDocument extends WithFile(Record) {
   }
 
   async saveLocal() {
-    const payload = this._prepareForSave();
+    const payload = this.serialize();
     payload.localId = this.localId || generateHash(20);
 
     const uploader = new LocalDocumentUploader(payload)
-    const uploadedDoc = await uploader.upload();
+    const uploadedDoc = await uploader.upload(this.file);
 
     return Object.assign(this, payload, uploadedDoc);
   }

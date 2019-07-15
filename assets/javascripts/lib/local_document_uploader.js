@@ -9,7 +9,7 @@ class LocalDocumentUploader {
     this.progress = new ProgressRegister(serializedDocument.fileSize);
   }
 
-  async upload() {
+  async upload(file) {
     new Promise((resolve) => {
       this.reader.onload = (evt) => {
         const payload = Object.assign({}, this.serializedDocument, {
@@ -24,7 +24,7 @@ class LocalDocumentUploader {
             resolve(this.serializedDocument);
           }) ;
       }
-      this.reader.readAsArrayBuffer(this.serializedDocument.file);
+      this.reader.readAsArrayBuffer(file);
     });
   }
 
