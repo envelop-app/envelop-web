@@ -32,22 +32,30 @@ function getUploader(payload, callbacks) {
 
 const WithFile = (superclass) => {
   const klass = class extends superclass {
+    static get attributes() {
+      return {
+        ...super.attributes,
+        filePath: null,
+        fileSize: null,
+        numParts: null
+      }
+    }
+
     constructor(fields = {}) {
       super(fields);
 
-      if (fields.fileName) {
-        this.fileName = fields.fileName;
-      }
-      else if (fields.filePath) {
-        this.fileName = fields.filePath.split('/').pop();
-      }
-
-      this.filePath = fields.filePath || `${generateHash(24)}/${fields.fileName}`;
-      this.fileSize = fields.fileSize;
       this.downloadProgressCallbacks = [];
-      this.numParts = fields.numParts;
-      this.partSize = fields.partSize;
       this.uploadProgressCallbacks = [];
+    }
+
+    get fileName() {
+      if (this._fileName) { return this._fileName; }
+      if (!this.filePath) { return null; }
+      return this._fileName = this.filePath.split('/').pop();
+    }
+
+    set fileName(value) {
+      this._fileName = value;
     }
 
     async download() {
@@ -119,6 +127,8 @@ const WithFile = (superclass) => {
   });
 
   klass.beforeSave(async (record) => {
+    record.filePath = record.filePath || `${generateHash(24)}/${record.fileName}`;
+
     const payload = record.serialize();
 
     record._uploader = getUploader(payload, record.uploadProgressCallbacks);

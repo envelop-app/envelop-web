@@ -24,10 +24,7 @@ class Record {
     const json = await this.getSession().getFile(id, opts);
     const payload = JSON.parse(json);
 
-    return new this({
-      ...payload,
-      createdAt: new Date(payload.createdAt)
-    }, options);
+    return new this(payload, options);
   }
 
   static hooks = {
@@ -44,6 +41,13 @@ class Record {
     }
   }
 
+  static get attributes() {
+    return {
+      id: null,
+      createdAt: null
+    };
+  }
+
   static beforeSave(callback) {
     this.addHook('beforeSave', callback);
   }
@@ -53,13 +57,24 @@ class Record {
   }
 
   constructor(fields = {}) {
-    if (fields.createdAt) {
-      this.createdAt = new Date(fields.createdAt);
-    }
-    else {
-      this.createdAt = null;
-    }
-    this.id = fields.id;
+    this.attributes = {};
+
+    Object.keys(this.constructor.attributes).forEach(attrName => {
+      if (attrName in this) { return; }
+
+      Object.defineProperty(this, attrName, {
+        get() {
+          return this.attributes[attrName];
+        },
+        set(value) {
+          return this.attributes[attrName] = value;
+        }
+      });
+    });
+
+    Object.keys(fields).forEach(attrName => {
+      this[attrName] = fields[attrName];
+    });
   }
 
   async delete() {

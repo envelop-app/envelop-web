@@ -55,11 +55,6 @@ class GaiaDocument extends WithFile(Record) {
     this.uploaded = fields.uploaded;
     this._username = options.username;
     this.version = fields.version || version;
-
-    // Backwards compatibility
-    this.numParts = this.numParts || fields.num_parts;
-    this.createdAt = this.createdAt || new Date(fields.created_at);
-
   }
 
   getType() {
@@ -117,6 +112,24 @@ class GaiaDocument extends WithFile(Record) {
   uniqueKey() {
     return `${this.fileName}/${this.createdAt.getTime()}`;
   }
+
+  // Backwards compatibility
+  set created_at(value) {
+    this.createdAt = new Date(value);
+  }
+
+  set num_parts(value) {
+    this.numParts = value;
+  }
+
+  set size(value) {
+    this.fileSize = value;
+  }
+
+  set url(value) {
+    this.filePath = value;
+  }
+
 }
 
 export default GaiaDocument;
