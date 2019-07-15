@@ -24,10 +24,10 @@ class PartitionedDocumentUploader {
     this.uploadLimiter.disconnect();
   }
 
-  getFileSlice(partNumber) {
+  getFileSlice(file, partNumber) {
     const startAt = partNumber * this.partSize;
     const endAt = (partNumber + 1) * this.partSize;
-    return this.serializedDocument.file.slice(startAt, endAt);
+    return file.slice(startAt, endAt);
   }
 
   readFileSlice(fileSlice) {
@@ -59,10 +59,10 @@ class PartitionedDocumentUploader {
     });
   }
 
-  async upload() {
+  async upload(file) {
     const uploadPromises = Array(this.numParts).fill(null)
       .map(async (_, partNumber) => {
-        const fileSlice = this.getFileSlice(partNumber);
+        const fileSlice = this.getFileSlice(file, partNumber);
         const bufferPromise = this.scheduleRead(fileSlice);
         await this.scheduleUpload(partNumber, bufferPromise);
         this.progress.add(fileSlice.size);

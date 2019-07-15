@@ -26,7 +26,7 @@ class Record {
 
     return new this({
       ...payload,
-      created_at: new Date(payload.created_at)
+      createdAt: new Date(payload.createdAt)
     }, options);
   }
 
@@ -53,7 +53,12 @@ class Record {
   }
 
   constructor(fields = {}) {
-    this.created_at = fields.created_at;
+    if (fields.createdAt) {
+      this.createdAt = new Date(fields.createdAt);
+    }
+    else {
+      this.createdAt = null;
+    }
     this.id = fields.id;
   }
 
@@ -85,8 +90,8 @@ class Record {
       payload.id = this.id || generateHash(6);
     }
 
-    if (!payload.created_at) {
-      payload.created_at = this.created_at || new Date();
+    if (!payload.createdAt) {
+      payload.createdAt = this.createdAt || new Date();
     }
 
     // TODO: Maybe snakecase keys before upload? or camelize?
@@ -98,7 +103,7 @@ class Record {
 
   serialize() {
     return {
-      created_at: this.created_at || null,
+      createdAt: this.createdAt || null,
       id: this.id || null
     };
   }

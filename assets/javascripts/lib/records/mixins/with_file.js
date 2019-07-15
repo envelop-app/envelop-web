@@ -15,14 +15,14 @@ function generateHash(length) {
 function getUploader(payload, callbacks) {
   let uploader = null;
 
-  if (payload.file.size <= Constants.SINGLE_FILE_SIZE_LIMIT) {
+  if (payload.fileSize <= Constants.SINGLE_FILE_SIZE_LIMIT) {
     uploader = new DocumentUploader(payload)
   }
-  else if (payload.file.size > Constants.SINGLE_FILE_SIZE_LIMIT) {
+  else if (payload.fileSize > Constants.SINGLE_FILE_SIZE_LIMIT) {
     uploader = new PartitionedDocumentUploader(payload)
   }
   else {
-    throw("Cant get uploader - missing 'size'")
+    throw("Cant get uploader - missing 'fileSize'")
   }
 
   callbacks.forEach((callback) => uploader.onProgress(callback));
@@ -42,12 +42,7 @@ const WithFile = (superclass) => {
         this.fileName = fields.filePath.split('/').pop();
       }
 
-      // FIXME: This doens't work for new clean records: new FileRecord() will have
-      // fileName = undefined forever...
-      // OR
-      // implement overridable filepath function just like rails uploaders
       this.filePath = fields.filePath || `${generateHash(24)}/${fields.fileName}`;
-
       this.fileSize = fields.fileSize;
       this.downloadProgressCallbacks = [];
       this.numParts = fields.numParts;
@@ -102,15 +97,11 @@ const WithFile = (superclass) => {
     }
 
     getPartUrls() {
+      if (!this.numParts) { return []; }
+
       return new Array(this.numParts)
         .fill(null)
         .map((_, index) => `${this.filePath}.part${index}`);
-    }
-
-    _prepareForSave() {
-      const payload = this.serialize();
-      payload.file = this.file;
-      return payload;
     }
 
     serialize() {
@@ -128,10 +119,10 @@ const WithFile = (superclass) => {
   });
 
   klass.beforeSave(async (record) => {
-    const payload = record._prepareForSave();
+    const payload = record.serialize();
 
     record._uploader = getUploader(payload, record.uploadProgressCallbacks);
-    const modifiedPayload = await record._uploader.upload();
+    const modifiedPayload = await record._uploader.upload(record.file);
 
     record.numParts = modifiedPayload.numParts;
 

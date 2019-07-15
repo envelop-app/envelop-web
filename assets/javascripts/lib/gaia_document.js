@@ -24,7 +24,7 @@ class GaiaDocument extends WithFile(Record) {
   static fromFile(file) {
     return new this({
       fileName: file.name,
-      created_at: new Date(),
+      createdAt: new Date(),
       fileSize: file.size,
       content_type: file.name.split('.').pop(),
       file: file
@@ -37,7 +37,7 @@ class GaiaDocument extends WithFile(Record) {
       fileName: (raw.filePath || raw.url).split('/').pop(),
       filePath: (raw.filePath || raw.url),
       fileSize: raw.fileSize || raw.size,
-      created_at: new Date(raw.created_at)
+      createdAt: new Date(raw.createdAt || raw.created_at)
     });
   }
 
@@ -48,10 +48,6 @@ class GaiaDocument extends WithFile(Record) {
   constructor(fields = {}, options = {}) {
     super(fields);
 
-    // Backwards compatibility
-    // this.filePath = this.filePath || this.url;
-    this.numParts = this.numParts || fields.num_parts;
-
     this.content_type = fields.content_type;
     this.file = fields.file;
     this.localContents = null;
@@ -59,6 +55,11 @@ class GaiaDocument extends WithFile(Record) {
     this.uploaded = fields.uploaded;
     this._username = options.username;
     this.version = fields.version || version;
+
+    // Backwards compatibility
+    this.numParts = this.numParts || fields.num_parts;
+    this.createdAt = this.createdAt || new Date(fields.created_at);
+
   }
 
   getType() {
@@ -96,11 +97,14 @@ class GaiaDocument extends WithFile(Record) {
       ...super.serialize(),
       content_type: this.content_type || null,
       localId: this.id || null,
+      version: this.version || null,
+
+      // Backwards compatibility
+      created_at: this.createdAt || null,
       num_parts: this.numParts || null,
-      url: this.filePath || null,
       size: this.fileSize || null,
-      uploaded: this.uploaded || null,
-      version: this.version || null
+      url: this.filePath || null,
+      uploaded: this.uploaded || null
     };
   }
 
@@ -111,7 +115,7 @@ class GaiaDocument extends WithFile(Record) {
   }
 
   uniqueKey() {
-    return `${this.fileName}/${this.created_at.getTime()}`;
+    return `${this.fileName}/${this.createdAt.getTime()}`;
   }
 }
 

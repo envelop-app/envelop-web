@@ -13,7 +13,7 @@ class DocumentUploader {
     this.progress = new ProgressRegister(serializedDocument.fileSize);
   }
 
-  upload() {
+  upload(file) {
     return new Promise((resolve, reject) => {
       this.reader.onload = (evt) => {
         const rawFilePromise = this.uploadRawFile(evt.target.result);
@@ -28,7 +28,7 @@ class DocumentUploader {
         reject(evt.target.error);
       }
 
-      this.reader.readAsArrayBuffer(this.serializedDocument.file);
+      this.reader.readAsArrayBuffer(file);
     });
   }
 
