@@ -5,7 +5,7 @@ function mockSession(session) {
   Record.config({ session });
 }
 
-const oldDocument = {
+const legacyDocument = {
   id: '123',
   url: 'abcdef/name.pdf',
   size: 500,
@@ -15,8 +15,8 @@ const oldDocument = {
 }
 
 describe('.get', () => {
-  test('interprets old documents', async () => {
-    mockSession({ getFile: async() => JSON.stringify(oldDocument) })
+  test('interprets legacy documents', async () => {
+    mockSession({ getFile: async() => JSON.stringify(legacyDocument) })
 
     const doc = await GaiaDocument.get('123');
 
@@ -29,8 +29,8 @@ describe('.get', () => {
 });
 
 describe('.fromGaiaIndex', () => {
-  test('interprets old documents from GaiaIndex', async () => {
-    const doc = await GaiaDocument.fromGaiaIndex(oldDocument);
+  test('interprets legacy documents from GaiaIndex', async () => {
+    const doc = await GaiaDocument.fromGaiaIndex(legacyDocument);
 
     expect(doc.filePath).toBe('abcdef/name.pdf');
     expect(doc.fileSize).toBe(500);
@@ -62,8 +62,21 @@ describe('.save', () => {
 });
 
 describe('.serialize', () => {
-  test('outputs old attributes', async () => {
-    mockSession({ getFile: async() => JSON.stringify(oldDocument) })
+  test('serializes attributes', async () => {
+    mockSession({ getFile: async() => JSON.stringify(legacyDocument) })
+
+    const doc = await GaiaDocument.get('123');
+    const serialized = doc.serialize();
+
+    expect(serialized.id).toBe('123');
+    expect(serialized.filePath).toBe('abcdef/name.pdf');
+    expect(serialized.fileSize).toBe(500);
+    expect(serialized.createdAt).toEqual(new Date('2019-07-16T10:47:39.865Z'));
+    expect(serialized.numParts).toBe(2);
+  });
+
+  test('serializes legacy attributes', async () => {
+    mockSession({ getFile: async() => JSON.stringify(legacyDocument) })
 
     const doc = await GaiaDocument.get('123');
     const serialized = doc.serialize();
