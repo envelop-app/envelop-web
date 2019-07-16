@@ -6,10 +6,10 @@ class LocalDocumentUploader {
   constructor(serializedDocument) {
     this.serializedDocument = serializedDocument;
     this.reader = new FileReader();
-    this.progress = new ProgressRegister(serializedDocument.size);
+    this.progress = new ProgressRegister(serializedDocument.fileSize);
   }
 
-  async upload() {
+  async upload(file) {
     new Promise((resolve) => {
       this.reader.onload = (evt) => {
         const payload = Object.assign({}, this.serializedDocument, {
@@ -20,11 +20,11 @@ class LocalDocumentUploader {
         LocalDatabase
           .setItem(documentKey, payload)
           .then(() =>{
-            this.progress.add(this.serializedDocument.size);
+            this.progress.add(this.serializedDocument.fileSize);
             resolve(this.serializedDocument);
           }) ;
       }
-      this.reader.readAsArrayBuffer(this.serializedDocument.file);
+      this.reader.readAsArrayBuffer(file);
     });
   }
 

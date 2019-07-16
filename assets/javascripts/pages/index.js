@@ -1,11 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { privateUserSession } from '../lib/blockstack_client';
+import {
+  privateUserSession,
+  publicUserSession
+} from '../lib/blockstack_client';
 import Constants from '../lib/constants'
 import GaiaDocument from '../lib/gaia_document';
 import LocalIndex from '../lib/local_index';
 import Dialogs from '../lib/dialogs';
+
+import Record from '../lib/records/record';
+Record.config({ session: publicUserSession });
 
 import HomepageUploaderComponent from '../components/homepage_uploader.jsx';
 

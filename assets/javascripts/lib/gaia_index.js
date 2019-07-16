@@ -5,7 +5,7 @@ import { privateUserSession } from './blockstack_client';
 const version = 1;
 
 function parseDocuments(rawDocuments) {
-  return (rawDocuments || []).map(raw => GaiaDocument.fromGaia(raw));
+  return (rawDocuments || []).map(raw => GaiaDocument.fromGaiaIndex(raw));
 }
 
 class GaiaIndex {
@@ -22,6 +22,7 @@ class GaiaIndex {
     for (const group of groups) {
       await Promise.all(group.map(doc => doc.save()));
     }
+
     await this._syncFile(that => {
       that._setDocuments([...that.documents, ...docs])
     });

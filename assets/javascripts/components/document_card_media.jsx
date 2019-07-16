@@ -27,14 +27,14 @@ class DocumentCardMediaComponent extends Component {
 
   renderProgressStatus() {
     const {action, doc, progress} = this.props;
-    const downloadedBytes = Math.round(progress * doc.size);
+    const downloadedBytes = Math.round(progress * doc.fileSize);
 
     return [
       <div key="1" className="ev-document-card__media-percentage">
         {Math.round(progress * 100)}%
       </div>,
       <div key="2" className="ev-document-card__media-bytes">
-        {prettyBytes(downloadedBytes)} of {prettyBytes(doc.size)} {action}ed
+        {prettyBytes(downloadedBytes)} of {prettyBytes(doc.fileSize)} {action}ed
       </div>
     ];
   }

@@ -1,5 +1,6 @@
 import { detect as detectBrowser } from 'detect-browser';
 import React, { Component } from "react";
+import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import ReactDOM from "react-dom";
 
@@ -21,7 +22,7 @@ class DocumentDownloadCardComponent extends Component {
   triggerBrowserDownload(url) {
     const link = document.createElement('a')
     link.href = url;
-    link.download = this.props.doc.getName();
+    link.download = this.props.doc.fileName;
 
     if (detectBrowser().name === 'firefox') {
       const event = new MouseEvent('click', {bubbles: true, cancelable: true, view: window});
@@ -104,10 +105,10 @@ class DocumentDownloadCardComponent extends Component {
         />
         <div className="ev-document-card__body ev-document-card__body--download">
           <div className={`ev-document-card__text-title ev-document-card__text-title--download ${!doc && 'ev-document-card__text-title--download-loading'}`}>
-            {doc && doc.getName()}
+            {doc && doc.fileName}
           </div>
           <div className={`ev-document-card__text-primary ${!doc && 'ev-document-card__text-primary--download-loading'}`}>
-            {doc && doc.getSizePretty()}
+            {doc && prettyBytes(doc.fileSize)}
           </div>
         </div>
         <div className="ev-document-card__controls">

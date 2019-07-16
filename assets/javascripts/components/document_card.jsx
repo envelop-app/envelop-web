@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import copy from 'copy-to-clipboard';
 import Menu, {MenuList, MenuListItem, MenuListItemText, MenuListItemGraphic} from '@material/react-menu';
@@ -55,11 +56,11 @@ class DocumentCardComponent extends Component {
   }
 
   isDisabled() {
-    return !this.props.doc.isSynced() || this.props.deleting;
+    return !this.props.doc.isPersisted() || this.props.deleting;
   }
 
   renderButtonText() {
-    if (!this.props.doc.isSynced()) {
+    if (!this.props.doc.isPersisted()) {
       return 'uploading ...'
     }
     else if (this.props.deleting) {
@@ -107,15 +108,15 @@ class DocumentCardComponent extends Component {
         <DocumentCardMediaComponent
           doc={doc}
           action="upload"
-          showProgress={!doc.isSynced()}
+          showProgress={!doc.isPersisted()}
           progress={progress}>
           {this.renderMenu()}
         </DocumentCardMediaComponent>
         <div className="ev-document-card__body">
           <div className="ev-document-card__body-left">
-            <div className="ev-document-card__text-title">{doc.getName()}</div>
-            <div className="ev-document-card__text-primary">{doc.getSizePretty()}</div>
-            <div className="ev-document-card__text-secondary">{this.formatDate(doc.created_at)}</div>
+            <div className="ev-document-card__text-title">{doc.fileName}</div>
+            <div className="ev-document-card__text-primary">{prettyBytes(doc.fileSize)}</div>
+            <div className="ev-document-card__text-secondary">{this.formatDate(doc.createdAt)}</div>
           </div>
           <div className="ev-document-card__body-right">
             {!this.isDisabled() && <a href={doc.shareUrl()} className="ev-document-card__open" target="_blank"></a>}

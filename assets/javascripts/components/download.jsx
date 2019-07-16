@@ -29,10 +29,10 @@ class DownloadComponent extends Component {
     }
 
     GaiaDocument
-      .get(username, urlData.hash)
+      .get(urlData.hash, { username })
       .then((gaiaDocument) => {
         this.setState({ document: gaiaDocument });
-        window.document.title = `${gaiaDocument.getName()} - Envelop`;
+        window.document.title = `${gaiaDocument.fileName} - Envelop`;
 
         if (gaiaDocument.isUploading()) {
           setTimeout(() => this.fetchDocument(), Constants.DOWNLOAD_FILE_REFRESH);

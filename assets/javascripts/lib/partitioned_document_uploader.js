@@ -1,20 +1,20 @@
 import Bottleneck from 'bottleneck';
 
 import Constants from './constants';
-import { privateUserSession } from './blockstack_client';
+import Record from './records/record';
 import ProgressRegister from '../lib/progress_register';
 
 const publicFileOptions = { encrypt: false, verify: false };
 function putPublicFile(name, contents) {
-  return privateUserSession.putFile(name, contents, publicFileOptions);
+  return Record.getSession().putFile(name, contents, publicFileOptions);
 }
 
 class PartitionedDocumentUploader {
   constructor(serializedDocument) {
     this.partSize = serializedDocument.partSize || Constants.FILE_PART_SIZE;
-    this.numParts = Math.ceil(serializedDocument.size / this.partSize);
+    this.numParts = Math.ceil(serializedDocument.fileSize / this.partSize);
     this.serializedDocument = serializedDocument;
-    this.progress = new ProgressRegister(serializedDocument.size);
+    this.progress = new ProgressRegister(serializedDocument.fileSize);
     this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
     this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
   }
@@ -24,10 +24,10 @@ class PartitionedDocumentUploader {
     this.uploadLimiter.disconnect();
   }
 
-  getFileSlice(partNumber) {
+  getFileSlice(file, partNumber) {
     const startAt = partNumber * this.partSize;
     const endAt = (partNumber + 1) * this.partSize;
-    return this.serializedDocument.file.slice(startAt, endAt);
+    return file.slice(startAt, endAt);
   }
 
   readFileSlice(fileSlice) {
@@ -59,10 +59,10 @@ class PartitionedDocumentUploader {
     });
   }
 
-  async upload() {
+  async upload(file) {
     const uploadPromises = Array(this.numParts).fill(null)
       .map(async (_, partNumber) => {
-        const fileSlice = this.getFileSlice(partNumber);
+        const fileSlice = this.getFileSlice(file, partNumber);
         const bufferPromise = this.scheduleRead(fileSlice);
         await this.scheduleUpload(partNumber, bufferPromise);
         this.progress.add(fileSlice.size);
@@ -73,7 +73,7 @@ class PartitionedDocumentUploader {
 
     this.cleanupLimiters();
 
-    await this.uploadDocument();
+    this.serializedDocument.numParts = this.numParts;
 
     return this.serializedDocument;
   }
@@ -82,18 +82,9 @@ class PartitionedDocumentUploader {
     this.progress.onChange(callback);
   }
 
-  uploadDocument() {
-    this.serializedDocument.storageType = 'partitioned';
-    this.serializedDocument.num_parts = this.numParts;
-    this.serializedDocument.uploaded = true;
-
-    const contents = JSON.stringify(this.serializedDocument)
-    return putPublicFile(this.serializedDocument.id, contents);
-  }
-
   uploadPart(partNumber, partBuffer) {
     const options = { contentType: 'application/octet-stream' };
-    const partUrl = `${this.serializedDocument.url}.part${partNumber}`;
+    const partUrl = `${this.serializedDocument.filePath}.part${partNumber}`;
     return putPublicFile(partUrl, partBuffer, options);
   }
 }

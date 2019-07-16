@@ -1,28 +1,25 @@
-import { privateUserSession } from './blockstack_client';
+import Record from './records/record';
 import ProgressRegister from './progress_register';
 
 const publicFileOptions = { encrypt: false, verify: false };
 function putPublicFile(name, contents) {
-  return privateUserSession.putFile(name, contents, publicFileOptions);
+  return Record.getSession().putFile(name, contents, publicFileOptions);
 }
 
 class DocumentUploader {
   constructor(serializedDocument) {
     this.serializedDocument = serializedDocument;
     this.reader = new FileReader();
-    this.progress = new ProgressRegister(serializedDocument.size);
+    this.progress = new ProgressRegister(serializedDocument.fileSize);
   }
 
-  upload() {
+  upload(file) {
     return new Promise((resolve, reject) => {
       this.reader.onload = (evt) => {
-        const rawFilePromise =  this.uploadRawFile(evt.target.result);
-        const documentPromise = this.uploadDocument();
-
-        Promise
-          .all([rawFilePromise, documentPromise])
+        const rawFilePromise = this.uploadRawFile(evt.target.result);
+        rawFilePromise
           .then(() => {
-            this.progress.add(this.serializedDocument.size);
+            this.progress.add(this.serializedDocument.fileSize);
             resolve(this.serializedDocument);
           });
       }
@@ -31,7 +28,7 @@ class DocumentUploader {
         reject(evt.target.error);
       }
 
-      this.reader.readAsArrayBuffer(this.serializedDocument.file);
+      this.reader.readAsArrayBuffer(file);
     });
   }
 
@@ -41,13 +38,7 @@ class DocumentUploader {
 
   uploadRawFile(contents) {
     const options = { contentType: 'application/octet-stream' };
-    return putPublicFile(this.serializedDocument.url, contents, options);
-  }
-
-  uploadDocument() {
-    this.serializedDocument.uploaded = true;
-    const contents = JSON.stringify(this.serializedDocument);
-    return putPublicFile(this.serializedDocument.id, contents);
+    return putPublicFile(this.serializedDocument.filePath, contents, options);
   }
 }
 

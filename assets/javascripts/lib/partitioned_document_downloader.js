@@ -2,13 +2,13 @@ import Bottleneck from 'bottleneck';
 
 import LocalDatabase from '../lib/local_database';
 import ProgressRegister from '../lib/progress_register';
-import { publicUserSession } from '../lib/blockstack_client';
+import Record from './records/record';
 
 class PartitionedDocumentDownloader {
   constructor(gaiaDocument) {
     this.gaiaDocument = gaiaDocument;
     this.limiter = new Bottleneck({ maxConcurrent: 3 });
-    this.progress = new ProgressRegister(gaiaDocument.size);
+    this.progress = new ProgressRegister(gaiaDocument.fileSize);
   }
 
   async download() {
@@ -53,7 +53,7 @@ class PartitionedDocumentDownloader {
 
   downloadPart(partUrl) {
     const options = { username: this.gaiaDocument._username, decrypt: false, verify: false };
-    return publicUserSession.getFile(partUrl, options);
+    return Record.getSession().getFile(partUrl, options);
   }
 
   loadPartsFromLocal() {
@@ -65,7 +65,7 @@ class PartitionedDocumentDownloader {
   }
 
   createBlob(partBuffers) {
-    const blobOptions = { name: this.gaiaDocument.getName(), type: this.gaiaDocument.getMimeType() };
+    const blobOptions = { name: this.gaiaDocument.fileName, type: this.gaiaDocument.getMimeType() };
     return new Blob(partBuffers, blobOptions);
   }
 
