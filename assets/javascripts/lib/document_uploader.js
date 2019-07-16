@@ -1,9 +1,9 @@
-import { privateUserSession } from './blockstack_client';
+import Record from './records/record';
 import ProgressRegister from './progress_register';
 
 const publicFileOptions = { encrypt: false, verify: false };
 function putPublicFile(name, contents) {
-  return privateUserSession.putFile(name, contents, publicFileOptions);
+  return Record.getSession().putFile(name, contents, publicFileOptions);
 }
 
 class DocumentUploader {

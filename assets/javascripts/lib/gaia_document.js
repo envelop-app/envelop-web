@@ -49,7 +49,6 @@ class GaiaDocument extends WithFile(Record) {
     super(fields);
 
     this.content_type = fields.content_type;
-    this.file = fields.file;
     this.localContents = null;
     this.localId = fields.localId;
     this.uploaded = fields.uploaded;
@@ -129,7 +128,6 @@ class GaiaDocument extends WithFile(Record) {
   set url(value) {
     this.filePath = value;
   }
-
 }
 
 export default GaiaDocument;

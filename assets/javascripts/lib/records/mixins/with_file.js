@@ -44,6 +44,7 @@ const WithFile = (superclass) => {
     constructor(fields = {}) {
       super(fields);
 
+      this.file = fields.file;
       this.downloadProgressCallbacks = [];
       this.uploadProgressCallbacks = [];
     }

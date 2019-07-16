@@ -3,7 +3,8 @@
     "start": "./node_modules/.bin/webpack --watch -d --config webpack.development.js --color --progress",
     "build": "./node_modules/.bin/webpack --config webpack.production.js --bail",
     "netlify-local": "./node_modules/netlify-cli/bin/run dev",
-    "netlify-live": "./node_modules/netlify-cli/bin/run dev --live"
+    "netlify-live": "./node_modules/netlify-cli/bin/run dev --live",
+    "test": "jest"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

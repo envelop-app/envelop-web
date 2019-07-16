@@ -1,12 +1,12 @@
 import Bottleneck from 'bottleneck';
 
 import Constants from './constants';
-import { privateUserSession } from './blockstack_client';
+import Record from './records/record';
 import ProgressRegister from '../lib/progress_register';
 
 const publicFileOptions = { encrypt: false, verify: false };
 function putPublicFile(name, contents) {
-  return privateUserSession.putFile(name, contents, publicFileOptions);
+  return Record.getSession().putFile(name, contents, publicFileOptions);
 }
 
 class PartitionedDocumentUploader {

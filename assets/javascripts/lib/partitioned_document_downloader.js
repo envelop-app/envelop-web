@@ -2,7 +2,7 @@ import Bottleneck from 'bottleneck';
 
 import LocalDatabase from '../lib/local_database';
 import ProgressRegister from '../lib/progress_register';
-import { publicUserSession } from '../lib/blockstack_client';
+import Record from './records/record';
 
 class PartitionedDocumentDownloader {
   constructor(gaiaDocument) {
@@ -53,7 +53,7 @@ class PartitionedDocumentDownloader {
 
   downloadPart(partUrl) {
     const options = { username: this.gaiaDocument._username, decrypt: false, verify: false };
-    return publicUserSession.getFile(partUrl, options);
+    return Record.getSession().getFile(partUrl, options);
   }
 
   loadPartsFromLocal() {
