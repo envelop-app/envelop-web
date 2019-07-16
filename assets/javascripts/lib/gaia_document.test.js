@@ -9,20 +9,84 @@ function serialize(payload) {
   return JSON.parse(JSON.stringify(payload));
 }
 
-describe('.save', () => {
-  test('sets file path', async () => {
-    mockSession({ putFile: async() => true });
+describe('v2', () => {
+  describe('.save', () => {
+    test('sets appropriate attributes', async () => {
+      mockSession({ putFile: async() => true });
 
-    const attributes = {
-      fileName: 'name.pdf',
-      fileSize: 500,
-      file: new File([1], '...')
-    }
-    const doc = new GaiaDocument(attributes);
-    await doc.save();
+      const attributes = {
+        fileName: 'name.pdf',
+        fileSize: 500,
+        file: new File([1], '...')
+      }
+      const doc = new GaiaDocument(attributes);
+      await doc.save();
 
-    expect(doc.filePath).toMatch(/^[a-zA-Z0-9]{24}\/name\.pdf$/);
+      expect(doc.version).toBe(2);
+      expect(doc.filePath).toMatch(/^[a-zA-Z0-9]{24}$/);
+      expect(doc.fileName).toEqual('name.pdf');
+    });
   });
+
+  describe('.get', () => {
+    test('parses document', async () => {
+      const v2Attributes = {
+        id: '123',
+        url: 'abcdef',
+        fileName: 'name.pdf',
+        size: 500,
+        created_at: new Date('2019-07-16T10:47:39.865Z'),
+        num_parts: 2,
+        uploaded: true,
+        version: 2
+      }
+
+      mockSession({ getFile: async() => JSON.stringify(v2Attributes) });
+
+      const doc = await GaiaDocument.get('123');
+
+      expect(doc.filePath).toBe('abcdef');
+      expect(doc.fileName).toBe('name.pdf');
+      expect(doc.fileSize).toBe(500);
+      expect(doc.createdAt).toEqual(new Date('2019-07-16T10:47:39.865Z'));
+      expect(doc.numParts).toBe(2);
+      expect(doc.uploaded).toBe(true);
+      expect(doc.version).toBe(2);
+    });
+  });
+
+  describe('.serialize', () => {
+    test('serializes attributes', async () => {
+      const attributes = {
+        id: '123',
+        fileName: 'name.pdf',
+        filePath: 'abcdef',
+        fileSize: 500,
+        createdAt: new Date('2019-07-16T10:47:39.865Z'),
+        numParts: 2,
+        uploaded: true,
+        version: 2
+      }
+
+      const doc = new GaiaDocument(attributes);
+      const docJson = serialize(doc);
+
+      const expectedJson = serialize({
+        id: '123',
+        content_type: null,
+        localId: '123',
+        version: 2,
+        created_at: new Date('2019-07-16T10:47:39.865Z'),
+        num_parts: 2,
+        size: 500,
+        url: 'abcdef',
+        fileName: 'name.pdf',
+        uploaded: true
+      });
+
+      expect(docJson).toEqual(expectedJson);
+    });
+  })
 });
 
 describe('v1', () => {
@@ -97,7 +161,9 @@ describe('v1', () => {
         uploaded: true
       }
 
-      const doc = new GaiaDocument(attributes);
+      mockSession({ getFile: async() => JSON.stringify(attributes) })
+
+      const doc = await GaiaDocument.get('123');
       const docJson = serialize(doc);
 
       const expectedJson = serialize({

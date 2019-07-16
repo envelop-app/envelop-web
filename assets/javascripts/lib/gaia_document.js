@@ -14,13 +14,19 @@ const types = {
   archive: ['zip', 'rar', 'tar', 'gz', '7z', 'bz', 'bz2', 'arc'],
 };
 
-const version = 1;
-
 function generateHash(length) {
   return randomstring.generate(length);
 }
 
+const version = 2;
+
 class GaiaDocument extends WithFile(Record) {
+  static get attributes() {
+    return {
+      ...super.attributes,
+      version: null
+    }
+  }
   static fromFile(file) {
     return new this({
       fileName: file.name,
@@ -32,17 +38,32 @@ class GaiaDocument extends WithFile(Record) {
   }
 
   static fromGaiaIndex(raw) {
+    if (!raw.version || raw.version < 2) {
+      raw.version = 1;
+    }
+
     return new this({
       ...raw,
-      fileName: (raw.filePath || raw.url).split('/').pop(),
+      fileName: raw.fileName,
       filePath: (raw.filePath || raw.url),
       fileSize: raw.fileSize || raw.size,
-      createdAt: new Date(raw.createdAt || raw.created_at)
+      createdAt: new Date(raw.createdAt || raw.created_at),
+      version: raw.version || 1
     });
   }
 
   static fromLocal(raw) {
     return new this(raw);
+  }
+
+  static async get(id, options = {}) {
+    const doc = await super.get(id, options);
+
+    if (!doc.version || doc.version < 2) {
+      doc.version = 1;
+    }
+
+    return doc;
   }
 
   constructor(fields = {}, options = {}) {
@@ -53,7 +74,14 @@ class GaiaDocument extends WithFile(Record) {
     this.localId = fields.localId;
     this.uploaded = fields.uploaded;
     this._username = options.username;
-    this.version = fields.version || version;
+
+    // FIXME:
+    if (this.id) {
+      this.version = this.version || 1;
+    }
+    else {
+      this.version = version;
+    }
   }
 
   getType() {
@@ -95,6 +123,7 @@ class GaiaDocument extends WithFile(Record) {
 
       // Ignore other serialized fields
       createdAt: undefined,
+      fileName: this.version > 1 ? this.fileName : undefined,
       filePath: undefined,
       fileSize: undefined,
       numParts: undefined,
@@ -133,6 +162,16 @@ class GaiaDocument extends WithFile(Record) {
 
   set url(value) {
     this.filePath = value;
+  }
+
+  get fileName() {
+    if (this._fileName) { return this._fileName; }
+    if (!this.filePath) { return null; }
+    return this._fileName = this.filePath.split('/').pop();
+  }
+
+  set fileName(value) {
+    this._fileName = value;
   }
 }
 
