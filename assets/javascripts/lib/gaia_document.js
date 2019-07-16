@@ -93,6 +93,12 @@ class GaiaDocument extends WithFile(Record) {
       localId: this.id || null,
       version: this.version || null,
 
+      // Ignore other serialized fields
+      createdAt: undefined,
+      filePath: undefined,
+      fileSize: undefined,
+      numParts: undefined,
+
       // Backwards compatibility
       created_at: this.createdAt || null,
       num_parts: this.numParts || null,

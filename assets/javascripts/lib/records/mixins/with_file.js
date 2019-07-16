@@ -130,9 +130,7 @@ const WithFile = (superclass) => {
   klass.beforeSave(async (record) => {
     record.filePath = record.filePath || `${generateHash(24)}/${record.fileName}`;
 
-    const payload = record.serialize();
-
-    record._uploader = getUploader(payload, record.uploadProgressCallbacks);
+    record._uploader = getUploader(record, record.uploadProgressCallbacks);
     const modifiedPayload = await record._uploader.upload(record.file);
 
     record.numParts = modifiedPayload.numParts;
