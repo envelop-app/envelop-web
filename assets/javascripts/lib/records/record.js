@@ -77,6 +77,14 @@ class Record {
     });
   }
 
+  set createdAt(value) {
+    this.attributes.createdAt = new Date(value);
+  }
+
+  get createdAt() {
+    return this.attributes.createdAt;
+  }
+
   async delete() {
     await this.runHooks('beforeDelete');
     return Record.getSession().deleteFile(this.id);
