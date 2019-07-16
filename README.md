@@ -1,6 +1,6 @@
 ![Envelop](https://envelop.app/images/logo.svg)
 
-# Web app 🌐 [![Netlify Status](https://api.netlify.com/api/v1/badges/84718080-fc42-4011-acab-9d891c514d0c/deploy-status)](https://app.netlify.com/sites/envelop-web/deploys)
+# Web app 🌐 [![Netlify Status](https://api.netlify.com/api/v1/badges/84718080-fc42-4011-acab-9d891c514d0c/deploy-status)](https://app.netlify.com/sites/envelop-web/deploys) [![Build Status](https://travis-ci.org/envelop-app/envelop-web.svg?branch=master)](https://travis-ci.org/envelop-app/envelop-web)
 
 ![Envelop - Share and upload private files easily](https://envelop.app/images/og-image.png)
 
