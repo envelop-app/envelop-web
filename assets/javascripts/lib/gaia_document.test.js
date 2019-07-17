@@ -49,7 +49,7 @@ describe('v2', () => {
       expect(doc.name).toBe('name.pdf');
       expect(doc.size).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
-      expect(doc.numParts).toBe(2);
+      expect(doc.num_parts).toBe(2);
       expect(doc.uploaded).toBe(true);
       expect(doc.version).toBe(2);
     });
@@ -63,7 +63,7 @@ describe('v2', () => {
         url: 'abcdef',
         size: 500,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
-        numParts: 2,
+        num_parts: 2,
         uploaded: true,
         version: 2
       }
@@ -109,7 +109,7 @@ describe('v1', () => {
       expect(doc.name).toBe('name.pdf');
       expect(doc.size).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
-      expect(doc.numParts).toBe(2);
+      expect(doc.num_parts).toBe(2);
       expect(doc.uploaded).toBe(true);
       expect(doc.version).toBe(1);
     });
@@ -123,7 +123,7 @@ describe('v1', () => {
       expect(doc.name).toBe('name.pdf');
       expect(doc.size).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
-      expect(doc.numParts).toBe(2);
+      expect(doc.num_parts).toBe(2);
       expect(doc.uploaded).toBe(true);
       expect(doc.version).toBe(1);
     });
@@ -157,7 +157,7 @@ describe('v1', () => {
         url: 'abcdef/name.pdf',
         size: 500,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
-        numParts: 2,
+        num_parts: 2,
         uploaded: true
       }
 

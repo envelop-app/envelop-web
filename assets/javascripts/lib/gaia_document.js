@@ -124,16 +124,10 @@ class GaiaDocument extends WithFile(Record) {
       content_type: this.content_type || null,
       localId: this.id || null,
       version: this.version || null,
+      uploaded: this.uploaded || null,
 
       // Ignore other serialized fields
-      name: this.version > 1 ? this.name : undefined,
-      numParts: undefined,
-
-      // Backwards compatibility
-      num_parts: this.numParts || null,
-      size: this.size || null,
-      url: this.url || null,
-      uploaded: this.uploaded || null
+      name: this.version > 1 ? this.name : undefined
     };
   }
 
@@ -145,11 +139,6 @@ class GaiaDocument extends WithFile(Record) {
 
   uniqueKey() {
     return `${this.name}/${this.created_at.getTime()}`;
-  }
-
-  // Backwards compatibility
-  set num_parts(value) {
-    this.numParts = value;
   }
 }
 

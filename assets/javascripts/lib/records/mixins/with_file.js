@@ -38,7 +38,7 @@ const WithFile = (superclass) => {
         name: null,
         url: null,
         size: null,
-        numParts: null
+        num_parts: null
       }
     }
 
@@ -51,7 +51,7 @@ const WithFile = (superclass) => {
     }
 
     async download() {
-      if (this.numParts && this.numParts > 1) {
+      if (this.num_parts && this.num_parts > 1) {
         this._downloader = new PartitionedDocumentDownloader(this);
         this.downloadProgressCallbacks.forEach((callback) => {
           this._downloader.onProgress(callback);
@@ -97,9 +97,9 @@ const WithFile = (superclass) => {
     }
 
     getPartUrls() {
-      if (!this.numParts) { return []; }
+      if (!this.num_parts) { return []; }
 
-      return new Array(this.numParts)
+      return new Array(this.num_parts)
         .fill(null)
         .map((_, index) => `${this.url}.part${index}`);
     }
@@ -110,7 +110,7 @@ const WithFile = (superclass) => {
         name: this.name || null,
         url: this.url || null,
         size: this.size || null,
-        numParts: this.numParts || null
+        num_parts: this.num_parts || null
       };
     }
   }
@@ -125,7 +125,7 @@ const WithFile = (superclass) => {
     record._uploader = getUploader(record, record.uploadProgressCallbacks);
     const modifiedPayload = await record._uploader.upload(record.file);
 
-    record.numParts = modifiedPayload.numParts;
+    record.num_parts = modifiedPayload.num_parts;
 
     return true;
   });

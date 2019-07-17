@@ -73,7 +73,7 @@ class PartitionedDocumentUploader {
 
     this.cleanupLimiters();
 
-    this.serializedDocument.numParts = this.numParts;
+    this.serializedDocument.num_parts = this.numParts;
 
     return this.serializedDocument;
   }
