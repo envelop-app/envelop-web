@@ -1,5 +1,5 @@
 import mime from 'mime-types';
-import randomstring from 'randomstring';
+import uuid from 'uuid/v4';
 
 import Constants from '../../constants';
 import DocumentRemover from '../../document_remover';
@@ -7,10 +7,6 @@ import DocumentUploader from '../../document_uploader';
 import { publicUserSession as publicSession } from '../../blockstack_client';
 import PartitionedDocumentDownloader from '../../partitioned_document_downloader';
 import PartitionedDocumentUploader from '../../partitioned_document_uploader';
-
-function generateHash(length) {
-  return randomstring.generate(length);
-}
 
 function getUploader(payload, callbacks) {
   let uploader = null;
@@ -110,7 +106,7 @@ const WithFile = (superclass) => {
   });
 
   klass.beforeSave(async (record) => {
-    record.url = record.url || `${generateHash(24)}`;
+    record.url = record.url || uuid();
 
     record._uploader = getUploader(record, record.uploadProgressCallbacks);
     const modifiedPayload = await record._uploader.upload(record.file);

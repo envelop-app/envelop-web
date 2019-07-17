@@ -1,4 +1,4 @@
-import randomstring from 'randomstring';
+import uuid from 'uuid/v4';
 
 import { privateUserSession, } from '../lib/blockstack_client';
 import Constants from '../lib/constants';
@@ -13,10 +13,6 @@ const types = {
   video:   ['avi', 'mpeg', 'mpg', 'mp4', 'ogv', 'webm', '3gp', 'mov'],
   archive: ['zip', 'rar', 'tar', 'gz', '7z', 'bz', 'bz2', 'arc'],
 };
-
-function generateHash(length) {
-  return randomstring.generate(length);
-}
 
 const version = 2;
 
@@ -75,7 +71,7 @@ class GaiaDocument extends WithFile(Record) {
 
   async saveLocal() {
     const payload = this.serialize();
-    payload.localId = this.localId || generateHash(20);
+    payload.localId = this.localId || uuid();
 
     const uploader = new LocalDocumentUploader(payload)
     const uploadedDoc = await uploader.upload(this.file);

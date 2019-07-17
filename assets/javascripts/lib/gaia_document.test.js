@@ -1,6 +1,8 @@
 import Record from './records/record';
 import GaiaDocument from './gaia_document';
 
+const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
 function mockSession(session) {
   Record.config({ session });
 }
@@ -28,7 +30,7 @@ describe('v2', () => {
       await doc.save();
 
       expect(doc.version).toBe(2);
-      expect(doc.url).toMatch(/^[a-zA-Z0-9]{24}$/);
+      expect(doc.url).toMatch(uuidRegex);
       expect(doc.name).toEqual('name.pdf');
     });
   });
