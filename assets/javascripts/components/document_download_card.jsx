@@ -108,7 +108,7 @@ class DocumentDownloadCardComponent extends Component {
             {doc && doc.name}
           </div>
           <div className={`ev-document-card__text-primary ${!doc && 'ev-document-card__text-primary--download-loading'}`}>
-            {doc && prettyBytes(doc.fileSize)}
+            {doc && prettyBytes(doc.size)}
           </div>
         </div>
         <div className="ev-document-card__controls">

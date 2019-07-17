@@ -12,9 +12,9 @@ function putPublicFile(name, contents) {
 class PartitionedDocumentUploader {
   constructor(serializedDocument) {
     this.partSize = serializedDocument.partSize || Constants.FILE_PART_SIZE;
-    this.numParts = Math.ceil(serializedDocument.fileSize / this.partSize);
+    this.numParts = Math.ceil(serializedDocument.size / this.partSize);
     this.serializedDocument = serializedDocument;
-    this.progress = new ProgressRegister(serializedDocument.fileSize);
+    this.progress = new ProgressRegister(serializedDocument.size);
     this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
     this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
   }

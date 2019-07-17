@@ -10,7 +10,7 @@ class DocumentUploader {
   constructor(serializedDocument) {
     this.serializedDocument = serializedDocument;
     this.reader = new FileReader();
-    this.progress = new ProgressRegister(serializedDocument.fileSize);
+    this.progress = new ProgressRegister(serializedDocument.size);
   }
 
   upload(file) {
@@ -19,7 +19,7 @@ class DocumentUploader {
         const rawFilePromise = this.uploadRawFile(evt.target.result);
         rawFilePromise
           .then(() => {
-            this.progress.add(this.serializedDocument.fileSize);
+            this.progress.add(this.serializedDocument.size);
             resolve(this.serializedDocument);
           });
       }

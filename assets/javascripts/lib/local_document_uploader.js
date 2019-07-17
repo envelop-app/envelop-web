@@ -6,7 +6,7 @@ class LocalDocumentUploader {
   constructor(serializedDocument) {
     this.serializedDocument = serializedDocument;
     this.reader = new FileReader();
-    this.progress = new ProgressRegister(serializedDocument.fileSize);
+    this.progress = new ProgressRegister(serializedDocument.size);
   }
 
   async upload(file) {
@@ -20,7 +20,7 @@ class LocalDocumentUploader {
         LocalDatabase
           .setItem(documentKey, payload)
           .then(() =>{
-            this.progress.add(this.serializedDocument.fileSize);
+            this.progress.add(this.serializedDocument.size);
             resolve(this.serializedDocument);
           }) ;
       }

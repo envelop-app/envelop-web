@@ -115,7 +115,7 @@ class DocumentCardComponent extends Component {
         <div className="ev-document-card__body">
           <div className="ev-document-card__body-left">
             <div className="ev-document-card__text-title">{doc.name}</div>
-            <div className="ev-document-card__text-primary">{prettyBytes(doc.fileSize)}</div>
+            <div className="ev-document-card__text-primary">{prettyBytes(doc.size)}</div>
             <div className="ev-document-card__text-secondary">{this.formatDate(doc.created_at)}</div>
           </div>
           <div className="ev-document-card__body-right">

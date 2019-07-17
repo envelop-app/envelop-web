@@ -16,7 +16,7 @@ describe('v2', () => {
 
       const attributes = {
         name: 'name.pdf',
-        fileSize: 500,
+        size: 500,
         file: new File([1], '...')
       }
       const doc = new GaiaDocument(attributes);
@@ -47,7 +47,7 @@ describe('v2', () => {
 
       expect(doc.url).toBe('abcdef');
       expect(doc.name).toBe('name.pdf');
-      expect(doc.fileSize).toBe(500);
+      expect(doc.size).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
       expect(doc.numParts).toBe(2);
       expect(doc.uploaded).toBe(true);
@@ -61,7 +61,7 @@ describe('v2', () => {
         id: '123',
         name: 'name.pdf',
         url: 'abcdef',
-        fileSize: 500,
+        size: 500,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         numParts: 2,
         uploaded: true,
@@ -107,7 +107,7 @@ describe('v1', () => {
 
       expect(doc.url).toBe('abcdef/name.pdf');
       expect(doc.name).toBe('name.pdf');
-      expect(doc.fileSize).toBe(500);
+      expect(doc.size).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
       expect(doc.numParts).toBe(2);
       expect(doc.uploaded).toBe(true);
@@ -121,7 +121,7 @@ describe('v1', () => {
 
       expect(doc.url).toBe('abcdef/name.pdf');
       expect(doc.name).toBe('name.pdf');
-      expect(doc.fileSize).toBe(500);
+      expect(doc.size).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
       expect(doc.numParts).toBe(2);
       expect(doc.uploaded).toBe(true);
@@ -155,7 +155,7 @@ describe('v1', () => {
       const attributes = {
         id: '123',
         url: 'abcdef/name.pdf',
-        fileSize: 500,
+        size: 500,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         numParts: 2,
         uploaded: true

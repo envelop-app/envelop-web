@@ -15,14 +15,14 @@ function generateHash(length) {
 function getUploader(payload, callbacks) {
   let uploader = null;
 
-  if (payload.fileSize <= Constants.SINGLE_FILE_SIZE_LIMIT) {
+  if (payload.size <= Constants.SINGLE_FILE_SIZE_LIMIT) {
     uploader = new DocumentUploader(payload)
   }
-  else if (payload.fileSize > Constants.SINGLE_FILE_SIZE_LIMIT) {
+  else if (payload.size > Constants.SINGLE_FILE_SIZE_LIMIT) {
     uploader = new PartitionedDocumentUploader(payload)
   }
   else {
-    throw("Cant get uploader - missing 'fileSize'")
+    throw("Cant get uploader - missing 'size'")
   }
 
   callbacks.forEach((callback) => uploader.onProgress(callback));
@@ -37,7 +37,7 @@ const WithFile = (superclass) => {
         ...super.attributes,
         name: null,
         url: null,
-        fileSize: null,
+        size: null,
         numParts: null
       }
     }
@@ -109,7 +109,7 @@ const WithFile = (superclass) => {
         ...super.serialize(),
         name: this.name || null,
         url: this.url || null,
-        fileSize: this.fileSize || null,
+        size: this.size || null,
         numParts: this.numParts || null
       };
     }
