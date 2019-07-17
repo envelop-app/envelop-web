@@ -9,6 +9,11 @@ function serialize(payload) {
   return JSON.parse(JSON.stringify(payload));
 }
 
+test('new documents are version = 2', async () => {
+  const doc = new GaiaDocument({});
+  expect(doc.version).toBe(2);
+});
+
 describe('v2', () => {
   describe('.save', () => {
     test('sets appropriate attributes', async () => {
@@ -100,24 +105,24 @@ describe('v1', () => {
   }
 
   describe('.get', () => {
+    describe('new', () => {
+      test('parses fields', async () => {
+        const doc = new GaiaDocument(v1Attributes);
+
+        expect(doc.url).toBe('abcdef/name.pdf');
+        expect(doc.name).toBe('name.pdf');
+        expect(doc.size).toBe(500);
+        expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
+        expect(doc.num_parts).toBe(2);
+        expect(doc.uploaded).toBe(true);
+        expect(doc.version).toBe(1);
+      });
+    });
+
     test('parses document', async () => {
       mockSession({ getFile: async() => JSON.stringify(v1Attributes) })
 
       const doc = await GaiaDocument.get('123');
-
-      expect(doc.url).toBe('abcdef/name.pdf');
-      expect(doc.name).toBe('name.pdf');
-      expect(doc.size).toBe(500);
-      expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
-      expect(doc.num_parts).toBe(2);
-      expect(doc.uploaded).toBe(true);
-      expect(doc.version).toBe(1);
-    });
-  });
-
-  describe('.fromGaiaIndex', () => {
-    test('parses payload', async () => {
-      const doc = await GaiaDocument.fromGaiaIndex(v1Attributes);
 
       expect(doc.url).toBe('abcdef/name.pdf');
       expect(doc.name).toBe('name.pdf');
@@ -145,6 +150,7 @@ describe('v1', () => {
         num_parts: 2,
         size: 500,
         url: 'abcdef/name.pdf',
+        name: 'name.pdf',
         uploaded: true
       });
 
@@ -175,6 +181,7 @@ describe('v1', () => {
         num_parts: 2,
         size: 500,
         url: 'abcdef/name.pdf',
+        name: 'name.pdf',
         uploaded: true
       });
 

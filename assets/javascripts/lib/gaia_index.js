@@ -5,7 +5,7 @@ import { privateUserSession } from './blockstack_client';
 const version = 1;
 
 function parseDocuments(rawDocuments) {
-  return (rawDocuments || []).map(raw => GaiaDocument.fromGaiaIndex(raw));
+  return (rawDocuments || []).map(raw => new GaiaDocument(raw));
 }
 
 class GaiaIndex {

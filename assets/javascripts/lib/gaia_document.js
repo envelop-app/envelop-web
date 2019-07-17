@@ -31,33 +31,8 @@ class GaiaDocument extends WithFile(Record) {
     });
   }
 
-  static fromGaiaIndex(raw) {
-    if (!raw.version || raw.version < 2) {
-      raw.version = 1;
-    }
-
-    return new this({
-      ...raw,
-      name: raw.name,
-      url: raw.url,
-      size: raw.size,
-      created_at: new Date(raw.created_at),
-      version: raw.version || 1
-    });
-  }
-
   static fromLocal(raw) {
     return new this(raw);
-  }
-
-  static async get(id, options = {}) {
-    const doc = await super.get(id, options);
-
-    if (!doc.version || doc.version < 2) {
-      doc.version = 1;
-    }
-
-    return doc;
   }
 
   constructor(fields = {}, options = {}) {
@@ -75,10 +50,6 @@ class GaiaDocument extends WithFile(Record) {
     }
     else {
       this.version = version;
-    }
-
-    if (!this.name && this.url) {
-      this.name = this.url.split('/').pop();
     }
   }
 
@@ -119,9 +90,7 @@ class GaiaDocument extends WithFile(Record) {
       localId: this.id || null,
       version: this.version || null,
       uploaded: this.uploaded || null,
-
-      // Ignore other serialized fields
-      name: this.version > 1 ? this.name : undefined
+      name: this.name || null
     };
   }
 
@@ -135,5 +104,23 @@ class GaiaDocument extends WithFile(Record) {
     return `${this.name}/${this.created_at.getTime()}`;
   }
 }
+
+GaiaDocument.afterInitialize((record) => {
+  if (record.id) {
+    record.version = record.version || 1;
+  }
+  else {
+    record.version = version;
+  }
+});
+
+
+GaiaDocument.afterInitialize((record) => {
+  if (record.version !== 1) { return; }
+
+  if (record.id && record.url) {
+    record.name = record.url.split('/').pop();
+  }
+});
 
 export default GaiaDocument;

@@ -28,8 +28,9 @@ class Record {
   }
 
   static hooks = {
-    beforeDelete: [],
-    beforeSave: []
+    afterInitialize: [],
+    beforeSave: [],
+    beforeDelete: []
   }
 
   static addHook(hookName, hook) {
@@ -39,6 +40,10 @@ class Record {
     else {
       throw `${hookName} hook must be of type 'function'`;
     }
+  }
+
+  static afterInitialize(callback) {
+    this.addHook('afterInitialize', callback);
   }
 
   static beforeSave(callback) {
@@ -57,6 +62,8 @@ class Record {
     if (this.created_at) {
       this.created_at = new Date(this.created_at);
     }
+
+    this.runHooks('afterInitialize', { sync: true });
   }
 
   async delete() {
@@ -68,7 +75,16 @@ class Record {
     return !!this.id;
   }
 
-  async runHooks(hookName) {
+  runHooks(hookName, options = {}) {
+    if (options.sync) {
+      this.constructor.hooks[hookName].forEach(hook => hook(this));
+    }
+    else {
+      return this.runHooksAsync(hookName);
+    }
+  }
+
+  async runHooksAsync(hookName, options = {}) {
     const hooks = this.constructor.hooks[hookName];
     return hooks.reduce(async (previous, current) => {
       await previous;
