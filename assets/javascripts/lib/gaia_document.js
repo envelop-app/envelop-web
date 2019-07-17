@@ -21,12 +21,6 @@ function generateHash(length) {
 const version = 2;
 
 class GaiaDocument extends WithFile(Record) {
-  static get attributes() {
-    return {
-      ...super.attributes,
-      version: null
-    }
-  }
   static fromFile(file) {
     return new this({
       name: file.name,

@@ -11,18 +11,7 @@ const session = {
 
 Record.config({ session });
 
-class TestRecord extends Record {
-  static get attributes() {
-    return {
-      ...super.attributes,
-      custom: null
-    }
-  }
-
-  get custom() {
-    return 'overriden';
-  }
-}
+class TestRecord extends Record { }
 
 describe('.get', () => {
   test('parses default attributes', async () => {
@@ -30,12 +19,6 @@ describe('.get', () => {
 
     expect(testRecord.id).toBe('123');
     expect(testRecord.created_at).toBeInstanceOf(Date);
-  });
-
-  test('parses custom attributes', async () => {
-    const testRecord = await TestRecord.get('123');
-
-    expect(testRecord.custom).toBe('overriden');
   });
 });
 
@@ -46,19 +29,5 @@ describe('.save', () => {
 
     expect(typeof testRecord.id).toBe('string');
     expect(testRecord.created_at).toBeInstanceOf(Date);
-  });
-});
-
-describe('attribute getters/setters', () => {
-  test('are set by default if defined in attributes()', () => {
-    const testRecord = new TestRecord();
-
-    expect('custom' in testRecord).toBe(true);
-  });
-
-  test('are overridable', () => {
-    const testRecord = new TestRecord();
-
-    expect(testRecord.custom).toEqual('overriden');
   });
 });

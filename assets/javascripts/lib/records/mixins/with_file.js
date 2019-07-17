@@ -32,16 +32,6 @@ function getUploader(payload, callbacks) {
 
 const WithFile = (superclass) => {
   const klass = class extends superclass {
-    static get attributes() {
-      return {
-        ...super.attributes,
-        name: null,
-        url: null,
-        size: null,
-        num_parts: null
-      }
-    }
-
     constructor(fields = {}) {
       super(fields);
 

@@ -41,13 +41,6 @@ class Record {
     }
   }
 
-  static get attributes() {
-    return {
-      id: null,
-      created_at: null
-    };
-  }
-
   static beforeSave(callback) {
     this.addHook('beforeSave', callback);
   }
@@ -57,32 +50,13 @@ class Record {
   }
 
   constructor(fields = {}) {
-    this.attributes = {};
-
-    Object.keys(this.constructor.attributes).forEach(attrName => {
-      if (attrName in this) { return; }
-
-      Object.defineProperty(this, attrName, {
-        get() {
-          return this.attributes[attrName];
-        },
-        set(value) {
-          return this.attributes[attrName] = value;
-        }
-      });
-    });
-
     Object.keys(fields).forEach(attrName => {
       this[attrName] = fields[attrName];
     });
-  }
 
-  set created_at(value) {
-    this.attributes.created_at = new Date(value);
-  }
-
-  get created_at() {
-    return this.attributes.created_at;
+    if (this.created_at) {
+      this.created_at = new Date(this.created_at);
+    }
   }
 
   async delete() {
