@@ -35,7 +35,7 @@ const WithFile = (superclass) => {
     static get attributes() {
       return {
         ...super.attributes,
-        fileName: null,
+        name: null,
         url: null,
         fileSize: null,
         numParts: null
@@ -93,7 +93,7 @@ const WithFile = (superclass) => {
     }
 
     getMimeType() {
-      return mime.lookup(this.fileName) || null;
+      return mime.lookup(this.name) || null;
     }
 
     getPartUrls() {
@@ -107,7 +107,7 @@ const WithFile = (superclass) => {
     serialize() {
       return {
         ...super.serialize(),
-        fileName: this.fileName || null,
+        name: this.name || null,
         url: this.url || null,
         fileSize: this.fileSize || null,
         numParts: this.numParts || null

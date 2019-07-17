@@ -15,7 +15,7 @@ describe('v2', () => {
       mockSession({ putFile: async() => true });
 
       const attributes = {
-        fileName: 'name.pdf',
+        name: 'name.pdf',
         fileSize: 500,
         file: new File([1], '...')
       }
@@ -24,7 +24,7 @@ describe('v2', () => {
 
       expect(doc.version).toBe(2);
       expect(doc.url).toMatch(/^[a-zA-Z0-9]{24}$/);
-      expect(doc.fileName).toEqual('name.pdf');
+      expect(doc.name).toEqual('name.pdf');
     });
   });
 
@@ -33,7 +33,7 @@ describe('v2', () => {
       const v2Attributes = {
         id: '123',
         url: 'abcdef',
-        fileName: 'name.pdf',
+        name: 'name.pdf',
         size: 500,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         num_parts: 2,
@@ -46,7 +46,7 @@ describe('v2', () => {
       const doc = await GaiaDocument.get('123');
 
       expect(doc.url).toBe('abcdef');
-      expect(doc.fileName).toBe('name.pdf');
+      expect(doc.name).toBe('name.pdf');
       expect(doc.fileSize).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
       expect(doc.numParts).toBe(2);
@@ -59,7 +59,7 @@ describe('v2', () => {
     test('serializes attributes', async () => {
       const attributes = {
         id: '123',
-        fileName: 'name.pdf',
+        name: 'name.pdf',
         url: 'abcdef',
         fileSize: 500,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
@@ -80,7 +80,7 @@ describe('v2', () => {
         num_parts: 2,
         size: 500,
         url: 'abcdef',
-        fileName: 'name.pdf',
+        name: 'name.pdf',
         uploaded: true
       });
 
@@ -106,7 +106,7 @@ describe('v1', () => {
       const doc = await GaiaDocument.get('123');
 
       expect(doc.url).toBe('abcdef/name.pdf');
-      expect(doc.fileName).toBe('name.pdf');
+      expect(doc.name).toBe('name.pdf');
       expect(doc.fileSize).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
       expect(doc.numParts).toBe(2);
@@ -120,7 +120,7 @@ describe('v1', () => {
       const doc = await GaiaDocument.fromGaiaIndex(v1Attributes);
 
       expect(doc.url).toBe('abcdef/name.pdf');
-      expect(doc.fileName).toBe('name.pdf');
+      expect(doc.name).toBe('name.pdf');
       expect(doc.fileSize).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
       expect(doc.numParts).toBe(2);

@@ -22,7 +22,7 @@ class DocumentDownloadCardComponent extends Component {
   triggerBrowserDownload(url) {
     const link = document.createElement('a')
     link.href = url;
-    link.download = this.props.doc.fileName;
+    link.download = this.props.doc.name;
 
     if (detectBrowser().name === 'firefox') {
       const event = new MouseEvent('click', {bubbles: true, cancelable: true, view: window});
@@ -105,7 +105,7 @@ class DocumentDownloadCardComponent extends Component {
         />
         <div className="ev-document-card__body ev-document-card__body--download">
           <div className={`ev-document-card__text-title ev-document-card__text-title--download ${!doc && 'ev-document-card__text-title--download-loading'}`}>
-            {doc && doc.fileName}
+            {doc && doc.name}
           </div>
           <div className={`ev-document-card__text-primary ${!doc && 'ev-document-card__text-primary--download-loading'}`}>
             {doc && prettyBytes(doc.fileSize)}

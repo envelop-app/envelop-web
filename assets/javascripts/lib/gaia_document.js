@@ -29,7 +29,7 @@ class GaiaDocument extends WithFile(Record) {
   }
   static fromFile(file) {
     return new this({
-      fileName: file.name,
+      name: file.name,
       created_at: new Date(),
       fileSize: file.size,
       content_type: file.name.split('.').pop(),
@@ -44,7 +44,7 @@ class GaiaDocument extends WithFile(Record) {
 
     return new this({
       ...raw,
-      fileName: raw.fileName,
+      name: raw.name,
       url: raw.url,
       fileSize: raw.fileSize || raw.size,
       created_at: new Date(raw.created_at),
@@ -81,6 +81,10 @@ class GaiaDocument extends WithFile(Record) {
     }
     else {
       this.version = version;
+    }
+
+    if (!this.name && this.url) {
+      this.name = this.url.split('/').pop();
     }
   }
 
@@ -122,7 +126,7 @@ class GaiaDocument extends WithFile(Record) {
       version: this.version || null,
 
       // Ignore other serialized fields
-      fileName: this.version > 1 ? this.fileName : undefined,
+      name: this.version > 1 ? this.name : undefined,
       fileSize: undefined,
       numParts: undefined,
 
@@ -141,7 +145,7 @@ class GaiaDocument extends WithFile(Record) {
   }
 
   uniqueKey() {
-    return `${this.fileName}/${this.created_at.getTime()}`;
+    return `${this.name}/${this.created_at.getTime()}`;
   }
 
   // Backwards compatibility
@@ -151,16 +155,6 @@ class GaiaDocument extends WithFile(Record) {
 
   set size(value) {
     this.fileSize = value;
-  }
-
-  get fileName() {
-    if (this._fileName) { return this._fileName; }
-    if (!this.url) { return null; }
-    return this._fileName = this.url.split('/').pop();
-  }
-
-  set fileName(value) {
-    this._fileName = value;
   }
 }
 
