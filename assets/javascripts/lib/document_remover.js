@@ -12,7 +12,7 @@ class DocumentRemover {
     if (this.gaiaDocument.numParts > 1) {
       return this.removeParts();
     } else {
-      return this.removeRawFile(this.gaiaDocument.filePath);
+      return this.removeRawFile(this.gaiaDocument.url);
     }
   }
 

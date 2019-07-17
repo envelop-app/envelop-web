@@ -36,7 +36,7 @@ const WithFile = (superclass) => {
       return {
         ...super.attributes,
         fileName: null,
-        filePath: null,
+        url: null,
         fileSize: null,
         numParts: null
       }
@@ -60,7 +60,7 @@ const WithFile = (superclass) => {
       }
       else {
         const options = { username: this._username, decrypt: false, verify: false };
-        const fileUrl = await publicSession.getFileUrl(this.filePath, options);
+        const fileUrl = await publicSession.getFileUrl(this.url, options);
         this.downloadProgressCallbacks.forEach((callback) => callback(1));
         return fileUrl;
       }
@@ -101,14 +101,14 @@ const WithFile = (superclass) => {
 
       return new Array(this.numParts)
         .fill(null)
-        .map((_, index) => `${this.filePath}.part${index}`);
+        .map((_, index) => `${this.url}.part${index}`);
     }
 
     serialize() {
       return {
         ...super.serialize(),
         fileName: this.fileName || null,
-        filePath: this.filePath || null,
+        url: this.url || null,
         fileSize: this.fileSize || null,
         numParts: this.numParts || null
       };
@@ -120,7 +120,7 @@ const WithFile = (superclass) => {
   });
 
   klass.beforeSave(async (record) => {
-    record.filePath = record.filePath || `${generateHash(24)}`;
+    record.url = record.url || `${generateHash(24)}`;
 
     record._uploader = getUploader(record, record.uploadProgressCallbacks);
     const modifiedPayload = await record._uploader.upload(record.file);

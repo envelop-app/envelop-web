@@ -38,7 +38,7 @@ class DocumentUploader {
 
   uploadRawFile(contents) {
     const options = { contentType: 'application/octet-stream' };
-    return putPublicFile(this.serializedDocument.filePath, contents, options);
+    return putPublicFile(this.serializedDocument.url, contents, options);
   }
 }
 

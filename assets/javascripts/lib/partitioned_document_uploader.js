@@ -84,7 +84,7 @@ class PartitionedDocumentUploader {
 
   uploadPart(partNumber, partBuffer) {
     const options = { contentType: 'application/octet-stream' };
-    const partUrl = `${this.serializedDocument.filePath}.part${partNumber}`;
+    const partUrl = `${this.serializedDocument.url}.part${partNumber}`;
     return putPublicFile(partUrl, partBuffer, options);
   }
 }

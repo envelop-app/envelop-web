@@ -23,7 +23,7 @@ describe('v2', () => {
       await doc.save();
 
       expect(doc.version).toBe(2);
-      expect(doc.filePath).toMatch(/^[a-zA-Z0-9]{24}$/);
+      expect(doc.url).toMatch(/^[a-zA-Z0-9]{24}$/);
       expect(doc.fileName).toEqual('name.pdf');
     });
   });
@@ -45,7 +45,7 @@ describe('v2', () => {
 
       const doc = await GaiaDocument.get('123');
 
-      expect(doc.filePath).toBe('abcdef');
+      expect(doc.url).toBe('abcdef');
       expect(doc.fileName).toBe('name.pdf');
       expect(doc.fileSize).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
@@ -60,7 +60,7 @@ describe('v2', () => {
       const attributes = {
         id: '123',
         fileName: 'name.pdf',
-        filePath: 'abcdef',
+        url: 'abcdef',
         fileSize: 500,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         numParts: 2,
@@ -105,7 +105,7 @@ describe('v1', () => {
 
       const doc = await GaiaDocument.get('123');
 
-      expect(doc.filePath).toBe('abcdef/name.pdf');
+      expect(doc.url).toBe('abcdef/name.pdf');
       expect(doc.fileName).toBe('name.pdf');
       expect(doc.fileSize).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
@@ -119,7 +119,7 @@ describe('v1', () => {
     test('parses payload', async () => {
       const doc = await GaiaDocument.fromGaiaIndex(v1Attributes);
 
-      expect(doc.filePath).toBe('abcdef/name.pdf');
+      expect(doc.url).toBe('abcdef/name.pdf');
       expect(doc.fileName).toBe('name.pdf');
       expect(doc.fileSize).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
@@ -154,7 +154,7 @@ describe('v1', () => {
     test('serializes from new attributes', async () => {
       const attributes = {
         id: '123',
-        filePath: 'abcdef/name.pdf',
+        url: 'abcdef/name.pdf',
         fileSize: 500,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         numParts: 2,
