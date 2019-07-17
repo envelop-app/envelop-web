@@ -44,7 +44,7 @@ class Record {
   static get attributes() {
     return {
       id: null,
-      createdAt: null
+      created_at: null
     };
   }
 
@@ -77,12 +77,12 @@ class Record {
     });
   }
 
-  set createdAt(value) {
-    this.attributes.createdAt = new Date(value);
+  set created_at(value) {
+    this.attributes.created_at = new Date(value);
   }
 
-  get createdAt() {
-    return this.attributes.createdAt;
+  get created_at() {
+    return this.attributes.created_at;
   }
 
   async delete() {
@@ -113,8 +113,8 @@ class Record {
       payload.id = this.id || generateHash(6);
     }
 
-    if (!payload.createdAt) {
-      payload.createdAt = this.createdAt || new Date();
+    if (!payload.created_at) {
+      payload.created_at = this.created_at || new Date();
     }
 
     // TODO: Maybe snakecase keys before upload? or camelize?
@@ -126,7 +126,7 @@ class Record {
 
   serialize() {
     return {
-      createdAt: this.createdAt || null,
+      created_at: this.created_at || null,
       id: this.id || null
     };
   }

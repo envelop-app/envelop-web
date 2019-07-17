@@ -116,7 +116,7 @@ class DocumentCardComponent extends Component {
           <div className="ev-document-card__body-left">
             <div className="ev-document-card__text-title">{doc.fileName}</div>
             <div className="ev-document-card__text-primary">{prettyBytes(doc.fileSize)}</div>
-            <div className="ev-document-card__text-secondary">{this.formatDate(doc.createdAt)}</div>
+            <div className="ev-document-card__text-secondary">{this.formatDate(doc.created_at)}</div>
           </div>
           <div className="ev-document-card__body-right">
             {!this.isDisabled() && <a href={doc.shareUrl()} className="ev-document-card__open" target="_blank"></a>}

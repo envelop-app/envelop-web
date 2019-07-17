@@ -30,7 +30,7 @@ class GaiaDocument extends WithFile(Record) {
   static fromFile(file) {
     return new this({
       fileName: file.name,
-      createdAt: new Date(),
+      created_at: new Date(),
       fileSize: file.size,
       content_type: file.name.split('.').pop(),
       file: file
@@ -47,7 +47,7 @@ class GaiaDocument extends WithFile(Record) {
       fileName: raw.fileName,
       filePath: (raw.filePath || raw.url),
       fileSize: raw.fileSize || raw.size,
-      createdAt: new Date(raw.createdAt || raw.created_at),
+      created_at: new Date(raw.created_at),
       version: raw.version || 1
     });
   }
@@ -122,14 +122,12 @@ class GaiaDocument extends WithFile(Record) {
       version: this.version || null,
 
       // Ignore other serialized fields
-      createdAt: undefined,
       fileName: this.version > 1 ? this.fileName : undefined,
       filePath: undefined,
       fileSize: undefined,
       numParts: undefined,
 
       // Backwards compatibility
-      created_at: this.createdAt || null,
       num_parts: this.numParts || null,
       size: this.fileSize || null,
       url: this.filePath || null,
@@ -144,14 +142,10 @@ class GaiaDocument extends WithFile(Record) {
   }
 
   uniqueKey() {
-    return `${this.fileName}/${this.createdAt.getTime()}`;
+    return `${this.fileName}/${this.created_at.getTime()}`;
   }
 
   // Backwards compatibility
-  set created_at(value) {
-    this.createdAt = new Date(value);
-  }
-
   set num_parts(value) {
     this.numParts = value;
   }

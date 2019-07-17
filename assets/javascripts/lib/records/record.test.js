@@ -2,7 +2,7 @@ import Record from './record';
 
 const session = {
   async getFile() {
-    return JSON.stringify({ id: '123', createdAt: new Date() });
+    return JSON.stringify({ id: '123', created_at: new Date() });
   },
   async putFile() {
     return true;
@@ -29,7 +29,7 @@ describe('.get', () => {
     const testRecord = await TestRecord.get('123');
 
     expect(testRecord.id).toBe('123');
-    expect(testRecord.createdAt).toBeInstanceOf(Date);
+    expect(testRecord.created_at).toBeInstanceOf(Date);
   });
 
   test('parses custom attributes', async () => {
@@ -40,12 +40,12 @@ describe('.get', () => {
 });
 
 describe('.save', () => {
-  test('sets id and createdAt', async () => {
+  test('sets id and created_at', async () => {
     const testRecord = new TestRecord();
     await testRecord.save();
 
     expect(typeof testRecord.id).toBe('string');
-    expect(testRecord.createdAt).toBeInstanceOf(Date);
+    expect(testRecord.created_at).toBeInstanceOf(Date);
   });
 });
 

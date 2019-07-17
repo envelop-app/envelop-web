@@ -48,7 +48,7 @@ describe('v2', () => {
       expect(doc.filePath).toBe('abcdef');
       expect(doc.fileName).toBe('name.pdf');
       expect(doc.fileSize).toBe(500);
-      expect(doc.createdAt).toEqual(new Date('2019-07-16T10:47:39.865Z'));
+      expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
       expect(doc.numParts).toBe(2);
       expect(doc.uploaded).toBe(true);
       expect(doc.version).toBe(2);
@@ -62,7 +62,7 @@ describe('v2', () => {
         fileName: 'name.pdf',
         filePath: 'abcdef',
         fileSize: 500,
-        createdAt: new Date('2019-07-16T10:47:39.865Z'),
+        created_at: new Date('2019-07-16T10:47:39.865Z'),
         numParts: 2,
         uploaded: true,
         version: 2
@@ -108,7 +108,7 @@ describe('v1', () => {
       expect(doc.filePath).toBe('abcdef/name.pdf');
       expect(doc.fileName).toBe('name.pdf');
       expect(doc.fileSize).toBe(500);
-      expect(doc.createdAt).toEqual(new Date('2019-07-16T10:47:39.865Z'));
+      expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
       expect(doc.numParts).toBe(2);
       expect(doc.uploaded).toBe(true);
       expect(doc.version).toBe(1);
@@ -122,7 +122,7 @@ describe('v1', () => {
       expect(doc.filePath).toBe('abcdef/name.pdf');
       expect(doc.fileName).toBe('name.pdf');
       expect(doc.fileSize).toBe(500);
-      expect(doc.createdAt).toEqual(new Date('2019-07-16T10:47:39.865Z'));
+      expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
       expect(doc.numParts).toBe(2);
       expect(doc.uploaded).toBe(true);
       expect(doc.version).toBe(1);
@@ -156,7 +156,7 @@ describe('v1', () => {
         id: '123',
         filePath: 'abcdef/name.pdf',
         fileSize: 500,
-        createdAt: new Date('2019-07-16T10:47:39.865Z'),
+        created_at: new Date('2019-07-16T10:47:39.865Z'),
         numParts: 2,
         uploaded: true
       }
