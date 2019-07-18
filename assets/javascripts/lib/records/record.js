@@ -4,6 +4,12 @@ function generateHash(length) {
   return randomstring.generate(length);
 }
 
+const hooks = {
+  afterInitialize: [],
+  beforeSave: [],
+  beforeDelete: []
+}
+
 class Record {
   static config(options = {}) {
     this.session = options.session;
@@ -27,10 +33,8 @@ class Record {
     return new this(payload, options);
   }
 
-  static hooks = {
-    afterInitialize: [],
-    beforeSave: [],
-    beforeDelete: []
+  static get hooks() {
+    return hooks;
   }
 
   static addHook(hookName, hook) {
