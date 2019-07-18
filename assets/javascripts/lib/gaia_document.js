@@ -39,14 +39,6 @@ class GaiaDocument extends WithFile(Record) {
     this.localId = fields.localId;
     this.uploaded = fields.uploaded;
     this._username = options.username;
-
-    // FIXME:
-    if (this.id) {
-      this.version = this.version || 1;
-    }
-    else {
-      this.version = version;
-    }
   }
 
   getType() {
