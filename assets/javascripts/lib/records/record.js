@@ -29,8 +29,13 @@ class Record {
     const opts = { decrypt: false, verify: false, ...options };
     const json = await this.getSession().getFile(id, opts);
     const payload = JSON.parse(json);
+    const parsed = this.parse(payload, options);
 
-    return new this(payload, options);
+    return new this(parsed, options);
+  }
+
+  static parse(raw, _options) {
+    return raw;
   }
 
   static get hooks() {
@@ -88,7 +93,7 @@ class Record {
     }
   }
 
-  async runHooksAsync(hookName, options = {}) {
+  async runHooksAsync(hookName, _options) {
     const hooks = this.constructor.hooks[hookName];
     return hooks.reduce(async (previous, current) => {
       await previous;
@@ -96,37 +101,36 @@ class Record {
     }, Promise.resolve(this));
   }
 
-  async save(payload = null) {
-    await this.runHooks('beforeSave');
-
-    if (!payload) {
-      payload = this.serialize();
-    }
-
-    if (!payload.id) {
-      payload.id = this.id || generateHash(6);
-    }
-
-    if (!payload.created_at) {
-      payload.created_at = this.created_at || new Date();
-    }
-
-    // TODO: Maybe snakecase keys before upload? or camelize?
-    const contents = JSON.stringify(payload);
-    const fileOptions = { encrypt: false, verify: false };
-    await Record.getSession().putFile(payload.id, contents, fileOptions);
-    return Object.assign(this, payload);
-  }
-
-  serialize() {
+  attributes() {
     return {
       created_at: this.created_at || null,
       id: this.id || null
     };
   }
 
+  serialize(payload = this) {
+    return payload;
+  }
+
+  async save(payload = null) {
+    await this.runHooks('beforeSave');
+
+    if (!payload) {
+      payload = this.attributes();
+      payload.id = this.id || generateHash(6);
+      payload.created_at = this.created_at || new Date();
+    }
+
+    // TODO: Maybe snakecase keys before upload? or camelize?
+    const serialized = this.serialize(payload);
+    const content = JSON.stringify(serialized);
+    const fileOptions = { encrypt: false, verify: false };
+    await Record.getSession().putFile(payload.id, content, fileOptions);
+    return Object.assign(this, payload);
+  }
+
   toJSON() {
-    return this.serialize();
+    return this.attributes();
   }
 }
 

@@ -8,10 +8,16 @@ import DocumentDownloadCardComponent from './document_download_card.jsx';
 
 function parseUrl() {
   const paths = window.location.pathname.split('/').filter(s => s);
+
   if (paths.length !== 3) {
     throw(`Invalid download URL (path=${window.location.pathname}`)
   }
-  return { hash: paths[2], username: paths[1] };
+
+  const hashAndPasscode = paths[2].split('!');
+  const hash = hashAndPasscode[0];
+  const passcode = hashAndPasscode[1];
+
+  return { hash, passcode, username: paths[1] };
 }
 
 class DownloadComponent extends Component {
@@ -28,8 +34,10 @@ class DownloadComponent extends Component {
       username += '.id.blockstack';
     }
 
+    // FIXME: salt must be in the file to facilitate this process
+    const options = { username, passcode: urlData.passcode, salt: urlData.hash };
     GaiaDocument
-      .get(urlData.hash, { username })
+      .get(urlData.hash, options)
       .then((gaiaDocument) => {
         this.setState({ document: gaiaDocument });
         window.document.title = `${gaiaDocument.name} - Envelop`;

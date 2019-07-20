@@ -10,11 +10,11 @@ function putPublicFile(name, contents) {
 }
 
 class PartitionedDocumentUploader {
-  constructor(serializedDocument) {
-    this.partSize = serializedDocument.partSize || Constants.FILE_PART_SIZE;
-    this.numParts = Math.ceil(serializedDocument.size / this.partSize);
-    this.serializedDocument = serializedDocument;
-    this.progress = new ProgressRegister(serializedDocument.size);
+  constructor(doc) {
+    this.partSize = doc.partSize || Constants.FILE_PART_SIZE;
+    this.numParts = Math.ceil(doc.size / this.partSize);
+    this.doc = doc;
+    this.progress = new ProgressRegister(doc.size);
     this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
     this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
   }
@@ -73,9 +73,10 @@ class PartitionedDocumentUploader {
 
     this.cleanupLimiters();
 
-    this.serializedDocument.num_parts = this.numParts;
+    const uploadResult = {};
+    uploadResult.numParts = this.numParts;
 
-    return this.serializedDocument;
+    return uploadResult;
   }
 
   onProgress(callback) {
@@ -84,7 +85,7 @@ class PartitionedDocumentUploader {
 
   uploadPart(partNumber, partBuffer) {
     const options = { contentType: 'application/octet-stream' };
-    const partUrl = `${this.serializedDocument.url}.part${partNumber}`;
+    const partUrl = `${this.doc.url}.part${partNumber}`;
     return putPublicFile(partUrl, partBuffer, options);
   }
 }

@@ -63,7 +63,7 @@ class GaiaIndex {
     this.onChangeCallbacks.push(callback);
   }
 
-  serialize() {
+  attributes() {
     return { files: this.documents, version: this.version };
   }
 
@@ -73,7 +73,7 @@ class GaiaIndex {
   }
 
   toJSON() {
-    return this.serialize();
+    return this.attributes();
   }
 
   async _syncFile(callback) {

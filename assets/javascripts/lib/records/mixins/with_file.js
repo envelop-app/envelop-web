@@ -90,9 +90,9 @@ const WithFile = (superclass) => {
         .map((_, index) => `${this.url}.part${index}`);
     }
 
-    serialize() {
+    attributes() {
       return {
-        ...super.serialize(),
+        ...super.attributes(),
         name: this.name || null,
         url: this.url || null,
         size: this.size || null,
@@ -109,9 +109,9 @@ const WithFile = (superclass) => {
     record.url = record.url || uuid();
 
     record._uploader = getUploader(record, record.uploadProgressCallbacks);
-    const modifiedPayload = await record._uploader.upload(record.file);
+    const uploadResult = await record._uploader.upload(record.file);
 
-    record.num_parts = modifiedPayload.num_parts;
+    record.num_parts = uploadResult.numParts;
 
     return true;
   });

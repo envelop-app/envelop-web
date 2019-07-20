@@ -7,10 +7,10 @@ function putPublicFile(name, contents) {
 }
 
 class DocumentUploader {
-  constructor(serializedDocument) {
-    this.serializedDocument = serializedDocument;
+  constructor(doc) {
+    this.doc = doc;
     this.reader = new FileReader();
-    this.progress = new ProgressRegister(serializedDocument.size);
+    this.progress = new ProgressRegister(doc.size);
   }
 
   upload(file) {
@@ -19,8 +19,8 @@ class DocumentUploader {
         const rawFilePromise = this.uploadRawFile(evt.target.result);
         rawFilePromise
           .then(() => {
-            this.progress.add(this.serializedDocument.size);
-            resolve(this.serializedDocument);
+            this.progress.add(this.doc.size);
+            resolve(this.doc);
           });
       }
 
@@ -38,7 +38,7 @@ class DocumentUploader {
 
   uploadRawFile(contents) {
     const options = { contentType: 'application/octet-stream' };
-    return putPublicFile(this.serializedDocument.url, contents, options);
+    return putPublicFile(this.doc.url, contents, options);
   }
 }
 

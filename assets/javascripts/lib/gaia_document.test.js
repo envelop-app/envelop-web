@@ -1,5 +1,7 @@
-import Record from './records/record';
+import Encryptor from './encryptor';
 import GaiaDocument from './gaia_document';
+import Record from './records/record';
+
 
 const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
@@ -7,8 +9,24 @@ function mockSession(session) {
   Record.config({ session });
 }
 
-function serialize(payload) {
+function jsonify(payload) {
   return JSON.parse(JSON.stringify(payload));
+}
+
+function buildDoc(additionalAttributes) {
+  const attributes = {
+    id: '123',
+    content_type: null,
+    localId: '123',
+    version: 2,
+    created_at: new Date('2019-07-16T10:47:39.865Z'),
+    size: 500,
+    url: 'abcdef',
+    name: 'name.pdf',
+    file: new File([1], '...'),
+    ...additionalAttributes
+  }
+  return new GaiaDocument(attributes);
 }
 
 test('new documents are version = 2', async () => {
@@ -18,7 +36,7 @@ test('new documents are version = 2', async () => {
 
 describe('v2', () => {
   describe('.save', () => {
-    test('sets appropriate attributes', async () => {
+    test('populates appropriate attributes', async () => {
       mockSession({ putFile: async() => true });
 
       const attributes = {
@@ -32,25 +50,51 @@ describe('v2', () => {
       expect(doc.version).toBe(2);
       expect(doc.url).toMatch(uuidRegex);
       expect(doc.name).toEqual('name.pdf');
+      expect(doc.passcode).toMatch(/[A-Za-z0-9]{16}/)
+    });
+
+    test('encrypts contents', async () => {
+      let encryptedContent = null;
+      mockSession({
+        putFile: async (_, content) => encryptedContent = content
+      });
+
+      const doc = buildDoc();
+      await doc.save();
+
+      const encryptedPayload = JSON.parse(encryptedContent);
+      const payloadKeys = Object.keys(encryptedPayload).sort();
+      expect(payloadKeys).toEqual(['iv', 'payload']);
+
+      const options = { salt: doc.id, passcode: doc.passcode};
+      const decrypted = GaiaDocument.parse(encryptedPayload, options);
+
+      expect(decrypted).toEqual(jsonify(doc));
     });
   });
 
   describe('.get', () => {
-    test('parses document', async () => {
-      const v2Attributes = {
+    test('parses encrypted document', async () => {
+      let docBeforeSave = new GaiaDocument({
         id: '123',
         url: 'abcdef',
         name: 'name.pdf',
         size: 500,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         num_parts: 2,
+        passcode: '123',
         uploaded: true,
         version: 2
-      }
+      })
 
-      mockSession({ getFile: async() => JSON.stringify(v2Attributes) });
+      const encrypted = JSON.stringify(docBeforeSave.serialize());
+      mockSession({ getFile: async() => encrypted });
 
-      const doc = await GaiaDocument.get('123');
+      const getOptions = {
+        passcode: docBeforeSave.passcode,
+        salt: docBeforeSave.id
+      };
+      const doc = await GaiaDocument.get('123', getOptions);
 
       expect(doc.url).toBe('abcdef');
       expect(doc.name).toBe('name.pdf');
@@ -62,8 +106,8 @@ describe('v2', () => {
     });
   });
 
-  describe('.serialize', () => {
-    test('serializes attributes', async () => {
+  describe('.attributes', () => {
+    test('returns configured attributes', async () => {
       const attributes = {
         id: '123',
         name: 'name.pdf',
@@ -76,22 +120,26 @@ describe('v2', () => {
       }
 
       const doc = new GaiaDocument(attributes);
-      const docJson = serialize(doc);
+      const docJson = doc.attributes();
 
-      const expectedJson = serialize({
+      expect(docJson).toEqual({
         id: '123',
         content_type: null,
         localId: '123',
         version: 2,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         num_parts: 2,
+        passcode: null,
         size: 500,
         url: 'abcdef',
         name: 'name.pdf',
         uploaded: true
       });
+    });
+  });
 
-      expect(docJson).toEqual(expectedJson);
+  describe('.serialize', () => {
+    test('returns encrypted shit', async () => {
     });
   })
 });
@@ -136,51 +184,21 @@ describe('v1', () => {
     });
   });
 
-  describe('.serialize', () => {
-    test('serializes from v1 attributes', async () => {
+  describe('.attributes', () => {
+    test('parses from v1 attributes', async () => {
       mockSession({ getFile: async() => JSON.stringify(v1Attributes) })
 
       const doc = await GaiaDocument.get('123');
-      const docJson = serialize(doc);
+      const docJson = jsonify(doc);
 
-      const expectedJson = serialize({
+      const expectedJson = jsonify({
         id: '123',
         content_type: null,
         localId: '123',
         version: 1,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         num_parts: 2,
-        size: 500,
-        url: 'abcdef/name.pdf',
-        name: 'name.pdf',
-        uploaded: true
-      });
-
-      expect(docJson).toEqual(expectedJson);
-    });
-
-    test('serializes from new attributes', async () => {
-      const attributes = {
-        id: '123',
-        url: 'abcdef/name.pdf',
-        size: 500,
-        created_at: new Date('2019-07-16T10:47:39.865Z'),
-        num_parts: 2,
-        uploaded: true
-      }
-
-      mockSession({ getFile: async() => JSON.stringify(attributes) })
-
-      const doc = await GaiaDocument.get('123');
-      const docJson = serialize(doc);
-
-      const expectedJson = serialize({
-        id: '123',
-        content_type: null,
-        localId: '123',
-        version: 1,
-        created_at: new Date('2019-07-16T10:47:39.865Z'),
-        num_parts: 2,
+        passcode: null,
         size: 500,
         url: 'abcdef/name.pdf',
         name: 'name.pdf',
