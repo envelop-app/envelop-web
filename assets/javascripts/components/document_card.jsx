@@ -56,11 +56,11 @@ class DocumentCardComponent extends Component {
   }
 
   isDisabled() {
-    return !this.props.doc.isPersisted() || this.props.deleting;
+    return !this.props.doc.isReady() || this.props.deleting;
   }
 
   renderButtonText() {
-    if (!this.props.doc.isPersisted()) {
+    if (!this.props.doc.isReady()) {
       return 'uploading ...'
     }
     else if (this.props.deleting) {
@@ -103,12 +103,14 @@ class DocumentCardComponent extends Component {
     const {deleting, doc} = this.props;
     const progress = this.state.progress;
 
+    console.log(doc.isReady());
+
     return (
       <div className={`ev-document-card ${this.isDisabled() && 'ev-document-card__disabled'}`}>
         <DocumentCardMediaComponent
           doc={doc}
           action="upload"
-          showProgress={!doc.isPersisted()}
+          showProgress={!doc.isReady()}
           progress={progress}>
           {this.renderMenu()}
         </DocumentCardMediaComponent>

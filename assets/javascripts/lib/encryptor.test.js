@@ -1,4 +1,6 @@
 import crypto from 'crypto-js';
+// import encoding from 'text-encoding';
+
 import Encryptor from './encryptor';
 
 describe('interoperability', () => {
@@ -49,4 +51,8 @@ test('encrypts and decripts JSON', () => {
   const decrypted = Encryptor.decrypt(encrypted.payload, decryptOptions);
 
   expect(decrypted).toEqual(JSON.stringify(object));
+});
+
+test('encrypts and decripts ArrayBuffer', () => {
+  // TODO
 });

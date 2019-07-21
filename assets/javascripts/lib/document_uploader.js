@@ -1,3 +1,6 @@
+import crypto from 'crypto-js';
+
+import Encryptor from './encryptor';
 import Record from './records/record';
 import ProgressRegister from './progress_register';
 
@@ -37,8 +40,22 @@ class DocumentUploader {
   }
 
   uploadRawFile(contents) {
-    const options = { contentType: 'application/octet-stream' };
-    return putPublicFile(this.doc.url, contents, options);
+    const encrypted = Encryptor.encrypt(
+      contents,
+      {
+        passcode: this.doc.passcode,
+        salt: this.doc.id,
+        encoding: 'base64'
+      }
+    );
+
+    const encryptedPayload = JSON.stringify({
+      iv: encrypted.iv,
+      payload: encrypted.payload
+    });
+
+    const options = { contentType: 'application/json' };
+    return putPublicFile(this.doc.url, encryptedPayload, options);
   }
 }
 

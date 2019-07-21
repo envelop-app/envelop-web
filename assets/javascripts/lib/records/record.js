@@ -117,14 +117,14 @@ class Record {
     return payload;
   }
 
-  async save(payload = null) {
-    await this.runHooks('beforeSave');
-
-    if (!payload) {
-      payload = this.attributes();
-      payload.id = this.id || generateHash(6);
-      payload.created_at = this.created_at || new Date();
+  async save(options = {}) {
+    if (!options.skipHooks) {
+      await this.runHooks('beforeSave');
     }
+
+    const payload = this.attributes();
+    payload.id = this.id || generateHash(6);
+    payload.created_at = this.created_at || new Date();
 
     // TODO: Maybe snakecase keys before upload? or camelize?
     const serialized = this.serialize(payload);
@@ -132,9 +132,14 @@ class Record {
     const fileOptions = { encrypt: false, verify: false };
     await Record.getSession().putFile(payload.id, content, fileOptions);
 
-    await this.runHooks('afterSave');
+    // FIXME: What about code that checks for isPersisted????
+    Object.assign(this, payload);
 
-    return Object.assign(this, payload);
+    if (!options.skipHooks) {
+      await this.runHooks('afterSave');
+    }
+
+    return this;
   }
 
   toJSON() {

@@ -8,6 +8,22 @@ function decodeBase64(content) {
   return crypto.enc.Base64.parse(content);
 }
 
+function decodeUint8(wordArray) {
+  var length = wordArray.words.length;
+  var buffer = new Uint8Array(length << 2);
+  var offset = 0;
+
+  for (var i = 0; i < length; i++) {
+    var word = wordArray.words[i];
+    buffer[offset++] = word >> 24;
+    buffer[offset++] = (word >> 16) & 0xff;
+    buffer[offset++] = (word >> 8) & 0xff;
+    buffer[offset++] = word & 0xff;
+  }
+
+  return buffer
+}
+
 function generateKey(input, options = {}) {
   const salt = options.salt;
   const iterations = 5000;
@@ -40,6 +56,10 @@ function encrypt(contents, options = {}) {
     mode: crypto.mode.CTR,
     padding: crypto.pad.NoPadding
   };
+
+  if (contents instanceof ArrayBuffer) {
+    contents = crypto.lib.WordArray.create(contents);
+  }
 
   const encrypted = crypto.AES.encrypt(contents, key, cryptoOptions);
 
@@ -80,6 +100,9 @@ function decrypt(encrypted, options = {}) {
 
   if (options.encoding === 'utf8') {
     return crypto.enc.Utf8.stringify(decrypted);
+  }
+  else if (options.encoding === 'uint8') {
+    return decodeUint8(decrypted);
   }
   else {
     return decrypted;

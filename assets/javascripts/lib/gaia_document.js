@@ -63,8 +63,8 @@ class GaiaDocument extends WithFile(Record) {
     this.content_type = fields.content_type;
     this.localContents = null;
     this.localId = fields.localId;
-    this.uploaded = fields.uploaded;
     this._username = options.username;
+    this.passcode = fields.passcode || generateHash(16);
   }
 
   getType() {
@@ -87,6 +87,19 @@ class GaiaDocument extends WithFile(Record) {
     }
   }
 
+  isReady() {
+    if (!this.isPersisted()) {
+      return false;
+    }
+
+    if (typeof this.uploaded === 'boolean') {
+      return this.uploaded;
+    }
+    else {
+      return true;
+    }
+  }
+
   async saveLocal() {
     const payload = this.attributes();
     payload.localId = this.localId || uuid();
@@ -104,7 +117,6 @@ class GaiaDocument extends WithFile(Record) {
       localId: this.id || null,
       passcode: this.passcode || null,
       version: this.version || null,
-      uploaded: this.uploaded || null,
       name: this.name || null
     };
   }
@@ -158,10 +170,6 @@ GaiaDocument.afterInitialize((record) => {
   if (record.id && record.url) {
     record.name = record.url.split('/').pop();
   }
-});
-
-GaiaDocument.beforeSave((record) => {
-  record.passcode = record.passcode || generateHash(16);
 });
 
 export default GaiaDocument;

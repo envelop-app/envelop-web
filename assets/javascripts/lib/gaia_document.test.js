@@ -37,8 +37,8 @@ function buildDoc(additionalAttributes) {
     created_at: new Date('2019-07-16T10:47:39.865Z'),
     size: 500,
     url: 'abcdef',
-    name: 'name.pdf',
-    file: new File([1], '...'),
+    name: 'name.txt',
+    file: new File(['hello'], 'hello.txt'),
     ...additionalAttributes
   }
   return new GaiaDocument(attributes);
@@ -50,6 +50,18 @@ test('new documents are version = 2', async () => {
 });
 
 describe('v2', () => {
+  describe('.fromFile', () => {
+    test('creates a gaia document from a File', async () => {
+      const file = new File(["I'm encrypted"], 'foo.txt', { type: 'text/plain' });
+      const doc = GaiaDocument.fromFile(file);
+
+      expect(doc.name).toEqual('foo.txt');
+      expect(doc.size).toEqual(13);
+      expect(doc.content_type).toEqual('txt');
+      expect(doc.file).toBe(file);
+    });
+  });
+
   describe('.save', () => {
     test('populates appropriate attributes', async () => {
       const attributes = {
@@ -58,12 +70,18 @@ describe('v2', () => {
         file: new File([1], '...')
       }
       const doc = new GaiaDocument(attributes);
+
+      expect(doc.uploaded).toBe(false);
+      expect(doc.isReady()).toBe(false);
+
       await doc.save();
 
       expect(doc.version).toBe(2);
       expect(doc.url).toMatch(uuidRegex);
       expect(doc.name).toEqual('name.pdf');
       expect(doc.passcode).toMatch(/[A-Za-z0-9]{16}/)
+      expect(doc.uploaded).toBe(true);
+      expect(doc.isReady()).toBe(true);
     });
 
     test('encrypts contents', async () => {
@@ -79,6 +97,26 @@ describe('v2', () => {
       const decrypted = GaiaDocument.parse(encryptedPayload, options);
 
       expect(decrypted).toEqual(jsonify(doc));
+    });
+
+    test('uploads encrypted file', async () => {
+      const file = new File(["I'm encrypted"], 'foo.txt', { type: 'text/plain' });
+      const doc = GaiaDocument.fromFile(file);
+      await doc.save();
+
+      const encryptedContent = await Record.getSession().getFile(doc.url);
+      const encryptedPayload = JSON.parse(encryptedContent);
+      const payloadKeys = Object.keys(encryptedPayload).sort();
+      expect(payloadKeys).toEqual(['iv', 'payload']);
+
+      const options = {
+        salt: doc.id,
+        passcode: doc.passcode,
+        iv: Encryptor.utils.decodeBase64(encryptedPayload.iv),
+        encoding: 'utf8'
+      };
+      const decrypted = Encryptor.decrypt(encryptedPayload.payload, options);
+      expect(decrypted).toEqual("I'm encrypted");
     });
   });
 
@@ -133,13 +171,65 @@ describe('v2', () => {
         version: 2,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         num_parts: 2,
-        passcode: null,
+        passcode: doc.passcode,
         size: 500,
         url: 'abcdef',
         name: 'name.pdf',
         uploaded: true
       });
     });
+  });
+
+  test('isUploading considers both .id and .uploaded', async () => {
+    const attributes = buildDoc().attributes();
+    await Record.getSession().putFile(attributes.id, JSON.stringify(attributes));
+
+    const doc = await GaiaDocument.get(attributes.id);
+
+    delete doc.uploaded;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).not.toBeDefined();
+    expect(doc.isUploading()).toEqual(false);
+
+    doc.uploaded = false;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).toEqual(false);
+    expect(doc.isUploading()).toEqual(true);
+
+    doc.uploaded = true;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).toEqual(true);
+    expect(doc.isUploading()).toEqual(false);
+
+    doc.id = null;
+    expect(doc.id).toEqual(null);
+    expect(doc.isUploading()).toEqual(false);
+  });
+
+  test('isReady considers both .id and .uploaded', async () => {
+    const attributes = buildDoc().attributes();
+    await Record.getSession().putFile(attributes.id, JSON.stringify(attributes));
+
+    const doc = await GaiaDocument.get(attributes.id);
+
+    delete doc.uploaded;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).not.toBeDefined();
+    expect(doc.isReady()).toEqual(true);
+
+    doc.uploaded = false;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).toEqual(false);
+    expect(doc.isReady()).toEqual(false);
+
+    doc.uploaded = true;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).toEqual(true);
+    expect(doc.isReady()).toEqual(true);
+
+    doc.id = null;
+    expect(doc.id).toEqual(null);
+    expect(doc.isReady()).toEqual(false);
   });
 
   describe('.serialize', () => {
@@ -202,7 +292,7 @@ describe('v1', () => {
         version: 1,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         num_parts: 2,
-        passcode: null,
+        passcode: doc.passcode,
         size: 500,
         url: 'abcdef/name.pdf',
         name: 'name.pdf',
@@ -211,5 +301,55 @@ describe('v1', () => {
 
       expect(docJson).toEqual(expectedJson);
     });
+  });
+
+  test('isUploading considers both .id and .upladed', async () => {
+    await Record.getSession().putFile(v1Attributes.id, JSON.stringify(v1Attributes));
+
+    const doc = await GaiaDocument.get(v1Attributes.id);
+
+    delete doc.uploaded;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).not.toBeDefined();
+    expect(doc.isUploading()).toEqual(false);
+
+    doc.uploaded = false;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).toEqual(false);
+    expect(doc.isUploading()).toEqual(true);
+
+    doc.uploaded = true;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).toEqual(true);
+    expect(doc.isUploading()).toEqual(false);
+
+    doc.id = null;
+    expect(doc.id).toEqual(null);
+    expect(doc.isUploading()).toEqual(false);
+  });
+
+  test('isReady considers both .id and .uploaded', async () => {
+    await Record.getSession().putFile(v1Attributes.id, JSON.stringify(v1Attributes));
+
+    const doc = await GaiaDocument.get(v1Attributes.id);
+
+    delete doc.uploaded;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).not.toBeDefined();
+    expect(doc.isReady()).toEqual(true);
+
+    doc.uploaded = false;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).toEqual(false);
+    expect(doc.isReady()).toEqual(false);
+
+    doc.uploaded = true;
+    expect(doc.id).toEqual('123');
+    expect(doc.uploaded).toEqual(true);
+    expect(doc.isReady()).toEqual(true);
+
+    doc.id = null;
+    expect(doc.id).toEqual(null);
+    expect(doc.isReady()).toEqual(false);
   });
 });

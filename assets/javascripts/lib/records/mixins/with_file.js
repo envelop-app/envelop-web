@@ -33,6 +33,7 @@ const WithFile = (superclass) => {
 
       this.file = fields.file;
       this.downloadProgressCallbacks = [];
+      this.uploaded = fields.uploaded || false;
       this.uploadProgressCallbacks = [];
       this.url = fields.url || uuid();
     }
@@ -96,7 +97,8 @@ const WithFile = (superclass) => {
         name: this.name || null,
         url: this.url || null,
         size: this.size || null,
-        num_parts: this.num_parts || null
+        num_parts: this.num_parts || null,
+        uploaded: this.uploaded
       };
     }
   }
@@ -115,6 +117,8 @@ const WithFile = (superclass) => {
     await record._uploader.upload(record.file);
 
     record.uploaded = true;
+    record.file = null;
+    await record.save({ skipHooks: false });
 
     return true;
   });
