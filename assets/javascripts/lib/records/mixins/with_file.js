@@ -82,12 +82,22 @@ const WithFile = (superclass) => {
       return mime.lookup(this.name) || null;
     }
 
+    getPartUrl(partNumber) {
+      return `${this.url}.part${partNumber}`;
+    }
+
     getPartUrls() {
       if (!this.num_parts) { return []; }
 
       return new Array(this.num_parts)
         .fill(null)
-        .map((_, index) => `${this.url}.part${index}`);
+        .map((_, index) => this.getPartUrl(index));
+    }
+
+    mapPartUrls(callback) {
+      return this.getPartUrls().map((partUrl, partNumber) => {
+        return callback(partUrl, partNumber);
+      });
     }
 
     attributes() {

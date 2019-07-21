@@ -1,19 +1,28 @@
 import Bottleneck from 'bottleneck';
 
-import Record from './records/record';
-import ProgressRegister from '../lib/progress_register';
+import BaseDocumentUploader from './base_document_uploader';
 
-const publicFileOptions = { encrypt: false, verify: false };
-function putPublicFile(name, contents) {
-  return Record.getSession().putFile(name, contents, publicFileOptions);
-}
-
-class PartitionedDocumentUploader {
+class PartitionedDocumentUploader extends BaseDocumentUploader {
   constructor(doc) {
-    this.doc = doc;
-    this.progress = new ProgressRegister(doc.size);
+    super(doc);
     this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
     this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
+  }
+
+  async upload(file) {
+    const uploadPromises = this.doc.mapPartUrls(async (partUrl, partNumber) => {
+      const fileSlice = this.getFileSlice(file, partNumber);
+      const bufferPromise = this.scheduleRead(fileSlice);
+      await this.scheduleUpload(partUrl, bufferPromise);
+      this.progress.add(fileSlice.size);
+      return true;
+    });
+
+    await Promise.all(uploadPromises);
+
+    this.cleanupLimiters();
+
+    return true;
   }
 
   cleanupLimiters() {
@@ -49,38 +58,11 @@ class PartitionedDocumentUploader {
     });
   }
 
-  scheduleUpload(partNumber, bufferPromise) {
+  scheduleUpload(partUrl, bufferPromise) {
     return this.uploadLimiter.schedule(async () => {
       const partBuffer = await bufferPromise;
-      return this.uploadPart(partNumber, partBuffer)
+      return this.uploadRawFile(partUrl, partBuffer)
     });
-  }
-
-  async upload(file) {
-    const uploadPromises = Array(this.doc.num_parts).fill(null)
-      .map(async (_, partNumber) => {
-        const fileSlice = this.getFileSlice(file, partNumber);
-        const bufferPromise = this.scheduleRead(fileSlice);
-        await this.scheduleUpload(partNumber, bufferPromise);
-        this.progress.add(fileSlice.size);
-        return true;
-      });
-
-    await Promise.all(uploadPromises);
-
-    this.cleanupLimiters();
-
-    return true;
-  }
-
-  onProgress(callback) {
-    this.progress.onChange(callback);
-  }
-
-  uploadPart(partNumber, partBuffer) {
-    const options = { contentType: 'application/octet-stream' };
-    const partUrl = `${this.doc.url}.part${partNumber}`;
-    return putPublicFile(partUrl, partBuffer, options);
   }
 }
 

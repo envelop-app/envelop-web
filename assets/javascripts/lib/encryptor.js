@@ -104,6 +104,12 @@ function decrypt(encrypted, options = {}) {
   else if (options.encoding === 'uint8') {
     return decodeUint8(decrypted);
   }
+  else if (options.encoding === 'uint8-buffer') {
+    return decodeUint8(decrypted).buffer;
+  }
+  else if (options.encoding === 'base64') {
+    return encodeBase64(decrypted);
+  }
   else {
     return decrypted;
   }
