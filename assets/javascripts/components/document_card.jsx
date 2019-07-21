@@ -103,8 +103,6 @@ class DocumentCardComponent extends Component {
     const {deleting, doc} = this.props;
     const progress = this.state.progress;
 
-    console.log(doc.isReady());
-
     return (
       <div className={`ev-document-card ${this.isDisabled() && 'ev-document-card__disabled'}`}>
         <DocumentCardMediaComponent

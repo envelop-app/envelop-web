@@ -33,7 +33,6 @@ const WithFile = (superclass) => {
 
       this.file = fields.file;
       this.downloadProgressCallbacks = [];
-      this.uploaded = fields.uploaded || false;
       this.uploadProgressCallbacks = [];
       this.url = fields.url || uuid();
     }

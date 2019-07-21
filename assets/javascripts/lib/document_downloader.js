@@ -26,29 +26,34 @@ class DocumentDownloader {
 
   async downloadContents() {
     const getOptions = { username: this.doc._username, decrypt: false, verify: false };
-    const encryptedContents = await publicSession.getFile(this.doc.url, getOptions);
-    const encryptedPayload = JSON.parse(encryptedContents);
+    const contents = await publicSession.getFile(this.doc.url, getOptions);
 
-    const options = {
-      salt: this.doc.id,
-      passcode: this.doc.passcode,
-      iv: Encryptor.utils.decodeBase64(encryptedPayload.iv),
-      encoding: 'uint8'
-    };
+    let parsedContents = contents;
 
-    const decrypted = Encryptor.decrypt(encryptedPayload.payload, options);
+    if (this.doc.version > 1) {
+      parsedContents = JSON.parse(contents);
+
+      const options = {
+        salt: this.doc.id,
+        passcode: this.doc.passcode,
+        iv: Encryptor.utils.decodeBase64(parsedContents.iv),
+        encoding: 'uint8'
+      };
+
+      parsedContents = Encryptor.decrypt(parsedContents.payload, options);
+    }
 
     // FIXME:
     // Test the solution with the url = 'base64.,' and then
     // fetch(url) becase in that case decoding should be done by the
     // browser's native code
 
-    return this.createBlob(decrypted);
+    return this.createBlob(parsedContents);
   }
 
   createBlob(contents) {
     const blobOptions = { name: this.doc.name, type: this.doc.getMimeType() };
-    return new Blob([ contents ], blobOptions);
+    return new Blob([contents], blobOptions);
   }
 
   revokeLater(objectUrl) {

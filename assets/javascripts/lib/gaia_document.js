@@ -172,4 +172,9 @@ GaiaDocument.afterInitialize((record) => {
   }
 });
 
+GaiaDocument.afterInitialize((record) => {
+  if (record.version < 2) { return; }
+  record.uploaded = record.uploaded || false;
+});
+
 export default GaiaDocument;
