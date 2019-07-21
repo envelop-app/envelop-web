@@ -7,6 +7,7 @@ function generateHash(length) {
 const hooks = {
   afterInitialize: [],
   beforeSave: [],
+  afterSave: [],
   beforeDelete: []
 }
 
@@ -57,6 +58,10 @@ class Record {
 
   static beforeSave(callback) {
     this.addHook('beforeSave', callback);
+  }
+
+  static afterSave(callback) {
+    this.addHook('afterSave', callback);
   }
 
   static beforeDelete(callback) {
@@ -126,6 +131,9 @@ class Record {
     const content = JSON.stringify(serialized);
     const fileOptions = { encrypt: false, verify: false };
     await Record.getSession().putFile(payload.id, content, fileOptions);
+
+    await this.runHooks('afterSave');
+
     return Object.assign(this, payload);
   }
 

@@ -1,6 +1,5 @@
 import Bottleneck from 'bottleneck';
 
-import Constants from './constants';
 import Record from './records/record';
 import ProgressRegister from '../lib/progress_register';
 
@@ -11,8 +10,6 @@ function putPublicFile(name, contents) {
 
 class PartitionedDocumentUploader {
   constructor(doc) {
-    this.partSize = doc.partSize || Constants.FILE_PART_SIZE;
-    this.numParts = Math.ceil(doc.size / this.partSize);
     this.doc = doc;
     this.progress = new ProgressRegister(doc.size);
     this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
@@ -25,8 +22,8 @@ class PartitionedDocumentUploader {
   }
 
   getFileSlice(file, partNumber) {
-    const startAt = partNumber * this.partSize;
-    const endAt = (partNumber + 1) * this.partSize;
+    const startAt = partNumber * this.doc.partSize;
+    const endAt = (partNumber + 1) * this.doc.partSize;
     return file.slice(startAt, endAt);
   }
 
@@ -60,7 +57,7 @@ class PartitionedDocumentUploader {
   }
 
   async upload(file) {
-    const uploadPromises = Array(this.numParts).fill(null)
+    const uploadPromises = Array(this.doc.num_parts).fill(null)
       .map(async (_, partNumber) => {
         const fileSlice = this.getFileSlice(file, partNumber);
         const bufferPromise = this.scheduleRead(fileSlice);
@@ -73,10 +70,7 @@ class PartitionedDocumentUploader {
 
     this.cleanupLimiters();
 
-    const uploadResult = {};
-    uploadResult.numParts = this.numParts;
-
-    return uploadResult;
+    return true;
   }
 
   onProgress(callback) {

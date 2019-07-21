@@ -2,12 +2,27 @@ import Encryptor from './encryptor';
 import GaiaDocument from './gaia_document';
 import Record from './records/record';
 
-
 const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
-function mockSession(session) {
-  Record.config({ session });
+class MockSession {
+  constructor() {
+    this.files = {};
+  }
+
+  async getFile(path) {
+    if (!this.files[path]) {
+      throw '404 File does not exist';
+    }
+    return Promise.resolve(this.files[path]);
+  }
+
+  putFile(path, contents) {
+    this.files[path] = contents;
+    return Promise.resolve(path);
+  }
 }
+
+Record.config({ session: new MockSession() });
 
 function jsonify(payload) {
   return JSON.parse(JSON.stringify(payload));
@@ -37,8 +52,6 @@ test('new documents are version = 2', async () => {
 describe('v2', () => {
   describe('.save', () => {
     test('populates appropriate attributes', async () => {
-      mockSession({ putFile: async() => true });
-
       const attributes = {
         name: 'name.pdf',
         size: 500,
@@ -54,14 +67,10 @@ describe('v2', () => {
     });
 
     test('encrypts contents', async () => {
-      let encryptedContent = null;
-      mockSession({
-        putFile: async (_, content) => encryptedContent = content
-      });
-
       const doc = buildDoc();
       await doc.save();
 
+      const encryptedContent = await Record.getSession().getFile(doc.id);
       const encryptedPayload = JSON.parse(encryptedContent);
       const payloadKeys = Object.keys(encryptedPayload).sort();
       expect(payloadKeys).toEqual(['iv', 'payload']);
@@ -75,32 +84,27 @@ describe('v2', () => {
 
   describe('.get', () => {
     test('parses encrypted document', async () => {
-      let docBeforeSave = new GaiaDocument({
+      let doc = new GaiaDocument({
         id: '123',
         url: 'abcdef',
         name: 'name.pdf',
         size: 500,
         created_at: new Date('2019-07-16T10:47:39.865Z'),
-        num_parts: 2,
+        num_parts: 1,
         passcode: '123',
         uploaded: true,
         version: 2
       })
+      await doc.save();
 
-      const encrypted = JSON.stringify(docBeforeSave.serialize());
-      mockSession({ getFile: async() => encrypted });
-
-      const getOptions = {
-        passcode: docBeforeSave.passcode,
-        salt: docBeforeSave.id
-      };
-      const doc = await GaiaDocument.get('123', getOptions);
+      const getOptions = { passcode: doc.passcode, salt: doc.id };
+      doc = await GaiaDocument.get(doc.id, getOptions);
 
       expect(doc.url).toBe('abcdef');
       expect(doc.name).toBe('name.pdf');
       expect(doc.size).toBe(500);
       expect(doc.created_at).toEqual(new Date('2019-07-16T10:47:39.865Z'));
-      expect(doc.num_parts).toBe(2);
+      expect(doc.num_parts).toBe(1);
       expect(doc.uploaded).toBe(true);
       expect(doc.version).toBe(2);
     });
@@ -170,9 +174,9 @@ describe('v1', () => {
     });
 
     test('parses document', async () => {
-      mockSession({ getFile: async() => JSON.stringify(v1Attributes) })
+      await Record.getSession().putFile(v1Attributes.id, JSON.stringify(v1Attributes));
 
-      const doc = await GaiaDocument.get('123');
+      const doc = await GaiaDocument.get(v1Attributes.id);
 
       expect(doc.url).toBe('abcdef/name.pdf');
       expect(doc.name).toBe('name.pdf');
@@ -186,9 +190,9 @@ describe('v1', () => {
 
   describe('.attributes', () => {
     test('parses from v1 attributes', async () => {
-      mockSession({ getFile: async() => JSON.stringify(v1Attributes) })
+      await Record.getSession().putFile(v1Attributes.id, JSON.stringify(v1Attributes));
 
-      const doc = await GaiaDocument.get('123');
+      const doc = await GaiaDocument.get(v1Attributes.id);
       const docJson = jsonify(doc);
 
       const expectedJson = jsonify({

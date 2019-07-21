@@ -2,9 +2,9 @@ import mime from 'mime-types';
 import uuid from 'uuid/v4';
 
 import Constants from '../../constants';
+import DocumentDownloader from '../../document_downloader';
 import DocumentRemover from '../../document_remover';
 import DocumentUploader from '../../document_uploader';
-import { publicUserSession as publicSession } from '../../blockstack_client';
 import PartitionedDocumentDownloader from '../../partitioned_document_downloader';
 import PartitionedDocumentUploader from '../../partitioned_document_uploader';
 
@@ -34,22 +34,22 @@ const WithFile = (superclass) => {
       this.file = fields.file;
       this.downloadProgressCallbacks = [];
       this.uploadProgressCallbacks = [];
+      this.url = fields.url || uuid();
     }
 
     async download() {
       if (this.num_parts && this.num_parts > 1) {
         this._downloader = new PartitionedDocumentDownloader(this);
-        this.downloadProgressCallbacks.forEach((callback) => {
-          this._downloader.onProgress(callback);
-        });
-        return await this._downloader.download();
       }
       else {
-        const options = { username: this._username, decrypt: false, verify: false };
-        const fileUrl = await publicSession.getFileUrl(this.url, options);
-        this.downloadProgressCallbacks.forEach((callback) => callback(1));
-        return fileUrl;
+        this._downloader = new DocumentDownloader(this);
       }
+
+      this.downloadProgressCallbacks.forEach((callback) => {
+        this._downloader.onProgress(callback);
+      });
+
+      return await this._downloader.download();
     }
 
     onDownloadProgress(callback) {
@@ -101,19 +101,26 @@ const WithFile = (superclass) => {
     }
   }
 
-  klass.beforeDelete((record) => {
-    return new DocumentRemover(record).remove();
-  });
-
   klass.beforeSave(async (record) => {
-    record.url = record.url || uuid();
-
-    record._uploader = getUploader(record, record.uploadProgressCallbacks);
-    const uploadResult = await record._uploader.upload(record.file);
-
-    record.num_parts = uploadResult.numParts;
+    record.partSize = record.partSize || Constants.FILE_PART_SIZE;
+    record.num_parts = Math.ceil(record.size / record.partSize);
 
     return true;
+  });
+
+  klass.afterSave(async (record) => {
+    if (!record.file) { return; }
+
+    record._uploader = getUploader(record, record.uploadProgressCallbacks);
+    await record._uploader.upload(record.file);
+
+    record.uploaded = true;
+
+    return true;
+  });
+
+  klass.beforeDelete((record) => {
+    return new DocumentRemover(record).remove();
   });
 
   return klass;
