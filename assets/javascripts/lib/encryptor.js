@@ -43,9 +43,7 @@ function generateIv() {
 }
 
 function encrypt(contents, options = {}) {
-  if (options.key || (options.passcode && options.salt)) {
-    // do nothing
-  } else {
+  if (!options.key && !(options.passcode && options.salt)) {
     throw("Either `key` or (`passcode` and `salt`) are required for 'decrypt'")
   }
 
@@ -83,13 +81,12 @@ function encrypt(contents, options = {}) {
 }
 
 function decrypt(encrypted, options = {}) {
-  // if (!options.passcode || !options.iv || !options.salt) {
-  //   throw("options { passcode, iv, salt } are required for 'decrypt'")
-  // }
-  if (options.iv && (options.key || (options.passcode && options.salt))) {
-    // do nothing
-  } else {
-    throw("iv and (either `key` or (`passcode` and `salt`)) are required for 'decrypt'")
+  if (!options.iv) {
+    throw("iv is required for 'decrypt'");
+  }
+
+  if (!options.key && !(options.passcode && options.salt)) {
+    throw("Either `key` or (`passcode` and `salt`)) are required for 'decrypt");
   }
 
   const key = options.key || generateKey(options.passcode, { salt: options.salt });
