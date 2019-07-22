@@ -16,28 +16,25 @@ class DocumentDownloader {
     this.progress.onChange(callback);
   }
 
-  async downloadRawFile(url) {
+  async downloadRawFile(url, options = {}) {
     const getOptions = { username: this.doc._username, decrypt: false, verify: false };
     const contents = await Record.getSession().getFile(url, getOptions);
 
     let parsedContents = contents;
 
     if (this.doc.version > 1) {
-      parsedContents = JSON.parse(contents);
-
       if (!this._encryptionKey) {
         const keyOptions = { salt: this.doc.id };
         this._encryptionKey = Encryptor.utils.generateKey(this.doc.passcode, keyOptions);
       }
 
-      const options = {
-        salt: this.doc.id,
+      const decryptOptions = {
         key: this._encryptionKey,
-        iv: Encryptor.utils.decodeBase64(parsedContents.iv),
+        iv: this.getIv(options.partNumber),
         encoding: 'uint8-buffer',
       };
 
-      parsedContents = Encryptor.decrypt(parsedContents.payload, options);
+      parsedContents = Encryptor.decrypt(parsedContents, decryptOptions);
     }
 
     return parsedContents;
@@ -54,6 +51,11 @@ class DocumentDownloader {
       setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
       window.removeEventListener('focus', handler);
     });
+  }
+
+  getIv(partNumber) {
+    const iv = this.doc.ivs[partNumber];
+    return Encryptor.utils.decodeBase64(iv);
   }
 }
 

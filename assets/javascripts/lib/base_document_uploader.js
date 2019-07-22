@@ -21,28 +21,26 @@ class BaseDocumentUploader {
     this.progress.onChange(callback);
   }
 
-  uploadRawFile(path, contents) {
+  uploadRawFile(path, contents, options = {}) {
     if (!this._encryptionKey) {
       const keyOptions = { salt: this.doc.id };
       this._encryptionKey = Encryptor.utils.generateKey(this.doc.passcode, keyOptions);
     }
 
-    const encrypted = Encryptor.encrypt(
-      contents,
-      {
-        key: this._encryptionKey,
-        salt: this.doc.id,
-        encoding: 'base64'
-      }
-    );
+    const encryptOptions = {
+      key: this._encryptionKey,
+      encoding: 'uint8-buffer',
+      iv: this.getIv(options.partNumber)
+    }
+    const encrypted = Encryptor.encrypt(contents, encryptOptions);
 
-    const encryptedPayload = JSON.stringify({
-      iv: encrypted.iv,
-      payload: encrypted.payload
-    });
+    const uploadOptions = { contentType: 'application/octet-stream' };
+    return putPublicFile(path, encrypted.payload, uploadOptions);
+  }
 
-    const options = { contentType: 'application/json' };
-    return putPublicFile(path, encryptedPayload, options);
+  getIv(partNumber) {
+    const iv = this.doc.ivs[partNumber];
+    return Encryptor.utils.decodeBase64(iv);
   }
 }
 

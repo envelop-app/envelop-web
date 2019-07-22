@@ -13,7 +13,7 @@ class PartitionedDocumentUploader extends BaseDocumentUploader {
     const uploadPromises = this.doc.mapPartUrls(async (partUrl, partNumber) => {
       const fileSlice = this.getFileSlice(file, partNumber);
       const bufferPromise = this.scheduleRead(fileSlice);
-      await this.scheduleUpload(partUrl, bufferPromise);
+      await this.scheduleUpload(partUrl, bufferPromise, partNumber);
       this.progress.add(fileSlice.size);
       return true;
     });
@@ -58,10 +58,10 @@ class PartitionedDocumentUploader extends BaseDocumentUploader {
     });
   }
 
-  scheduleUpload(partUrl, bufferPromise) {
+  scheduleUpload(partUrl, bufferPromise, partNumber) {
     return this.uploadLimiter.schedule(async () => {
       const partBuffer = await bufferPromise;
-      return this.uploadRawFile(partUrl, partBuffer)
+      return this.uploadRawFile(partUrl, partBuffer, { partNumber });
     });
   }
 }

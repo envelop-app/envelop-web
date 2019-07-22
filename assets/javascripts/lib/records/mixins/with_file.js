@@ -5,6 +5,7 @@ import Constants from '../../constants';
 import DocumentDownloader from '../../document_downloader';
 import DocumentRemover from '../../document_remover';
 import DocumentUploader from '../../document_uploader';
+import Encryptor from '../../encryptor';
 import PartitionedDocumentDownloader from '../../partitioned_document_downloader';
 import PartitionedDocumentUploader from '../../partitioned_document_uploader';
 
@@ -107,14 +108,23 @@ const WithFile = (superclass) => {
         url: this.url || null,
         size: this.size || null,
         num_parts: this.num_parts || null,
-        uploaded: this.uploaded
+        uploaded: this.uploaded,
+        ivs: this.ivs || null
       };
     }
   }
 
   klass.beforeSave(async (record) => {
+    if (!record.file) { return; }
+
     record.partSize = record.partSize || Constants.FILE_PART_SIZE;
     record.num_parts = Math.ceil(record.size / record.partSize);
+
+    record.ivs = [];
+    for (let i = 0; i < record.num_parts; i++) {
+      const iv = Encryptor.utils.generateIv();
+      record.ivs.push(Encryptor.utils.encodeBase64(iv));
+    }
 
     return true;
   });

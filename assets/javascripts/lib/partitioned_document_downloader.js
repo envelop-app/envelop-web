@@ -25,8 +25,8 @@ class PartitionedDocumentDownloader extends BaseDocumentDownloader {
   }
 
   downloadAndSavePartsLocally() {
-    const promises = this.doc.mapPartUrls(async (partUrl) => {
-      const part = await this.scheduleDownload(partUrl);
+    const promises = this.doc.mapPartUrls(async (partUrl, partNumber) => {
+      const part = await this.scheduleDownload(partUrl, partNumber);
       await LocalDatabase.setItem(this.localUrl(partUrl), part);
       this.progress.add(part.byteLength);
       return true;
@@ -39,8 +39,8 @@ class PartitionedDocumentDownloader extends BaseDocumentDownloader {
     return `download:${partUrl}`;
   }
 
-  scheduleDownload(partUrl) {
-    return this.limiter.schedule(() => this.downloadRawFile(partUrl));
+  scheduleDownload(partUrl, partNumber) {
+    return this.limiter.schedule(() => this.downloadRawFile(partUrl, { partNumber }));
   }
 
   loadPartsFromLocal() {

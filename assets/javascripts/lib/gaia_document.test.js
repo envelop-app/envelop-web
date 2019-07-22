@@ -79,9 +79,10 @@ describe('v2', () => {
       expect(doc.version).toBe(2);
       expect(doc.url).toMatch(uuidRegex);
       expect(doc.name).toEqual('name.pdf');
-      expect(doc.passcode).toMatch(/[A-Za-z0-9]{16}/)
+      expect(doc.passcode).toMatch(/[A-Za-z0-9]{16}/);
       expect(doc.uploaded).toBe(true);
       expect(doc.isReady()).toBe(true);
+      expect(doc.ivs).toHaveLength(1);
     });
 
     test('encrypts contents', async () => {
@@ -158,7 +159,8 @@ describe('v2', () => {
         created_at: new Date('2019-07-16T10:47:39.865Z'),
         num_parts: 2,
         uploaded: true,
-        version: 2
+        version: 2,
+        ivs: ['123']
       }
 
       const doc = new GaiaDocument(attributes);
@@ -175,7 +177,8 @@ describe('v2', () => {
         size: 500,
         url: 'abcdef',
         name: 'name.pdf',
-        uploaded: true
+        uploaded: true,
+        ivs: ['123']
       });
     });
   });
@@ -296,7 +299,8 @@ describe('v1', () => {
         size: 500,
         url: 'abcdef/name.pdf',
         name: 'name.pdf',
-        uploaded: true
+        uploaded: true,
+        ivs: null
       });
 
       expect(docJson).toEqual(expectedJson);

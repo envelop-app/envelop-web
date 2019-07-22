@@ -24,6 +24,10 @@ function decodeUint8(wordArray) {
   return buffer
 }
 
+function encodeUint8(array) {
+  return crypto.lib.WordArray.create(array);
+}
+
 function generateKey(input, options = {}) {
   const salt = options.salt;
   const iterations = 5000;
@@ -98,6 +102,11 @@ function decrypt(encrypted, options = {}) {
     // format: crypto.enc.Utf8
   };
 
+  if (encrypted instanceof ArrayBuffer) {
+    const encryptedWordArray = crypto.lib.WordArray.create(encrypted);
+    encrypted = { ciphertext: encryptedWordArray };
+  }
+
   const decrypted = crypto.AES.decrypt(encrypted, key, cryptoOptions);
 
   if (options.encoding === 'utf8') {
@@ -123,6 +132,8 @@ const Encryptor = {
   utils: {
     decodeBase64,
     encodeBase64,
+    decodeUint8,
+    encodeUint8,
     generateKey,
     generateIv
   }
@@ -154,4 +165,3 @@ export default Encryptor;
 //     throw 'gluglu';
 //   }
 // }
-
