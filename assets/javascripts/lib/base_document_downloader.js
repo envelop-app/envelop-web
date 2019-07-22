@@ -25,9 +25,14 @@ class DocumentDownloader {
     if (this.doc.version > 1) {
       parsedContents = JSON.parse(contents);
 
+      if (!this._encryptionKey) {
+        const keyOptions = { salt: this.doc.id };
+        this._encryptionKey = Encryptor.utils.generateKey(this.doc.passcode, keyOptions);
+      }
+
       const options = {
         salt: this.doc.id,
-        passcode: this.doc.passcode,
+        key: this._encryptionKey,
         iv: Encryptor.utils.decodeBase64(parsedContents.iv),
         encoding: 'uint8-buffer',
       };

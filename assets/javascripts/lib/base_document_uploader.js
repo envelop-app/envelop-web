@@ -22,10 +22,15 @@ class BaseDocumentUploader {
   }
 
   uploadRawFile(path, contents) {
+    if (!this._encryptionKey) {
+      const keyOptions = { salt: this.doc.id };
+      this._encryptionKey = Encryptor.utils.generateKey(this.doc.passcode, keyOptions);
+    }
+
     const encrypted = Encryptor.encrypt(
       contents,
       {
-        passcode: this.doc.passcode,
+        key: this._encryptionKey,
         salt: this.doc.id,
         encoding: 'base64'
       }
