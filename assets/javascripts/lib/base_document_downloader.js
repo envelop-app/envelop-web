@@ -41,7 +41,6 @@ class DocumentDownloader {
   createBlob(contents) {
     const blobOptions = { name: this.doc.name, type: this.doc.getMimeType() };
     const blobContents = contents.length ? contents : [contents];
-    console.log(blobContents)
     return new Blob(blobContents, blobOptions);
   }
 

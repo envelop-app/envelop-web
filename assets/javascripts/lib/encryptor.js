@@ -43,12 +43,14 @@ function generateIv() {
 }
 
 function encrypt(contents, options = {}) {
-  if (!options.passcode || !options.salt) {
-    throw("options { passcode, salt } are required for 'decrypt'")
+  if (options.key || (options.passcode && options.salt)) {
+    // do nothing
+  } else {
+    throw("Either `key` or (`passcode` and `salt`) are required for 'decrypt'")
   }
 
   const generateKeyOptions = { salt: options.salt };
-  const key = generateKey(options.passcode, generateKeyOptions);
+  const key = options.key || generateKey(options.passcode, generateKeyOptions);
   const iv = options.iv || generateIv();
 
   const cryptoOptions = {
@@ -64,30 +66,33 @@ function encrypt(contents, options = {}) {
   const encrypted = crypto.AES.encrypt(contents, key, cryptoOptions);
 
   const result = {};
-  result.passcode = key;
   result.iv = iv;
-  result.payload = encodeBase64(encrypted.ciphertext);
+  result.passcode = key;
+  result.payload = encrypted.ciphertext;
 
   if (options.encoding === 'base64') {
     result.iv = encodeBase64(encrypted.iv);
     result.passcode = encodeBase64(encrypted.key);
     result.payload = encodeBase64(encrypted.ciphertext);
   }
-  else {
-    result.iv = iv;
-    result.passcode = key;
-    result.payload = encrypted;
+  else if (options.encoding === 'uint8-buffer') {
+    result.payload = decodeUint8(encrypted.ciphertext).buffer;
   }
 
   return result;
 }
 
 function decrypt(encrypted, options = {}) {
-  if (!options.passcode || !options.iv || !options.salt) {
-    throw("options { passcode, iv, salt } are required for 'decrypt'")
+  // if (!options.passcode || !options.iv || !options.salt) {
+  //   throw("options { passcode, iv, salt } are required for 'decrypt'")
+  // }
+  if (options.iv && (options.key || (options.passcode && options.salt))) {
+    // do nothing
+  } else {
+    throw("iv and (either `key` or (`passcode` and `salt`)) are required for 'decrypt'")
   }
 
-  const key = generateKey(options.passcode, { salt: options.salt });
+  const key = options.key || generateKey(options.passcode, { salt: options.salt });
 
   const cryptoOptions = {
     iv: options.iv,
@@ -121,7 +126,8 @@ const Encryptor = {
   utils: {
     decodeBase64,
     encodeBase64,
-    generateKey
+    generateKey,
+    generateIv
   }
 };
 

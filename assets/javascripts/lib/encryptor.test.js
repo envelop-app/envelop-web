@@ -1,5 +1,4 @@
 import crypto from 'crypto-js';
-// import encoding from 'text-encoding';
 
 import Encryptor from './encryptor';
 
