@@ -35,7 +35,7 @@ class LocalIndex {
   }
 
   _dump() {
-    return LocalDatabase.setItem(indexKey, this.attributes())
+    return LocalDatabase.setItem(indexKey, this.serialize())
   }
 }
 
