@@ -1,8 +1,8 @@
 import BaseDocumentUploader from './base_document_uploader';
 
 class DocumentUploader extends BaseDocumentUploader {
-  constructor(doc) {
-    super(doc);
+  constructor() {
+    super(...arguments);
     this.reader = new FileReader();
   }
 

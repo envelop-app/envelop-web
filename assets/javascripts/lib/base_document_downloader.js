@@ -3,9 +3,10 @@ import ProgressRegister from './progress_register';
 import Record from './records/record';
 
 class DocumentDownloader {
-  constructor(doc) {
+  constructor(doc, options = {}) {
     this.doc = doc;
     this.progress = new ProgressRegister(doc.size);
+    this.encryption = options.encryption;
   }
 
   async download() {
@@ -50,7 +51,7 @@ class DocumentDownloader {
   }
 
   getIv(partNumber) {
-    const iv = this.doc.ivs[partNumber];
+    const iv = this.encryption.ivs[partNumber];
     return Encryptor.utils.decodeBase64(iv);
   }
 
@@ -58,11 +59,11 @@ class DocumentDownloader {
     if (this._encryptionKey) { return this._encryptionKey; }
 
     const keyOptions = {
-      salt: this.doc.salt,
-      keyIterations: this.doc.key_iterations,
-      keySize: this.doc.key_size
+      salt: this.encryption.salt,
+      keyIterations: this.encryption.key_iterations,
+      keySize: this.encryption.key_size
     };
-    const key = Encryptor.utils.generateKey(this.doc.passcode, keyOptions);
+    const key = Encryptor.utils.generateKey(this.encryption.passcode, keyOptions);
 
     return this._encryptionKey = key;
   }

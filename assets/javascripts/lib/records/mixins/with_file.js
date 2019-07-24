@@ -9,20 +9,32 @@ import Encryptor from '../../encryptor';
 import PartitionedDocumentDownloader from '../../partitioned_document_downloader';
 import PartitionedDocumentUploader from '../../partitioned_document_uploader';
 
-function getUploader(payload, callbacks) {
+function getUploader(record) {
   let uploader = null;
 
-  if (payload.size <= Constants.SINGLE_FILE_SIZE_LIMIT) {
-    uploader = new DocumentUploader(payload)
+  const options = {
+    encryption: {
+      salt: record.salt,
+      keyIterations: record.key_iterations,
+      keySize: record.key_size,
+      passcode: record.passcode,
+      ivs: record.ivs
+    }
   }
-  else if (payload.size > Constants.SINGLE_FILE_SIZE_LIMIT) {
-    uploader = new PartitionedDocumentUploader(payload)
+
+  if (record.size <= Constants.SINGLE_FILE_SIZE_LIMIT) {
+    uploader = new DocumentUploader(record, options)
+  }
+  else if (record.size > Constants.SINGLE_FILE_SIZE_LIMIT) {
+    uploader = new PartitionedDocumentUploader(record, options)
   }
   else {
     throw("Cant get uploader - missing 'size'")
   }
 
-  callbacks.forEach((callback) => uploader.onProgress(callback));
+  record.uploadProgressCallbacks.forEach((callback) => {
+    uploader.onProgress(callback);
+  });
 
   return uploader;
 }
@@ -39,11 +51,21 @@ const WithFile = (superclass) => {
     }
 
     async download() {
+      const options = {
+        encryption: {
+          salt: this.salt,
+          keyIterations: this.key_iterations,
+          keySize: this.key_size,
+          passcode: this.passcode,
+          ivs: this.ivs
+        }
+      }
+
       if (this.num_parts && this.num_parts > 1) {
-        this._downloader = new PartitionedDocumentDownloader(this);
+        this._downloader = new PartitionedDocumentDownloader(this, options);
       }
       else {
-        this._downloader = new DocumentDownloader(this);
+        this._downloader = new DocumentDownloader(this, options);
       }
 
       this.downloadProgressCallbacks.forEach((callback) => {
@@ -136,7 +158,7 @@ const WithFile = (superclass) => {
     // in order to be able to 'serialize' attributes first
     record.salt = record.id;
 
-    record._uploader = getUploader(record, record.uploadProgressCallbacks);
+    record._uploader = getUploader(record);
     await record._uploader.upload(record.file);
 
     record.uploaded = true;

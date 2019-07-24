@@ -4,8 +4,8 @@ import BaseDocumentDownloader from './base_document_downloader';
 import LocalDatabase from './local_database';
 
 class PartitionedDocumentDownloader extends BaseDocumentDownloader {
-  constructor(doc) {
-    super(doc);
+  constructor() {
+    super(...arguments);
     this.limiter = new Bottleneck({ maxConcurrent: 3 });
   }
 

@@ -3,8 +3,8 @@ import Bottleneck from 'bottleneck';
 import BaseDocumentUploader from './base_document_uploader';
 
 class PartitionedDocumentUploader extends BaseDocumentUploader {
-  constructor(doc) {
-    super(doc);
+  constructor() {
+    super(...arguments);
     this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
     this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
   }
