@@ -41,7 +41,7 @@ class PartitionedDocumentUploader extends BaseDocumentUploader {
       const reader = new FileReader();
 
       reader.onload = (evt) => {
-        resolve(evt.target.result);
+        resolve(evt.target.result || reader.result);
       };
 
       reader.onerror = (evt) => {

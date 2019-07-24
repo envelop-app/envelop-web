@@ -22,13 +22,8 @@ class BaseDocumentUploader {
   }
 
   uploadRawFile(path, contents, options = {}) {
-    if (!this._encryptionKey) {
-      const keyOptions = { salt: this.doc.id };
-      this._encryptionKey = Encryptor.utils.generateKey(this.doc.passcode, keyOptions);
-    }
-
     const encryptOptions = {
-      key: this._encryptionKey,
+      key: this.getEncryptionKey(),
       encoding: 'uint8-buffer',
       iv: this.getIv(options.partNumber)
     }
@@ -41,6 +36,19 @@ class BaseDocumentUploader {
   getIv(partNumber) {
     const iv = this.doc.ivs[partNumber];
     return Encryptor.utils.decodeBase64(iv);
+  }
+
+  getEncryptionKey() {
+    if (this._encryptionKey) { return this._encryptionKey; }
+
+    const keyOptions = {
+      salt: this.doc.salt,
+      keyIterations: this.doc.key_iterations,
+      keySize: this.doc.key_size
+    };
+    const key = Encryptor.utils.generateKey(this.doc.passcode, keyOptions);
+
+    return this._encryptionKey = key;
   }
 }
 

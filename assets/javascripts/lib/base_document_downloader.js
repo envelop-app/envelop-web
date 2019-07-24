@@ -23,13 +23,9 @@ class DocumentDownloader {
     let parsedContents = contents;
 
     if (this.doc.version > 1) {
-      if (!this._encryptionKey) {
-        const keyOptions = { salt: this.doc.id };
-        this._encryptionKey = Encryptor.utils.generateKey(this.doc.passcode, keyOptions);
-      }
 
       const decryptOptions = {
-        key: this._encryptionKey,
+        key: this.getEncryptionKey(),
         iv: this.getIv(options.partNumber),
         encoding: 'uint8-buffer',
       };
@@ -56,6 +52,19 @@ class DocumentDownloader {
   getIv(partNumber) {
     const iv = this.doc.ivs[partNumber];
     return Encryptor.utils.decodeBase64(iv);
+  }
+
+  getEncryptionKey() {
+    if (this._encryptionKey) { return this._encryptionKey; }
+
+    const keyOptions = {
+      salt: this.doc.salt,
+      keyIterations: this.doc.key_iterations,
+      keySize: this.doc.key_size
+    };
+    const key = Encryptor.utils.generateKey(this.doc.passcode, keyOptions);
+
+    return this._encryptionKey = key;
   }
 }
 

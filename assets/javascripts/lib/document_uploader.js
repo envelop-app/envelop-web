@@ -9,7 +9,7 @@ class DocumentUploader extends BaseDocumentUploader {
   upload(file) {
     return new Promise((resolve, reject) => {
       this.reader.onload = (evt) => {
-        const buffer = evt.target.result;
+        const buffer = evt.target.result || this.reader.result;
         const rawFilePromise = this.uploadRawFile(this.doc.url, buffer, { partNumber: 0 });
 
         rawFilePromise

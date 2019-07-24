@@ -132,6 +132,10 @@ const WithFile = (superclass) => {
   klass.afterSave(async (record) => {
     if (!record.file) { return; }
 
+    // FIXME: only record.attributes must be passed to the uploader,
+    // in order to be able to 'serialize' attributes first
+    record.salt = record.id;
+
     record._uploader = getUploader(record, record.uploadProgressCallbacks);
     await record._uploader.upload(record.file);
 

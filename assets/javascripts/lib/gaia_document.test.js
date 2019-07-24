@@ -1,3 +1,4 @@
+import Constants from './constants';
 import Encryptor from './encryptor';
 import GaiaDocument from './gaia_document';
 import Record from './records/record';
@@ -92,7 +93,10 @@ describe('v2', () => {
       const encryptedContent = await Record.getSession().getFile(doc.id);
       const encryptedPayload = JSON.parse(encryptedContent);
       const payloadKeys = Object.keys(encryptedPayload).sort();
-      expect(payloadKeys).toEqual(['iv', 'payload']);
+      expect(payloadKeys).toEqual(['iv', 'key_iterations', 'key_size', 'payload', 'salt']);
+      expect(encryptedPayload.key_iterations).toEqual(10000);
+      expect(encryptedPayload.key_size).toEqual(256);
+      expect(encryptedPayload.salt).toEqual(doc.id);
 
       const options = { salt: doc.id, passcode: doc.passcode};
       const decrypted = GaiaDocument.parse(encryptedPayload, options);
@@ -101,23 +105,29 @@ describe('v2', () => {
     });
 
     test('uploads encrypted file', async () => {
-      const file = new File(["I'm encrypted"], 'foo.txt', { type: 'text/plain' });
+      const buffer = new ArrayBuffer(8);
+      const uint8View = new Uint8Array(buffer);
+      for (var i=0; i< uint8View.length; i++) {
+        uint8View[i] = i % 4;
+      }
+
+      const file = new File([buffer], 'foo.txt', { type: 'text/plain' });
       const doc = GaiaDocument.fromFile(file);
       await doc.save();
 
       const encryptedContent = await Record.getSession().getFile(doc.url);
-      const encryptedPayload = JSON.parse(encryptedContent);
-      const payloadKeys = Object.keys(encryptedPayload).sort();
-      expect(payloadKeys).toEqual(['iv', 'payload']);
 
       const options = {
         salt: doc.id,
+        keySize: 256,
+        keyIterations: 10000,
         passcode: doc.passcode,
-        iv: Encryptor.utils.decodeBase64(encryptedPayload.iv),
-        encoding: 'utf8'
+        iv: Encryptor.utils.decodeBase64(doc.ivs[0]),
+        encoding: 'uint8-buffer'
       };
-      const decrypted = Encryptor.decrypt(encryptedPayload.payload, options);
-      expect(decrypted).toEqual("I'm encrypted");
+
+      const decrypted = Encryptor.decrypt(encryptedContent, options);
+      expect(new Uint8Array(decrypted)).toEqual(uint8View);
     });
   });
 
@@ -178,7 +188,10 @@ describe('v2', () => {
         url: 'abcdef',
         name: 'name.pdf',
         uploaded: true,
-        ivs: ['123']
+        ivs: ['123'],
+        key_iterations: 10000,
+        key_size: 256,
+        salt: '123'
       });
     });
   });
@@ -234,11 +247,6 @@ describe('v2', () => {
     expect(doc.id).toEqual(null);
     expect(doc.isReady()).toEqual(false);
   });
-
-  describe('.serialize', () => {
-    test('returns encrypted shit', async () => {
-    });
-  })
 });
 
 describe('v1', () => {
@@ -300,7 +308,10 @@ describe('v1', () => {
         url: 'abcdef/name.pdf',
         name: 'name.pdf',
         uploaded: true,
-        ivs: null
+        ivs: null,
+        salt: '123',
+        key_iterations: 10000,
+        key_size: 256,
       });
 
       expect(docJson).toEqual(expectedJson);

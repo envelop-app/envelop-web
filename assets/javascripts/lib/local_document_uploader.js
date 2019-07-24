@@ -13,7 +13,7 @@ class LocalDocumentUploader {
     new Promise((resolve) => {
       this.reader.onload = (evt) => {
         const payload = Object.assign({}, this.doc, {
-          localContents: evt.target.result
+          localContents: evt.target.result || this.reader.result
         });
         const documentKey = `${Constants.TEMP_DOCUMENTS_PREFIX}/${payload.id}`;
 

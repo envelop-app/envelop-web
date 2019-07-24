@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ensureUsernameExists();
     mountComponents();
   } else if (privateUserSession.isSignInPending()) {
-    privateUserSession.handlePendingSignIn().then(userData => {
+    privateUserSession.handlePendingSignIn().then(() => {
       window.location = window.location.href;
     });
   } else {

@@ -48,7 +48,7 @@ class PartitionedDocumentDownloader extends BaseDocumentDownloader {
       return LocalDatabase.getItem(this.localUrl(partUrl));
     });
 
-    return  Promise.all(promises);
+    return Promise.all(promises);
   }
 
   deletePartsFromLocal() {
@@ -56,7 +56,7 @@ class PartitionedDocumentDownloader extends BaseDocumentDownloader {
       return LocalDatabase.removeItem(this.localUrl(partUrl));
     });
 
-    return  Promise.all(promises);
+    return Promise.all(promises);
   }
 }
 

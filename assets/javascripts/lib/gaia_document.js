@@ -20,7 +20,7 @@ const types = {
   archive: ['zip', 'rar', 'tar', 'gz', '7z', 'bz', 'bz2', 'arc'],
 };
 
-const version = 2;
+const currentVersion = 2;
 
 class GaiaDocument extends WithFile(Record) {
   static fromFile(file) {
@@ -47,7 +47,9 @@ class GaiaDocument extends WithFile(Record) {
       {
         iv: Encryptor.utils.decodeBase64(raw.iv),
         passcode: options.passcode,
-        salt: options.salt,
+        salt: raw.salt,
+        keySize: raw.key_size,
+        keyIterations: raw.key_iterations,
         encoding: 'utf8'
       }
     );
@@ -117,7 +119,10 @@ class GaiaDocument extends WithFile(Record) {
       localId: this.id || null,
       passcode: this.passcode || null,
       version: this.version || null,
-      name: this.name || null
+      name: this.name || null,
+      salt: this.salt || this.id || null,
+      key_iterations: this.key_iterations || null,
+      key_size: this.key_size || null
     };
   }
 
@@ -125,15 +130,20 @@ class GaiaDocument extends WithFile(Record) {
     const encryptedPayload = Encryptor.encrypt(
       JSON.stringify(payload),
       {
-        passcode: payload.passcode,
         salt: payload.id,
+        keyIterations: payload.key_iterations,
+        keySize: payload.key_size,
+        passcode: payload.passcode,
         encoding: 'base64'
       }
     );
 
     return super.serialize({
+      salt: payload.id,
+      key_iterations: payload.key_iterations,
+      key_size: payload.key_size,
       iv: encryptedPayload.iv,
-      payload: encryptedPayload.payload
+      payload: encryptedPayload.payload,
     });
   }
 
@@ -160,7 +170,7 @@ GaiaDocument.afterInitialize((record) => {
     record.version = record.version || 1;
   }
   else {
-    record.version = version;
+    record.version = currentVersion;
   }
 });
 
@@ -175,6 +185,11 @@ GaiaDocument.afterInitialize((record) => {
 GaiaDocument.afterInitialize((record) => {
   if (record.version < 2) { return; }
   record.uploaded = record.uploaded || false;
+});
+
+GaiaDocument.afterInitialize((record) => {
+  record.key_iterations = record.key_iterations || Constants.KEY_ITERATIONS;
+  record.key_size = record.key_size || Constants.KEY_SIZE;
 });
 
 export default GaiaDocument;

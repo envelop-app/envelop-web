@@ -1,4 +1,15 @@
-import crypto from 'crypto-js';
+import crypto from 'crypto-js/core';
+import 'crypto-js/enc-base64';
+import 'crypto-js/enc-utf8';
+import 'crypto-js/lib-typedarrays';
+import 'crypto-js/pbkdf2';
+import 'crypto-js/sha1';
+import 'crypto-js/sha256';
+import 'crypto-js/aes';
+import 'crypto-js/mode-ctr';
+import 'crypto-js/pad-nopadding';
+
+import Constants from './constants';
 
 function encodeBase64(content) {
   return content.toString(crypto.enc.Base64);
@@ -9,6 +20,7 @@ function decodeBase64(content) {
 }
 
 function decodeUint8(wordArray) {
+  wordArray.clamp()
   var length = wordArray.words.length;
   var buffer = new Uint8Array(length << 2);
   var offset = 0;
@@ -29,14 +41,14 @@ function encodeUint8(array) {
 }
 
 function generateKey(input, options = {}) {
-  const salt = options.salt;
-  const iterations = 5000;
-  const keyLength = 128;
+  if (!options.salt) {
+    throw "`options.salt` is required for 'generateKey()'";
+  }
 
-  const key = crypto.PBKDF2(input, salt, {
-    keySize: keyLength / 32,
-    iterations: iterations,
-    hasher: crypto.algo.SHA1
+  const key = crypto.PBKDF2(input, options.salt, {
+    keySize: (options.keySize || Constants.KEY_SIZE) / 32,
+    iterations: options.keyIterations || Constants.KEY_ITERATIONS,
+    hasher: options.hasher || crypto.algo.SHA256
   });
 
   return options.encoding === 'base64' ? encodeBase64(key) : key;
@@ -51,7 +63,12 @@ function encrypt(contents, options = {}) {
     throw("Either `key` or (`passcode` and `salt`) are required for 'decrypt'")
   }
 
-  const generateKeyOptions = { salt: options.salt };
+  const generateKeyOptions = {
+    salt: options.salt,
+    keyIterations: options.keyIterations,
+    keySize: options.keySize,
+    hasher: options.hasher
+  };
   const key = options.key || generateKey(options.passcode, generateKeyOptions);
   const iv = options.iv || generateIv();
 
@@ -93,7 +110,13 @@ function decrypt(encrypted, options = {}) {
     throw("Either `key` or (`passcode` and `salt`)) are required for 'decrypt");
   }
 
-  const key = options.key || generateKey(options.passcode, { salt: options.salt });
+  const generatekeyoptions = {
+    salt: options.salt,
+    keyIterations: options.keyIterations,
+    keySize: options.keySize,
+    hasher: options.hasher
+  };
+  const key = options.key || generateKey(options.passcode, generatekeyoptions);
 
   const cryptoOptions = {
     iv: options.iv,
@@ -136,6 +159,10 @@ const Encryptor = {
     encodeUint8,
     generateKey,
     generateIv
+  },
+  hashers: {
+    SHA1: crypto.algo.SHA1,
+    SHA256: crypto.algo.SHA256
   }
 };
 
@@ -152,7 +179,6 @@ export default Encryptor;
 //     return JSON.stringify(encrypted);
 //   },
 //   parse: function (json) {
-//   //   console.log('cu')
 //   //   // const encrypted = JSON.parse(json);
 //   //   //
 //   //   // const cipherParams = crypto.lib.CipherParams.create({
@@ -161,7 +187,5 @@ export default Encryptor;
 //   //   // });
 //   //   //
 //   //   // return cipherParams;
-//     // console.log('ble')
-//     throw 'gluglu';
 //   }
 // }
