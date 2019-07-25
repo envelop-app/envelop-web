@@ -23,7 +23,7 @@ class BaseDocumentUploader {
     this.progress.onChange(callback);
   }
 
-  async uploadRawFile(path, contents, options = {}) {
+  async encrypt(contents, options = {}) {
     const key = this.getEncryptionKey();
     const iv = this.encryption.ivs[options.partNumber];
 
@@ -53,11 +53,18 @@ class BaseDocumentUploader {
       encrypted = result.payload;
     }
 
+    return encrypted;
+  }
+
+  async uploadRawFile(path, contents, options = {}) {
+    let encrypted = await this.encrypt(contents, options)
     contents = null;
 
     const uploadOptions = { contentType: 'application/octet-stream' };
     let putFile = putPublicFile(path, encrypted, uploadOptions);
+
     encrypted = null;
+
     return putFile;
   }
 
