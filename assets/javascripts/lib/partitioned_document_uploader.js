@@ -5,20 +5,17 @@ import BaseDocumentUploader from './base_document_uploader';
 class PartitionedDocumentUploader extends BaseDocumentUploader {
   constructor() {
     super(...arguments);
-    this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
     this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
   }
 
   async upload(file) {
-    const uploadPromises = this.doc.mapPartUrls(async (partUrl, partNumber) => {
-      const bufferPromise = this.scheduleRead(file, partNumber);
-      await this.scheduleUpload(partUrl, bufferPromise, partNumber);
-      return true;
+    const uploadPromises = this.doc.mapPartUrls((partUrl, partNumber) => {
+      return this.scheduleUpload(file, partUrl, partNumber);
     });
 
     await Promise.all(uploadPromises);
 
-    this.encryptor && this.encryptor.terminate();
+    this.encryptor && await this.encryptor.terminate();
     this.encryptor = null;
 
     this.cleanupLimiters();
@@ -27,7 +24,6 @@ class PartitionedDocumentUploader extends BaseDocumentUploader {
   }
 
   cleanupLimiters() {
-    this.readLimiter.disconnect();
     this.uploadLimiter.disconnect();
   }
 
@@ -53,20 +49,17 @@ class PartitionedDocumentUploader extends BaseDocumentUploader {
     });
   }
 
-  scheduleRead(file, partNumber) {
-    return this.readLimiter.schedule(() => {
-      let fileSlice = this.getFileSlice(file, partNumber);
-      return this.readFileSlice(fileSlice);
-    });
-  }
-
-  scheduleUpload(partUrl, bufferPromise, partNumber) {
+  scheduleUpload(file, partUrl, partNumber) {
     return this.uploadLimiter.schedule(async () => {
-      let partBuffer = await bufferPromise;
-      const upload =  this.uploadRawFile(partUrl, partBuffer, { partNumber });
+      let fileSlice = this.getFileSlice(file, partNumber);
+      let partBuffer = await this.readFileSlice(fileSlice);
+      fileSlice = null;
+
+      const uploadPromise = await this.uploadRawFile(partUrl, partBuffer, { partNumber });
       this.progress.add(partBuffer.byteLength);
       partBuffer = null;
-      return upload;
+
+      return uploadPromise;
     });
   }
 }
