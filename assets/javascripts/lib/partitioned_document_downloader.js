@@ -10,9 +10,20 @@ class PartitionedDocumentDownloader extends BaseDocumentDownloader {
   }
 
   async download() {
-    await this.downloadAndSavePartsLocally();
+    let parts;
 
-    const parts = await this.loadPartsFromLocal();
+    try {
+      await this.downloadParts();
+      parts = await this.loadPartsFromLocal();
+    }
+    catch (e) {
+      if (e.name === 'QuotaExceededError') {
+        await this.deletePartsFromLocal();
+
+        parts = await this.downloadParts({ saveLocal: false });
+      }
+    }
+
     const blob = this.createBlob(parts);
     const objectUrl = URL.createObjectURL(blob);
 
@@ -24,12 +35,23 @@ class PartitionedDocumentDownloader extends BaseDocumentDownloader {
     return objectUrl;
   }
 
-  downloadAndSavePartsLocally() {
+  downloadParts(options = {}) {
+    const saveLocal = (options.saveLocal === false) ? false : true;
+
     const promises = this.doc.mapPartUrls(async (partUrl, partNumber) => {
-      const part = await this.scheduleDownload(partUrl, partNumber);
-      await LocalDatabase.setItem(this.localUrl(partUrl), part);
+      // `ret` is needed because we don't want to keep the part buffer
+      // around if the data is saved locally to disk (LocalDatabase).
+      let ret = true;
+      let part = await this.scheduleDownload(partUrl, partNumber);
+
+      if (saveLocal) {
+        ret = await LocalDatabase.setItem(this.localUrl(partUrl), part);
+        part = null;
+      }
+
       this.progress.add(part.byteLength);
-      return true;
+
+      return ret;
     });
 
     return Promise.all(promises);
