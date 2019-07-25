@@ -82,11 +82,9 @@ function encrypt(contents, options = {}) {
   }
 
   const encrypted = crypto.AES.encrypt(contents, key, cryptoOptions);
+  contents = null;
 
   const result = {};
-  result.iv = iv;
-  result.passcode = key;
-  result.payload = encrypted.ciphertext;
 
   if (options.encoding === 'base64') {
     result.iv = encodeBase64(encrypted.iv);
@@ -95,6 +93,12 @@ function encrypt(contents, options = {}) {
   }
   else if (options.encoding === 'uint8-buffer') {
     result.payload = decodeUint8(encrypted.ciphertext).buffer;
+    delete encrypted.ciphertext;
+  }
+  else {
+    result.iv = iv;
+    result.passcode = key;
+    result.payload = encrypted.ciphertext;
   }
 
   return result;

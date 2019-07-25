@@ -6,8 +6,18 @@ function isProduction() {
  return process.env.NODE_ENV === 'production';
 }
 
-let BLOCKSTACK_ORIGIN = window.location.origin;
-let SHARE_URI = window.location.origin + '/d';
+let _window;
+
+// Web Workers don't have access to the `window` context
+if (typeof window === 'undefined') {
+  _window = { location: { origin: 'https://envelop.app' } }
+}
+else {
+  _window = window;
+}
+
+let BLOCKSTACK_ORIGIN = _window.location.origin;
+let SHARE_URI = _window.location.origin + '/d';
 if (isProduction() && !isPreview()) {
   BLOCKSTACK_ORIGIN = 'https://envelop.app';
   SHARE_URI = 'https://envl.app';

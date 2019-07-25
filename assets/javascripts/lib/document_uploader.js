@@ -15,6 +15,8 @@ class DocumentUploader extends BaseDocumentUploader {
         rawFilePromise
           .then(() => {
             this.progress.add(this.doc.size);
+            this.encryptor && this.encryptor.terminate();
+            this.encryptor = null;
             resolve(this.doc);
           });
       }

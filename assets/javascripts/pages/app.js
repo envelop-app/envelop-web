@@ -37,4 +37,3 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location = window.location.origin;
   }
 });
-

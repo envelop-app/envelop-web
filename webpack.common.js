@@ -3,6 +3,7 @@ const path = require('path');
 const autoprefixer = require('autoprefixer');
 const fs = require('fs');
 const globImporter = require('node-sass-glob-importer');
+const WorkerPlugin = require('worker-plugin');
 
 function getPageEntries() {
   // Read all files under /assets/javascripts/pages/* and create
@@ -75,7 +76,8 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       __PREVIEW__: !!process.env.PREVIEW
-    })
+    }),
+    new WorkerPlugin
   ],
   optimization: {
     splitChunks: {
