@@ -107,7 +107,7 @@ describe('v2', () => {
     test('uploads encrypted file', async () => {
       const buffer = new ArrayBuffer(8);
       const uint8View = new Uint8Array(buffer);
-      for (var i=0; i< uint8View.length; i++) {
+      for (let i = 0; i < uint8View.length; i++) {
         uint8View[i] = i % 4;
       }
 
@@ -123,11 +123,16 @@ describe('v2', () => {
         keyIterations: 10000,
         passcode: doc.passcode,
         iv: Encryptor.utils.decodeBase64(doc.ivs[0]),
-        encoding: 'uint8-buffer'
+        encoding: 'uint8'
       };
 
       const decrypted = Encryptor.decrypt(encryptedContent, options);
-      expect(new Uint8Array(decrypted)).toEqual(uint8View);
+
+      expect(decrypted.length).toEqual(uint8View.length);
+
+      for (let i = uint8View.length - 1; i === 0; i--) {
+        expect(decrypted[i]).toEqual(uint8View[i]);
+      }
     });
   });
 

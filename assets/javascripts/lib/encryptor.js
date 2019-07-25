@@ -20,9 +20,8 @@ function decodeBase64(content) {
 }
 
 function decodeUint8(wordArray) {
-  wordArray.clamp()
   var length = wordArray.words.length;
-  var buffer = new Uint8Array(length << 2);
+  var buffer = new Uint8Array(wordArray.sigBytes);
   var offset = 0;
 
   for (var i = 0; i < length; i++) {
@@ -33,7 +32,7 @@ function decodeUint8(wordArray) {
     buffer[offset++] = word & 0xff;
   }
 
-  return buffer
+  return buffer;
 }
 
 function encodeUint8(array) {
