@@ -65,7 +65,7 @@ class AvatarComponent extends Component {
     } else if (item == 1) {
       window.open('mailto:feedback@envelop.app?subject=Envelop Feedback', '_blank');
     } else if (item == 2) {
-      window.open('https://app-center.openintents.org/appco/1453/comment', '_blank', 'noopener');
+      window.open('https://app-center.openintents.org/appco/1453/review', '_blank', 'noopener');
     } else if (item == 3) {
       privateUserSession.signUserOut();
       window.location = window.location.origin;
