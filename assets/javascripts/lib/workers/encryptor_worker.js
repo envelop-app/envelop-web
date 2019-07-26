@@ -11,6 +11,20 @@ import Encryptor from '../encryptor';
  *
  * => https://github.com/GoogleChromeLabs/worker-plugin/issues/24
  *
+ *
+ * Also, we had to fork worker-plugin because it was generating
+ * names like 0.worker.js for worker files after build, even in production,
+ * and we have to introduct some kind of cache bust mechanis such as
+ * the one we are using in Middleman (ex: common-876r5.js).
+ *
+ * The strategy is:
+ *
+ * - worker files are now generated with random string prefixes (such
+ *   as 0ifd3.worker.js), which has to be done in the fork of worker-plugin
+ *   we are now maintaining. Worker files, specifically, cannot have suffixes
+ *   put by Middleman because they have to be referenced in the JS code,
+ *   and final build pathnames are not known at that point.
+ *
  */
 
 self.onmessage = function(message) {

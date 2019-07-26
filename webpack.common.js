@@ -71,14 +71,14 @@ module.exports = {
         query: {
           presets: ['@babel/preset-env', '@babel/preset-react'],
         },
-      }
+      },
     ]
   },
   plugins: [
     new webpack.DefinePlugin({
       __PREVIEW__: !!process.env.PREVIEW
     }),
-    new WorkerPlugin
+    new WorkerPlugin()
   ],
   optimization: {
     splitChunks: {

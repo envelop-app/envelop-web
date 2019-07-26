@@ -29,7 +29,7 @@ class BaseDocumentUploader {
 
     let encrypted = null;
 
-    if (window.Worker) {
+    if (this.doc.num_parts > 1 && window.Worker) {
       this.encryptor = await this.getEncryptor();
 
       const response = await this.encryptor.perform(
