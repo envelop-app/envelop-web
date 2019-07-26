@@ -33,7 +33,8 @@ module.exports = {
 
   output: {
     path: path.join(__dirname, '.tmp', 'dist'),
-    filename: 'javascripts/[name].js'
+    filename: 'javascripts/[name].js',
+    publicPath: '/'
   },
 
   module: {

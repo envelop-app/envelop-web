@@ -1,7 +1,7 @@
 import Encryptor from './encryptor';
 import Record from './records/record';
 import ProgressRegister from './progress_register';
-import Workers from '../lib/workers';
+import Workers from './workers';
 
 const publicFileOptions = { encrypt: false, verify: false };
 function putPublicFile(name, contents) {
@@ -38,7 +38,8 @@ class BaseDocumentUploader {
           contents,
           iv,
           key,
-          encoding: 'uint8-buffer'
+          encoding: 'uint8-buffer',
+          type: 'encrypt'
         },
         [contents]
       );
