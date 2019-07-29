@@ -5,7 +5,7 @@ import MaterialIcon from '@material/react-material-icon';
 import Constants from '../lib/constants';
 import Dialogs from '../lib/dialogs';
 import GaiaDocument from '../lib/gaia_document';
-import GaiaIndex from '../lib/gaia_index';
+import { gaiaIndex } from '../lib/gaia_index';
 import LocalIndex from '../lib/local_index';
 import Page from '../lib/page';
 
@@ -18,7 +18,6 @@ class AppComponent extends Component {
     super();
     this.inputRef = React.createRef();
     this.localIndex = new LocalIndex();
-    this.gaiaIndex = new GaiaIndex();
     this.state = Object.assign({},
       Dialogs.initState(),
       { documents: [], deleting: null, loading: true }
@@ -27,18 +26,18 @@ class AppComponent extends Component {
 
   componentDidMount() {
     Page.preventClose(async () => {
-      this.gaiaIndex.onChange(() => {
-        this.setState({ documents: this.gaiaIndex.documents });
+      gaiaIndex.onChange(() => {
+        this.setState({ documents: gaiaIndex.documents });
       });
 
       await this.localIndex.load();
 
       if (this.localIndex.tempDocuments.length > 0) {
         this.setState({ documents: this.localIndex.tempDocuments });
-        await this.gaiaIndex.addDocuments(this.localIndex.tempDocuments);
+        await gaiaIndex.addDocuments(this.localIndex.tempDocuments);
         this.localIndex.setTempDocuments([]);
       } else {
-        await this.gaiaIndex.load();
+        await gaiaIndex.load();
       }
 
       this.setState({ loading: false });
@@ -66,7 +65,7 @@ class AppComponent extends Component {
     Page.preventClose(() => {
       const gaiaDocuments = files.map(file => GaiaDocument.fromFile(file));
       this.setState({ documents: [...gaiaDocuments, ...this.state.documents] });
-      return this.gaiaIndex.addDocuments(gaiaDocuments);
+      return gaiaIndex.addDocuments(gaiaDocuments);
     });
   }
 
@@ -80,7 +79,7 @@ class AppComponent extends Component {
 
   onConfirmDelete = (doc) => {
     this.setState({ deleting: doc });
-    this.gaiaIndex.deleteDocument(doc);
+    gaiaIndex.deleteDocument(doc);
   }
 
   showEmptyState() {
