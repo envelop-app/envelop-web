@@ -7,6 +7,7 @@ class BaseDocumentDownloader {
   constructor(doc) {
     this.doc = doc;
     this.progress = new ProgressRegister(doc.size);
+    this.encryptor = new Workers.Encryptor({ restartEvery: 10 });
   }
 
   async download() {
@@ -33,8 +34,6 @@ class BaseDocumentDownloader {
     let decrypted = null;
 
     if (this.doc.num_parts > 1 && window.Worker) {
-      this.encryptor = await this.getEncryptor();
-
       const response = await this.encryptor.perform(
         {
           ...encryption,
@@ -75,35 +74,12 @@ class BaseDocumentDownloader {
   getEncryptionKey(encryption) {
     if (this._encryptionKey) { return this._encryptionKey; }
 
-    const keyOptions = {
-      salt: encryption.salt,
-      keyIterations: encryption.key_iterations,
-      keySize: encryption.key_size
-    };
-    const key = Encryptor.utils.generateKey(encryption.passcode, keyOptions);
+    const key = Encryptor.utils.generateKey(
+      encryption.passcode,
+      {...encryption, encoding: 'base64' }
+    );
 
-    return this._encryptionKey = Encryptor.utils.encodeBase64(key);
-  }
-
-  async getEncryptor() {
-    // Opera is showing high memory usage (> 2GB) while uploading a large
-    // file (> 1GB) possibly because it is not releasing memory during the whole
-    // process. It was observed that the stale memory was related with the Web Worker,
-    // so we are killing and replacing the worker on every 10 calls (9MB each call
-    // as of the time of this writing as per Constants.FILE_PART_SIZE)
-
-    this._encryptor_calls = this._encryptor_calls || 1;
-
-    if (this.encryptor && this._encryptor_calls % 10 === 0) {
-      await this.encryptor.terminate();
-      this.encryptor = null;
-    }
-
-    this.encryptor = this.encryptor || new Workers.Encryptor();
-
-    this._encryptor_calls++;
-
-    return this.encryptor;
+    return this._encryptionKey = key;
   }
 }
 

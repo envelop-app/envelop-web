@@ -1,4 +1,4 @@
-import { chunk } from 'lodash';
+import chunk from 'lodash/chunk';
 import GaiaDocument from './gaia_document';
 import Record from './records/record';
 
