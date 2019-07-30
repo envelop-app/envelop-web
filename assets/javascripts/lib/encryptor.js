@@ -53,8 +53,9 @@ function generateKey(input, options = {}) {
   return options.encoding === 'base64' ? encodeBase64(key) : key;
 }
 
-function generateIv() {
-  return crypto.lib.WordArray.random(128 / 8);
+function generateIv(options = {}) {
+  const iv = crypto.lib.WordArray.random(128 / 8);
+  return options.encoding === 'base64' ? encodeBase64(iv) : iv;
 }
 
 function encrypt(contents, options = {}) {

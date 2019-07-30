@@ -27,7 +27,7 @@ class DocumentDownloader {
     }
 
     const key = this.getEncryptionKey();
-    const iv = this.encryption.ivs[options.partNumber];
+    const iv = this.encryption.part_ivs[options.partNumber];
 
     let decrypted = null;
 

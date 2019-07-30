@@ -83,7 +83,7 @@ describe('v2', () => {
       expect(doc.passcode).toMatch(/[A-Za-z0-9]{16}/);
       expect(doc.uploaded).toBe(true);
       expect(doc.isReady()).toBe(true);
-      expect(doc.ivs).toHaveLength(1);
+      expect(doc.part_ivs).toHaveLength(1);
     });
 
     test('encrypts contents', async () => {
@@ -91,15 +91,25 @@ describe('v2', () => {
       await doc.save();
 
       const encryptedContent = await Record.getSession().getFile(doc.id);
-      const encryptedPayload = JSON.parse(encryptedContent);
-      const payloadKeys = Object.keys(encryptedPayload).sort();
-      expect(payloadKeys).toEqual(['iv', 'key_iterations', 'key_size', 'payload', 'salt']);
-      expect(encryptedPayload.key_iterations).toEqual(10000);
-      expect(encryptedPayload.key_size).toEqual(256);
-      expect(encryptedPayload.salt).toEqual(doc.id);
+      const encrypted = JSON.parse(encryptedContent);
+      const payloadKeys = Object.keys(encrypted).sort();
+      expect(payloadKeys).toEqual(['encryption', 'payload']);
+
+      const encryption = encrypted.encryption;
+      const encryptionKeys = Object.keys(encryption).sort();
+      expect(encryptionKeys).toEqual(['params', 'type']);
+
+      expect(encryption.type).toEqual('PBKDF2/AES');
+      const params = encryption.params;
+      const paramKeys = Object.keys(params).sort();
+      expect(paramKeys).toEqual(['iv', 'key_iterations', 'key_size', 'salt']);
+
+      expect(params.key_iterations).toEqual(10000);
+      expect(params.key_size).toEqual(256);
+      expect(params.salt).toEqual(doc.id);
 
       const options = { salt: doc.id, passcode: doc.passcode};
-      const decrypted = GaiaDocument.parse(encryptedPayload, options);
+      const decrypted = GaiaDocument.parse(encrypted, options);
 
       expect(decrypted).toEqual(jsonify(doc));
     });
@@ -122,7 +132,7 @@ describe('v2', () => {
         keySize: 256,
         keyIterations: 10000,
         passcode: doc.passcode,
-        iv: Encryptor.utils.decodeBase64(doc.ivs[0]),
+        iv: Encryptor.utils.decodeBase64(doc.part_ivs[0]),
         encoding: 'uint8'
       };
 
@@ -175,7 +185,7 @@ describe('v2', () => {
         num_parts: 2,
         uploaded: true,
         version: 2,
-        ivs: ['123']
+        part_ivs: ['123']
       }
 
       const doc = new GaiaDocument(attributes);
@@ -193,10 +203,8 @@ describe('v2', () => {
         url: 'abcdef',
         name: 'name.pdf',
         uploaded: true,
-        ivs: ['123'],
-        key_iterations: 10000,
-        key_size: 256,
-        salt: '123'
+        part_ivs: ['123'],
+        encryption: null
       });
     });
   });
@@ -313,10 +321,8 @@ describe('v1', () => {
         url: 'abcdef/name.pdf',
         name: 'name.pdf',
         uploaded: true,
-        ivs: null,
-        salt: '123',
-        key_iterations: 10000,
-        key_size: 256,
+        part_ivs: null,
+        encryption: null
       });
 
       expect(docJson).toEqual(expectedJson);

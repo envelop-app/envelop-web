@@ -1,6 +1,6 @@
 import { chunk } from 'lodash';
 import GaiaDocument from './gaia_document';
-import { privateUserSession } from './blockstack_client';
+import Record from './records/record';
 
 const version = 1;
 
@@ -42,8 +42,8 @@ class GaiaIndex {
   }
 
   async load() {
-    const indexJson = await privateUserSession.getFile('index');
-    const index = JSON.parse(indexJson);
+    const indexJson = await Record.getSession().getFile('index');
+    const index = indexJson && JSON.parse(indexJson);
 
     if (index) {
       this.version = index.version || 1;
@@ -79,7 +79,7 @@ class GaiaIndex {
   async _syncFile(callback) {
     await this.load();
     callback(this);
-    await privateUserSession.putFile('index', JSON.stringify(this));
+    await Record.getSession().putFile('index', JSON.stringify(this));
     return this;
   }
 }

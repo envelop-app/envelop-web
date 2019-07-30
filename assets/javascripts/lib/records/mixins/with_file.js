@@ -14,11 +14,8 @@ function getUploader(record) {
 
   const options = {
     encryption: {
-      salt: record.salt,
-      keyIterations: record.key_iterations,
-      keySize: record.key_size,
-      passcode: record.passcode,
-      ivs: record.ivs
+      ...record.getEncryption().toEncryptor(),
+      part_ivs: record.part_ivs
     }
   }
 
@@ -51,13 +48,11 @@ const WithFile = (superclass) => {
     }
 
     async download() {
-      const options = {
-        encryption: {
-          salt: this.salt,
-          keyIterations: this.key_iterations,
-          keySize: this.key_size,
-          passcode: this.passcode,
-          ivs: this.ivs
+      const options = {};
+      if (this.version > 1) {
+        options.encryption = {
+          ...this.getEncryption().toEncryptor(),
+          part_ivs: this.part_ivs
         }
       }
 
@@ -131,7 +126,7 @@ const WithFile = (superclass) => {
         size: this.size || null,
         num_parts: this.num_parts || null,
         uploaded: this.uploaded,
-        ivs: this.ivs || null
+        part_ivs: this.part_ivs || null
       };
     }
   }
@@ -142,10 +137,10 @@ const WithFile = (superclass) => {
     record.partSize = record.partSize || Constants.FILE_PART_SIZE;
     record.num_parts = Math.ceil(record.size / record.partSize);
 
-    record.ivs = [];
+    record.part_ivs = [];
     for (let i = 0; i < record.num_parts; i++) {
       const iv = Encryptor.utils.generateIv();
-      record.ivs.push(Encryptor.utils.encodeBase64(iv));
+      record.part_ivs.push(Encryptor.utils.encodeBase64(iv));
     }
 
     return true;

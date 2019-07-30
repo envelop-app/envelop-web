@@ -22,6 +22,50 @@ const types = {
 
 const currentVersion = 2;
 
+class Encryption {
+  static parse(raw) {
+    return new this({
+      type: raw.type,
+      iv: Encryptor.utils.decodeBase64(raw.params.iv),
+      key_iterations: raw.params.key_iterations,
+      key_size: raw.params.key_size,
+      passcode: raw.params.passcode,
+      salt: raw.params.salt
+    });
+  }
+
+  constructor(fields = {}) {
+    this.type = fields.type || 'PBKDF2/AES';
+    this.key_iterations = fields.key_iterations || Constants.KEY_ITERATIONS;
+    this.key_size = fields.key_size || Constants.KEY_SIZE;
+    this.passcode = fields.passcode;
+    this.salt = fields.salt;
+    this.iv = fields.iv || Encryptor.utils.generateIv();
+  }
+
+  serialize() {
+    return {
+      type: this.type,
+      params: {
+        iv: Encryptor.utils.encodeBase64(this.iv),
+        key_iterations: this.key_iterations,
+        key_size: this.key_size,
+        salt: this.salt
+      }
+    }
+  }
+
+  toEncryptor() {
+    return {
+      iv: this.iv,
+      keyIterations: this.key_iterations,
+      keySize: this.key_size,
+      passcode: this.passcode,
+      salt: this.salt
+    };
+  }
+}
+
 class GaiaDocument extends WithFile(Record) {
   static fromFile(file) {
     return new this({
@@ -38,20 +82,16 @@ class GaiaDocument extends WithFile(Record) {
   }
 
   static parse(raw, options = {}) {
-    if (!raw.iv && !raw.payload) {
+    if (!raw.encryption) {
       return super.parse(raw, options);
     }
 
+    const encryption = Encryption.parse({ ...raw.encryption });
+    encryption.passcode = options.passcode;
+
     const decrypted = Encryptor.decrypt(
       raw.payload,
-      {
-        iv: Encryptor.utils.decodeBase64(raw.iv),
-        passcode: options.passcode,
-        salt: raw.salt,
-        keySize: raw.key_size,
-        keyIterations: raw.key_iterations,
-        encoding: 'utf8'
-      }
+      {...encryption.toEncryptor(), encoding: 'utf8' }
     );
 
     const attributes = JSON.parse(decrypted);
@@ -120,31 +160,32 @@ class GaiaDocument extends WithFile(Record) {
       passcode: this.passcode || null,
       version: this.version || null,
       name: this.name || null,
-      salt: this.salt || this.id || null,
-      key_iterations: this.key_iterations || null,
-      key_size: this.key_size || null
+      encryption: this.encryption || null
     };
   }
 
   serialize(payload = this) {
+    const encryptionParams = { salt: payload.id, passcode: payload.passcode };
+    const encryption = new Encryption(encryptionParams);
+    const serializedEncryption = encryption.serialize();
+
+    payload.encryption = serializedEncryption;
+
     const encryptedPayload = Encryptor.encrypt(
       JSON.stringify(payload),
-      {
-        salt: payload.id,
-        keyIterations: payload.key_iterations,
-        keySize: payload.key_size,
-        passcode: payload.passcode,
-        encoding: 'base64'
-      }
+      {...encryption.toEncryptor(), encoding: 'base64'}
     );
 
     return super.serialize({
-      salt: payload.id,
-      key_iterations: payload.key_iterations,
-      key_size: payload.key_size,
-      iv: encryptedPayload.iv,
-      payload: encryptedPayload.payload,
+      encryption: serializedEncryption,
+      payload: encryptedPayload.payload
     });
+  }
+
+  getEncryption() {
+    const encryption = Encryption.parse(this.encryption);
+    encryption.passcode = this.passcode;
+    return encryption;
   }
 
   shareUrl() {
@@ -185,11 +226,6 @@ GaiaDocument.afterInitialize((record) => {
 GaiaDocument.afterInitialize((record) => {
   if (record.version < 2) { return; }
   record.uploaded = record.uploaded || false;
-});
-
-GaiaDocument.afterInitialize((record) => {
-  record.key_iterations = record.key_iterations || Constants.KEY_ITERATIONS;
-  record.key_size = record.key_size || Constants.KEY_SIZE;
 });
 
 export default GaiaDocument;

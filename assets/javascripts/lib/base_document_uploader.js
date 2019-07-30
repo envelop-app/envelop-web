@@ -25,7 +25,7 @@ class BaseDocumentUploader {
 
   async encrypt(contents, options = {}) {
     const key = this.getEncryptionKey();
-    const iv = this.encryption.ivs[options.partNumber];
+    const iv = this.encryption.part_ivs[options.partNumber];
 
     let encrypted = null;
 
