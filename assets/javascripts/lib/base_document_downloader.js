@@ -3,11 +3,10 @@ import ProgressRegister from './progress_register';
 import Record from './records/record';
 import Workers from './workers';
 
-class DocumentDownloader {
-  constructor(doc, options = {}) {
+class BaseDocumentDownloader {
+  constructor(doc) {
     this.doc = doc;
     this.progress = new ProgressRegister(doc.size);
-    this.encryption = options.encryption;
   }
 
   async download() {
@@ -26,8 +25,10 @@ class DocumentDownloader {
       return contents;
     }
 
-    const key = this.getEncryptionKey();
-    const iv = this.encryption.part_ivs[options.partNumber];
+    const encryption = this.doc.getEncryption().toEncryptor();
+
+    const key = this.getEncryptionKey(encryption);
+    const iv = this.doc.part_ivs[options.partNumber];
 
     let decrypted = null;
 
@@ -36,7 +37,7 @@ class DocumentDownloader {
 
       const response = await this.encryptor.perform(
         {
-          ...this.encryption,
+          ...encryption,
           contents,
           iv,
           key,
@@ -71,15 +72,15 @@ class DocumentDownloader {
     });
   }
 
-  getEncryptionKey() {
+  getEncryptionKey(encryption) {
     if (this._encryptionKey) { return this._encryptionKey; }
 
     const keyOptions = {
-      salt: this.encryption.salt,
-      keyIterations: this.encryption.key_iterations,
-      keySize: this.encryption.key_size
+      salt: encryption.salt,
+      keyIterations: encryption.key_iterations,
+      keySize: encryption.key_size
     };
-    const key = Encryptor.utils.generateKey(this.encryption.passcode, keyOptions);
+    const key = Encryptor.utils.generateKey(encryption.passcode, keyOptions);
 
     return this._encryptionKey = Encryptor.utils.encodeBase64(key);
   }
@@ -106,4 +107,4 @@ class DocumentDownloader {
   }
 }
 
-export default DocumentDownloader;
+export default BaseDocumentDownloader;

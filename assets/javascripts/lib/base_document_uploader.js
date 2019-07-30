@@ -9,10 +9,9 @@ function putPublicFile(name, contents) {
 }
 
 class BaseDocumentUploader {
-  constructor(doc, options = {}) {
+  constructor(doc) {
     this.doc = doc;
     this.progress = new ProgressRegister(doc.size);
-    this.encryption = options.encryption;
   }
 
   upload(_file) {
@@ -24,8 +23,10 @@ class BaseDocumentUploader {
   }
 
   async encrypt(contents, options = {}) {
-    const key = this.getEncryptionKey();
-    const iv = this.encryption.part_ivs[options.partNumber];
+    const encryption = this.doc.getEncryption().toEncryptor();
+
+    const key = this.getEncryptionKey(encryption);
+    const iv = this.doc.part_ivs[options.partNumber];
 
     let encrypted = null;
 
@@ -34,7 +35,7 @@ class BaseDocumentUploader {
 
       const response = await this.encryptor.perform(
         {
-          ...this.encryption,
+          ...encryption,
           contents,
           iv,
           key,
@@ -69,16 +70,16 @@ class BaseDocumentUploader {
     return putFile;
   }
 
-  getEncryptionKey() {
+  getEncryptionKey(encryption) {
     if (this._encryptionKey) { return this._encryptionKey; }
 
     const keyOptions = {
-      salt: this.encryption.salt,
-      keyIterations: this.encryption.keyIterations,
-      keySize: this.encryption.keySize
+      salt: encryption.salt,
+      keyIterations: encryption.keyIterations,
+      keySize: encryption.keySize
     };
     const key = Encryptor.utils.generateKey(
-      this.encryption.passcode,
+      encryption.passcode,
       keyOptions
     );
 

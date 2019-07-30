@@ -12,18 +12,11 @@ import PartitionedDocumentUploader from '../../partitioned_document_uploader';
 function getUploader(record) {
   let uploader = null;
 
-  const options = {
-    encryption: {
-      ...record.getEncryption().toEncryptor(),
-      part_ivs: record.part_ivs
-    }
-  }
-
   if (record.size <= Constants.SINGLE_FILE_SIZE_LIMIT) {
-    uploader = new DocumentUploader(record, options)
+    uploader = new DocumentUploader(record)
   }
   else if (record.size > Constants.SINGLE_FILE_SIZE_LIMIT) {
-    uploader = new PartitionedDocumentUploader(record, options)
+    uploader = new PartitionedDocumentUploader(record)
   }
   else {
     throw("Cant get uploader - missing 'size'")
@@ -48,19 +41,11 @@ const WithFile = (superclass) => {
     }
 
     async download() {
-      const options = {};
-      if (this.version > 1) {
-        options.encryption = {
-          ...this.getEncryption().toEncryptor(),
-          part_ivs: this.part_ivs
-        }
-      }
-
       if (this.num_parts && this.num_parts > 1) {
-        this._downloader = new PartitionedDocumentDownloader(this, options);
+        this._downloader = new PartitionedDocumentDownloader(this);
       }
       else {
-        this._downloader = new DocumentDownloader(this, options);
+        this._downloader = new DocumentDownloader(this);
       }
 
       this.downloadProgressCallbacks.forEach((callback) => {
