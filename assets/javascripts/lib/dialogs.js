@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 
 const DELETE_CONFIRMATION = {
@@ -16,7 +16,13 @@ const MAXIMUM_FILE_SIZE = {
 const EMPTY_FILE = {
   title: "Empty file",
   acceptText: 'Ok, got it',
-  content: <p>Sorry, you can't upload empty files.</p>
+  content: <p>{"Sorry, you can't upload empty files."}</p>
+}
+
+const DIRECTORY = {
+  title: "Directory",
+  acceptText: 'Ok, got it',
+  content: <p>{"Sorry, you can't upload directories."}</p>
 }
 
 function initState() {
@@ -46,6 +52,7 @@ function set(setState, status, dialogState = {}) {
 
 const Dialogs = {
   DELETE_CONFIRMATION,
+  DIRECTORY,
   MAXIMUM_FILE_SIZE,
   EMPTY_FILE,
   initState,
