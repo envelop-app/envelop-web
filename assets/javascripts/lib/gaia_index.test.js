@@ -12,9 +12,6 @@ class MockSession {
   }
 
   async getFile(path) {
-    // if (!this.files[path]) {
-    //   throw '404 File does not exist';
-    // }
     return Promise.resolve(this.files[path]);
   }
 
@@ -22,13 +19,13 @@ class MockSession {
     this.files[path] = contents;
     return Promise.resolve(path);
   }
+
+  loadUserData() {
+    return { username: 'billburr' };
+  }
 }
 
 Record.config({ session: new MockSession() });
-
-function jsonify(payload) {
-  return JSON.parse(JSON.stringify(payload));
-}
 
 function buildDoc() {
   const file = new File(["I'm encrypted"], 'foo.txt', { type: 'text/plain' });

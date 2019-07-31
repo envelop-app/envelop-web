@@ -29,13 +29,7 @@ class DownloadComponent extends Component {
   fetchDocument() {
     const urlData = parseUrl();
 
-    var username = urlData.username;
-    if (!username.includes('.')) {
-      username += '.id.blockstack';
-    }
-
-    // FIXME: salt must be in the file to facilitate this process
-    const options = { username, passcode: urlData.passcode, salt: urlData.hash };
+    const options = { username: urlData.username, passcode: urlData.passcode };
     GaiaDocument
       .get(urlData.hash, options)
       .then((gaiaDocument) => {

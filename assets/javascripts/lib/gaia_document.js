@@ -1,7 +1,6 @@
 import uuid from 'uuid/v4';
 import randomstring from 'randomstring';
 
-import { privateUserSession, } from '../lib/blockstack_client';
 import Constants from '../lib/constants';
 import Encryptor from './encryptor';
 import LocalDocumentUploader from '../lib/local_document_uploader';
@@ -77,10 +76,6 @@ class GaiaDocument extends WithFile(Record) {
     });
   }
 
-  static fromLocal(raw) {
-    return new this(raw);
-  }
-
   static parse(raw, options = {}) {
     if (!raw.encryption) {
       return super.parse(raw, options);
@@ -105,7 +100,19 @@ class GaiaDocument extends WithFile(Record) {
     this.content_type = fields.content_type;
     this.localContents = null;
     this.localId = fields.localId;
-    this._username = options.username;
+
+    if (!this.username) {
+      if (options.username) {
+        this.username = options.username;
+      }
+      else {
+        const userData = Record.getSession().loadUserData();
+        if (userData) {
+          this.username = userData.username;
+        }
+      }
+    }
+
     this.passcode = fields.passcode || generateHash(16);
   }
 
@@ -160,7 +167,8 @@ class GaiaDocument extends WithFile(Record) {
       passcode: this.passcode || null,
       version: this.version || null,
       name: this.name || null,
-      encryption: this.encryption || null
+      encryption: this.encryption || null,
+      username: this.username || null
     };
   }
 
@@ -189,9 +197,7 @@ class GaiaDocument extends WithFile(Record) {
   }
 
   shareUrl() {
-    let username = privateUserSession.loadUserData().username;
-    username = username.replace('.id.blockstack', '');
-
+    const username = this.username.replace('.id.blockstack', '');
     let url = `${Constants.SHARE_URI}/${username}/${this.id}`;
 
     if (this.version > 1) {

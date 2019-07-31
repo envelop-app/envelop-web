@@ -10,7 +10,7 @@ class MockSession {
     this.files = {};
   }
 
-  async getFile(path) {
+  getFile(path) {
     if (!this.files[path]) {
       throw '404 File does not exist';
     }
@@ -20,6 +20,10 @@ class MockSession {
   putFile(path, contents) {
     this.files[path] = contents;
     return Promise.resolve(path);
+  }
+
+  loadUserData() {
+    return { username: 'chrisrock.id.blockstack' };
   }
 }
 
@@ -204,7 +208,8 @@ describe('v2', () => {
         name: 'name.pdf',
         uploaded: true,
         part_ivs: ['123'],
-        encryption: null
+        encryption: null,
+        username: 'chrisrock.id.blockstack'
       });
     });
   });
@@ -306,7 +311,8 @@ describe('v1', () => {
     test('parses from v1 attributes', async () => {
       await Record.getSession().putFile(v1Attributes.id, JSON.stringify(v1Attributes));
 
-      const doc = await GaiaDocument.get(v1Attributes.id);
+      const getOptions = { username: 'davechappelle' };
+      const doc = await GaiaDocument.get(v1Attributes.id, getOptions);
       const docJson = jsonify(doc);
 
       const expectedJson = jsonify({
@@ -322,7 +328,8 @@ describe('v1', () => {
         name: 'name.pdf',
         uploaded: true,
         part_ivs: null,
-        encryption: null
+        encryption: null,
+        username: 'davechappelle.id.blockstack'
       });
 
       expect(docJson).toEqual(expectedJson);

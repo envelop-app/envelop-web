@@ -27,6 +27,10 @@ class Record {
   }
 
   static async get(id, options = {}) {
+    if (options.username && !options.username.includes('.')) {
+      options.username += '.id.blockstack';
+    }
+
     const opts = { decrypt: false, verify: false, ...options };
     const json = await this.getSession().getFile(id, opts);
     const payload = JSON.parse(json);
