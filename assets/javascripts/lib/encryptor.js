@@ -171,25 +171,3 @@ const Encryptor = {
 };
 
 export default Encryptor;
-
-// const formatter = {
-//   stringify: function (cipherParams) {
-//     const encrypted = {
-//       iv: encodeBase64(cipherParams.iv),
-//       passcode: encodeBase64(cipherParams.key),
-//       payload: encodeBase64(cipherParams.ciphertext)
-//     };
-//
-//     return JSON.stringify(encrypted);
-//   },
-//   parse: function (json) {
-//   //   // const encrypted = JSON.parse(json);
-//   //   //
-//   //   // const cipherParams = crypto.lib.CipherParams.create({
-//   //   //   ciphertext: crypto.enc.Base64.parse(encrypted.payload),
-//   //   //   iv: crypto.enc.Base64.parse(encrypted.iv)
-//   //   // });
-//   //   //
-//   //   // return cipherParams;
-//   }
-// }
