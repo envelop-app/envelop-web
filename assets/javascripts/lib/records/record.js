@@ -34,12 +34,12 @@ class Record {
     const opts = { decrypt: false, verify: false, ...options };
     const json = await this.getSession().getFile(id, opts);
     const payload = JSON.parse(json);
-    const parsed = this.parse(payload, options);
+    const parsed = await this.parse(payload, options);
 
     return new this(parsed, options);
   }
 
-  static parse(raw, _options) {
+  static async parse(raw, _options) {
     return raw;
   }
 
@@ -117,7 +117,7 @@ class Record {
     };
   }
 
-  serialize(payload = this) {
+  async serialize(payload = this) {
     return payload;
   }
 
@@ -131,7 +131,7 @@ class Record {
     payload.created_at = this.created_at || new Date();
 
     // TODO: Maybe snakecase keys before upload? or camelize?
-    const serialized = this.serialize(payload);
+    const serialized = await this.serialize(payload);
     const content = JSON.stringify(serialized);
     const fileOptions = { encrypt: false, verify: false };
     await Record.getSession().putFile(payload.id, content, fileOptions);

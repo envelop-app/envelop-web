@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import Encryptor from '../encryptor';
 
 /* All background workloads must be denfined in this file.
@@ -27,25 +28,25 @@ import Encryptor from '../encryptor';
  *
  */
 
-self.onmessage = function(message) {
+self.onmessage = async function(message) {
   switch (message.data.type) {
     case 'decrypt':
-      decrypt(message)
+      await decrypt(message)
       break;
     case 'encrypt':
-      encrypt(message)
+      await encrypt(message)
       break;
     default:
       throw "Unknown or missing worker `type`"
   }
 }
 
-function decrypt(message) {
+async function decrypt(message) {
   const iv = Encryptor.utils.decodeBase64(message.data.iv);
   const key = Encryptor.utils.decodeBase64(message.data.key);
 
   const decryptOptions = { iv, key, encoding: 'uint8-buffer' };
-  let decrypted = Encryptor.decrypt(message.data.contents, decryptOptions);
+  let decrypted = await Encryptor.decrypt(message.data.contents, decryptOptions);
 
   let response = { buffer: decrypted };
   self.postMessage(response, [decrypted]);
@@ -60,12 +61,12 @@ function decrypt(message) {
   decrypted = null;
 }
 
-function encrypt(message) {
+async function encrypt(message) {
   const iv = Encryptor.utils.decodeBase64(message.data.iv);
   const key = Encryptor.utils.decodeBase64(message.data.key);
 
   const encryptOptions = { iv, key, encoding: 'uint8-buffer' };
-  let encrypted = Encryptor.encrypt(message.data.contents, encryptOptions);
+  let encrypted = await Encryptor.encrypt(message.data.contents, encryptOptions);
 
   let response = { buffer: encrypted.payload };
   self.postMessage(response, [encrypted.payload]);

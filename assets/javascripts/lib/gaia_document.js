@@ -76,7 +76,7 @@ class GaiaDocument extends WithFile(Record) {
     });
   }
 
-  static parse(raw, options = {}) {
+  static async parse(raw, options = {}) {
     if (!raw.encryption) {
       return super.parse(raw, options);
     }
@@ -84,7 +84,7 @@ class GaiaDocument extends WithFile(Record) {
     const encryption = Encryption.parse({ ...raw.encryption });
     encryption.passcode = options.passcode;
 
-    const decrypted = Encryptor.decrypt(
+    const decrypted = await Encryptor.decrypt(
       raw.payload,
       {...encryption.toEncryptor(), encoding: 'utf8' }
     );
@@ -172,14 +172,14 @@ class GaiaDocument extends WithFile(Record) {
     };
   }
 
-  serialize(payload = this) {
+  async serialize(payload = this) {
     const encryptionParams = { salt: payload.id, passcode: payload.passcode };
     const encryption = new Encryption(encryptionParams);
     const serializedEncryption = encryption.serialize();
 
     payload.encryption = serializedEncryption;
 
-    const encryptedPayload = Encryptor.encrypt(
+    const encryptedPayload = await Encryptor.encrypt(
       JSON.stringify(payload),
       {...encryption.toEncryptor(), encoding: 'base64'}
     );

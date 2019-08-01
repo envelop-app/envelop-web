@@ -28,7 +28,7 @@ class BaseDocumentDownloader {
 
     const encryption = this.doc.getEncryption().toEncryptor();
 
-    const key = this.getEncryptionKey(encryption);
+    const key = await this.getEncryptionKey(encryption);
     const iv = this.doc.part_ivs[options.partNumber];
 
     let decrypted = null;
@@ -48,7 +48,7 @@ class BaseDocumentDownloader {
       decrypted = response.data.buffer;
     }
     else {
-      decrypted = Encryptor.decrypt(contents, {
+      decrypted = await Encryptor.decrypt(contents, {
         key: Encryptor.utils.decodeBase64(key),
         iv: Encryptor.utils.decodeBase64(iv),
         encoding: 'uint8-buffer'
@@ -71,10 +71,10 @@ class BaseDocumentDownloader {
     });
   }
 
-  getEncryptionKey(encryption) {
+  async getEncryptionKey(encryption) {
     if (this._encryptionKey) { return this._encryptionKey; }
 
-    const key = Encryptor.utils.generateKey(
+    const key = await Encryptor.utils.generateKey(
       encryption.passcode,
       {...encryption, encoding: 'base64' }
     );

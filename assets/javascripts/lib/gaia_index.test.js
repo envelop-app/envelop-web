@@ -1,5 +1,3 @@
-import Constants from './constants';
-import Encryptor from './encryptor';
 import GaiaDocument from './gaia_document';
 import GaiaIndex from './gaia_index';
 import Record from './records/record';

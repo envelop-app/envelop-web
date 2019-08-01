@@ -113,7 +113,7 @@ describe('v2', () => {
       expect(params.salt).toEqual(doc.id);
 
       const options = { salt: doc.id, passcode: doc.passcode};
-      const decrypted = GaiaDocument.parse(encrypted, options);
+      const decrypted = await GaiaDocument.parse(encrypted, options);
 
       expect(decrypted).toEqual(jsonify(doc));
     });
@@ -140,7 +140,7 @@ describe('v2', () => {
         encoding: 'uint8'
       };
 
-      const decrypted = Encryptor.decrypt(encryptedContent, options);
+      const decrypted = await Encryptor.decrypt(encryptedContent, options);
 
       expect(decrypted.length).toEqual(uint8View.length);
 
