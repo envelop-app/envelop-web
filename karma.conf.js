@@ -44,7 +44,13 @@ module.exports = function(config) {
       stats: 'errors-only'
     },
     colors: true,
-    browsers: ['ChromeHeadless'],
+    browsers: ['ChromeHeadlessNoSandbox'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-translate', '--disable-extensions']
+      }
+    },
     autoWatch: false,
     singleRun: true,
     concurrency: 5

@@ -67,8 +67,7 @@ async function generateKey(password, options = {}) {
   const passwordBuffer = Buffer.from(password, 'utf8');
   const importedKey = await crypto.importKey('raw', passwordBuffer, algo, false, ['deriveBits']);
 
-  // FIXME: Maybe I don't need to extract bits and then import, but just call
-  // deriveKey
+  // FIXME: Maybe I don't need to extract bits and then import, but just call deriveKey
   const saltBuffer = Buffer.from(options.salt, 'utf8');
   const params = {name: algo, hash: hasher, salt: saltBuffer, iterations: keyIterations};
   const derivation = await crypto.deriveBits(params, importedKey, keySize);
