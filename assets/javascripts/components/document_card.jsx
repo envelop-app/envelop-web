@@ -56,11 +56,11 @@ class DocumentCardComponent extends Component {
   }
 
   isDisabled() {
-    return !this.props.doc.isPersisted() || this.props.deleting;
+    return !this.props.doc.isReady() || this.props.deleting;
   }
 
   renderButtonText() {
-    if (!this.props.doc.isPersisted()) {
+    if (!this.props.doc.isReady()) {
       return 'uploading ...'
     }
     else if (this.props.deleting) {
@@ -108,15 +108,15 @@ class DocumentCardComponent extends Component {
         <DocumentCardMediaComponent
           doc={doc}
           action="upload"
-          showProgress={!doc.isPersisted()}
+          showProgress={!doc.isReady()}
           progress={progress}>
           {this.renderMenu()}
         </DocumentCardMediaComponent>
         <div className="ev-document-card__body">
           <div className="ev-document-card__body-left">
-            <div className="ev-document-card__text-title">{doc.fileName}</div>
-            <div className="ev-document-card__text-primary">{prettyBytes(doc.fileSize)}</div>
-            <div className="ev-document-card__text-secondary">{this.formatDate(doc.createdAt)}</div>
+            <div className="ev-document-card__text-title">{doc.name}</div>
+            <div className="ev-document-card__text-primary">{prettyBytes(doc.size)}</div>
+            <div className="ev-document-card__text-secondary">{this.formatDate(doc.created_at)}</div>
           </div>
           <div className="ev-document-card__body-right">
             {!this.isDisabled() && <a href={doc.shareUrl()} className="ev-document-card__open" target="_blank"></a>}

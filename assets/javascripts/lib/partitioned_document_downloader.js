@@ -1,87 +1,78 @@
 import Bottleneck from 'bottleneck';
 
-import LocalDatabase from '../lib/local_database';
-import ProgressRegister from '../lib/progress_register';
-import Record from './records/record';
+import BaseDocumentDownloader from './base_document_downloader';
+import LocalDatabase from './local_database';
 
-class PartitionedDocumentDownloader {
-  constructor(gaiaDocument) {
-    this.gaiaDocument = gaiaDocument;
+class PartitionedDocumentDownloader extends BaseDocumentDownloader {
+  constructor() {
+    super(...arguments);
     this.limiter = new Bottleneck({ maxConcurrent: 3 });
-    this.progress = new ProgressRegister(gaiaDocument.fileSize);
   }
 
   async download() {
-    await this.downloadAndSavePartsLocally();
+    let parts;
 
-    const parts = await this.loadPartsFromLocal();
+    try {
+      await this.downloadParts({ saveLocal: true });
+      parts = await this.loadPartsFromLocal();
+    }
+    catch (e) {
+      if (e.name === 'QuotaExceededError') {
+        await this.deletePartsFromLocal();
+
+        parts = await this.downloadParts();
+      }
+    }
+
     const blob = this.createBlob(parts);
     const objectUrl = URL.createObjectURL(blob);
 
-    this.deletePartsFromLocal();
+    await this.deletePartsFromLocal();
     this.revokeLater(objectUrl);
+
+    this.limiter.disconnect();
 
     return objectUrl;
   }
 
-  downloadAndSavePartsLocally() {
-    const promises = this.mapPartUrls(async (partUrl) => {
-      const part = await this.scheduleDownload(partUrl);
-      await LocalDatabase.setItem(this.localUrl(partUrl), part);
+  downloadParts(options = {}) {
+    const promises = this.doc.mapPartUrls(async (partUrl, partNumber) => {
+      const part = await this.scheduleDownload(partUrl, partNumber);
+
+      if (options.saveLocal) {
+        await LocalDatabase.setItem(this.localUrl(partUrl), part);
+      }
+
       this.progress.add(part.byteLength);
-      return true;
+
+      return options.saveLocal ? true : part;
     });
 
     return Promise.all(promises);
-  }
-
-  onProgress(callback) {
-    this.progress.onChange(callback);
   }
 
   localUrl(partUrl) {
     return `download:${partUrl}`;
   }
 
-  mapPartUrls(callback) {
-    return this.gaiaDocument.getPartUrls().map(partUrl => callback(partUrl));
-  }
-
-  scheduleDownload(partUrl) {
-    return this.limiter.schedule(() => this.downloadPart(partUrl));
-  }
-
-  downloadPart(partUrl) {
-    const options = { username: this.gaiaDocument._username, decrypt: false, verify: false };
-    return Record.getSession().getFile(partUrl, options);
+  scheduleDownload(partUrl, partNumber) {
+    return this.limiter.schedule(() => this.downloadRawFile(partUrl, { partNumber }));
   }
 
   loadPartsFromLocal() {
-    const promises = this.mapPartUrls(partUrl => {
+    const promises = this.doc.mapPartUrls(partUrl => {
       return LocalDatabase.getItem(this.localUrl(partUrl));
     });
 
-    return  Promise.all(promises);
-  }
-
-  createBlob(partBuffers) {
-    const blobOptions = { name: this.gaiaDocument.fileName, type: this.gaiaDocument.getMimeType() };
-    return new Blob(partBuffers, blobOptions);
+    return Promise.all(promises);
   }
 
   deletePartsFromLocal() {
-    const promises = this.mapPartUrls(partUrl => {
+    const promises = this.doc.mapPartUrls(partUrl => {
       return LocalDatabase.removeItem(this.localUrl(partUrl));
     });
 
-    return  Promise.all(promises);
-  }
-
-  revokeLater(objectUrl) {
-    window.addEventListener('focus', function handler() {
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
-      window.removeEventListener('focus', handler);
-    });
+    return Promise.all(promises);
   }
 }
 

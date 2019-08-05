@@ -1,32 +1,35 @@
 import Bottleneck from 'bottleneck';
 
-import Constants from './constants';
-import Record from './records/record';
-import ProgressRegister from '../lib/progress_register';
+import BaseDocumentUploader from './base_document_uploader';
 
-const publicFileOptions = { encrypt: false, verify: false };
-function putPublicFile(name, contents) {
-  return Record.getSession().putFile(name, contents, publicFileOptions);
-}
-
-class PartitionedDocumentUploader {
-  constructor(serializedDocument) {
-    this.partSize = serializedDocument.partSize || Constants.FILE_PART_SIZE;
-    this.numParts = Math.ceil(serializedDocument.fileSize / this.partSize);
-    this.serializedDocument = serializedDocument;
-    this.progress = new ProgressRegister(serializedDocument.fileSize);
-    this.readLimiter = new Bottleneck({ maxConcurrent: 6 });
+class PartitionedDocumentUploader extends BaseDocumentUploader {
+  constructor() {
+    super(...arguments);
     this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
   }
 
+  async upload(file) {
+    const uploadPromises = this.doc.mapPartUrls((partUrl, partNumber) => {
+      return this.scheduleUpload(file, partUrl, partNumber);
+    });
+
+    await Promise.all(uploadPromises);
+
+    this.encryptor && await this.encryptor.terminate();
+    this.encryptor = null;
+
+    this.cleanupLimiters();
+
+    return true;
+  }
+
   cleanupLimiters() {
-    this.readLimiter.disconnect();
     this.uploadLimiter.disconnect();
   }
 
   getFileSlice(file, partNumber) {
-    const startAt = partNumber * this.partSize;
-    const endAt = (partNumber + 1) * this.partSize;
+    const startAt = partNumber * this.doc.partSize;
+    const endAt = (partNumber + 1) * this.doc.partSize;
     return file.slice(startAt, endAt);
   }
 
@@ -35,7 +38,7 @@ class PartitionedDocumentUploader {
       const reader = new FileReader();
 
       reader.onload = (evt) => {
-        resolve(evt.target.result);
+        resolve(evt.target.result || reader.result);
       };
 
       reader.onerror = (evt) => {
@@ -46,46 +49,18 @@ class PartitionedDocumentUploader {
     });
   }
 
-  scheduleRead(fileSlice) {
-    return this.readLimiter.schedule(() => {
-      return this.readFileSlice(fileSlice);
-    });
-  }
-
-  scheduleUpload(partNumber, bufferPromise) {
+  scheduleUpload(file, partUrl, partNumber) {
     return this.uploadLimiter.schedule(async () => {
-      const partBuffer = await bufferPromise;
-      return this.uploadPart(partNumber, partBuffer)
+      let fileSlice = this.getFileSlice(file, partNumber);
+      let partBuffer = await this.readFileSlice(fileSlice);
+      fileSlice = null;
+
+      const uploadPromise = await this.uploadRawFile(partUrl, partBuffer, { partNumber });
+      this.progress.add(partBuffer.byteLength);
+      partBuffer = null;
+
+      return uploadPromise;
     });
-  }
-
-  async upload(file) {
-    const uploadPromises = Array(this.numParts).fill(null)
-      .map(async (_, partNumber) => {
-        const fileSlice = this.getFileSlice(file, partNumber);
-        const bufferPromise = this.scheduleRead(fileSlice);
-        await this.scheduleUpload(partNumber, bufferPromise);
-        this.progress.add(fileSlice.size);
-        return true;
-      });
-
-    await Promise.all(uploadPromises);
-
-    this.cleanupLimiters();
-
-    this.serializedDocument.numParts = this.numParts;
-
-    return this.serializedDocument;
-  }
-
-  onProgress(callback) {
-    this.progress.onChange(callback);
-  }
-
-  uploadPart(partNumber, partBuffer) {
-    const options = { contentType: 'application/octet-stream' };
-    const partUrl = `${this.serializedDocument.filePath}.part${partNumber}`;
-    return putPublicFile(partUrl, partBuffer, options);
   }
 }
 

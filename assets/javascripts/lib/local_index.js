@@ -5,7 +5,7 @@ import GaiaDocument from '../lib/gaia_document';
 const indexKey = `${Constants.TEMP_DOCUMENTS_PREFIX}/index`;
 
 function parseDocuments(rawDocuments) {
-  return (rawDocuments || []).map(raw => GaiaDocument.fromLocal(raw));
+  return (rawDocuments || []).map(raw => new GaiaDocument(raw));
 }
 
 class LocalIndex {

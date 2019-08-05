@@ -3,25 +3,25 @@ import Constants from '../lib/constants';
 import ProgressRegister from '../lib/progress_register';
 
 class LocalDocumentUploader {
-  constructor(serializedDocument) {
-    this.serializedDocument = serializedDocument;
+  constructor(doc) {
+    this.doc = doc;
     this.reader = new FileReader();
-    this.progress = new ProgressRegister(serializedDocument.fileSize);
+    this.progress = new ProgressRegister(doc.size);
   }
 
   async upload(file) {
     new Promise((resolve) => {
       this.reader.onload = (evt) => {
-        const payload = Object.assign({}, this.serializedDocument, {
-          localContents: evt.target.result
+        const payload = Object.assign({}, this.doc, {
+          localContents: evt.target.result || this.reader.result
         });
         const documentKey = `${Constants.TEMP_DOCUMENTS_PREFIX}/${payload.id}`;
 
         LocalDatabase
           .setItem(documentKey, payload)
           .then(() =>{
-            this.progress.add(this.serializedDocument.fileSize);
-            resolve(this.serializedDocument);
+            this.progress.add(this.doc.size);
+            resolve(this.doc);
           }) ;
       }
       this.reader.readAsArrayBuffer(file);

@@ -59,7 +59,6 @@ class AvatarComponent extends Component {
   }
 
   onSelect = (item) => {
-    console.log(item);
     if (item == 0) {
       window.open('https://play.google.com/store/apps/details?id=app.envelop', '_blank');
     } else if (item == 1) {

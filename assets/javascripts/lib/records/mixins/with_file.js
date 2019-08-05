@@ -1,78 +1,58 @@
 import mime from 'mime-types';
-import randomstring from 'randomstring';
+import uuid from 'uuid/v4';
 
 import Constants from '../../constants';
+import DocumentDownloader from '../../document_downloader';
 import DocumentRemover from '../../document_remover';
 import DocumentUploader from '../../document_uploader';
-import { publicUserSession as publicSession } from '../../blockstack_client';
+import Encryptor from '../../encryptor';
 import PartitionedDocumentDownloader from '../../partitioned_document_downloader';
 import PartitionedDocumentUploader from '../../partitioned_document_uploader';
 
-function generateHash(length) {
-  return randomstring.generate(length);
-}
-
-function getUploader(payload, callbacks) {
+function getUploader(record) {
   let uploader = null;
 
-  if (payload.fileSize <= Constants.SINGLE_FILE_SIZE_LIMIT) {
-    uploader = new DocumentUploader(payload)
+  if (record.size <= Constants.SINGLE_FILE_SIZE_LIMIT) {
+    uploader = new DocumentUploader(record)
   }
-  else if (payload.fileSize > Constants.SINGLE_FILE_SIZE_LIMIT) {
-    uploader = new PartitionedDocumentUploader(payload)
+  else if (record.size > Constants.SINGLE_FILE_SIZE_LIMIT) {
+    uploader = new PartitionedDocumentUploader(record)
   }
   else {
-    throw("Cant get uploader - missing 'fileSize'")
+    throw("Cant get uploader - missing 'size'")
   }
 
-  callbacks.forEach((callback) => uploader.onProgress(callback));
+  record.uploadProgressCallbacks.forEach((callback) => {
+    uploader.onProgress(callback);
+  });
 
   return uploader;
 }
 
 const WithFile = (superclass) => {
   const klass = class extends superclass {
-    static get attributes() {
-      return {
-        ...super.attributes,
-        filePath: null,
-        fileSize: null,
-        numParts: null
-      }
-    }
-
     constructor(fields = {}) {
       super(fields);
 
       this.file = fields.file;
       this.downloadProgressCallbacks = [];
       this.uploadProgressCallbacks = [];
-    }
-
-    get fileName() {
-      if (this._fileName) { return this._fileName; }
-      if (!this.filePath) { return null; }
-      return this._fileName = this.filePath.split('/').pop();
-    }
-
-    set fileName(value) {
-      this._fileName = value;
+      this.url = fields.url || uuid();
     }
 
     async download() {
-      if (this.numParts && this.numParts > 1) {
+      if (this.num_parts && this.num_parts > 1) {
         this._downloader = new PartitionedDocumentDownloader(this);
-        this.downloadProgressCallbacks.forEach((callback) => {
-          this._downloader.onProgress(callback);
-        });
-        return await this._downloader.download();
       }
       else {
-        const options = { username: this._username, decrypt: false, verify: false };
-        const fileUrl = await publicSession.getFileUrl(this.filePath, options);
-        this.downloadProgressCallbacks.forEach((callback) => callback(1));
-        return fileUrl;
+        this._downloader = new DocumentDownloader(this);
       }
+
+      this.downloadProgressCallbacks.forEach((callback) => {
+        this._downloader.onProgress(callback);
+      });
+
+      return await this._downloader.download();
     }
 
     onDownloadProgress(callback) {
@@ -102,40 +82,74 @@ const WithFile = (superclass) => {
     }
 
     getMimeType() {
-      return mime.lookup(this.fileName) || null;
+      return mime.lookup(this.name) || null;
+    }
+
+    getPartUrl(partNumber) {
+      return `${this.url}.part${partNumber}`;
     }
 
     getPartUrls() {
-      if (!this.numParts) { return []; }
+      if (!this.num_parts) { return []; }
 
-      return new Array(this.numParts)
+      return new Array(this.num_parts)
         .fill(null)
-        .map((_, index) => `${this.filePath}.part${index}`);
+        .map((_, index) => this.getPartUrl(index));
     }
 
-    serialize() {
+    mapPartUrls(callback) {
+      return this.getPartUrls().map((partUrl, partNumber) => {
+        return callback(partUrl, partNumber);
+      });
+    }
+
+    attributes() {
       return {
-        ...super.serialize(),
-        filePath: this.filePath || null,
-        fileSize: this.fileSize || null,
-        numParts: this.numParts || null
+        ...super.attributes(),
+        name: this.name || null,
+        url: this.url || null,
+        size: this.size || null,
+        num_parts: this.num_parts || null,
+        uploaded: this.uploaded,
+        part_ivs: this.part_ivs || null
       };
     }
   }
 
-  klass.beforeDelete((record) => {
-    return new DocumentRemover(record).remove();
-  });
-
   klass.beforeSave(async (record) => {
-    record.filePath = record.filePath || `${generateHash(24)}/${record.fileName}`;
+    if (!record.file) { return; }
 
-    record._uploader = getUploader(record, record.uploadProgressCallbacks);
-    const modifiedPayload = await record._uploader.upload(record.file);
+    record.partSize = record.partSize || Constants.FILE_PART_SIZE;
+    record.num_parts = Math.ceil(record.size / record.partSize);
 
-    record.numParts = modifiedPayload.numParts;
+    record.part_ivs = [];
+    for (let i = 0; i < record.num_parts; i++) {
+      const iv = Encryptor.utils.generateIv();
+      record.part_ivs.push(Encryptor.utils.encodeBase64(iv));
+    }
 
     return true;
+  });
+
+  klass.afterSave(async (record) => {
+    if (!record.file) { return; }
+
+    // FIXME: only record.attributes must be passed to the uploader,
+    // in order to be able to 'serialize' attributes first
+    record.salt = record.id;
+
+    record._uploader = getUploader(record);
+    await record._uploader.upload(record.file);
+
+    record.uploaded = true;
+    record.file = null;
+    await record.save({ skipHooks: false });
+
+    return true;
+  });
+
+  klass.beforeDelete((record) => {
+    return new DocumentRemover(record).remove();
   });
 
   return klass;

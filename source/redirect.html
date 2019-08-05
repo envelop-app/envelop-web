@@ -8,8 +8,8 @@
     return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
   }
 
-  var authResponse = getParameterByName('authResponse')
-  window.location="https://envelop.app/redirect_mobile/" + authResponse
+  var authResponse = getParameterByName('authResponse');
+  window.location = window.location.origin + '/redirect_mobile/' + authResponse;
   </script>
 <body>
 </body>

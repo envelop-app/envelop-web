@@ -1,5 +1,8 @@
+dist: trusty
 language: node_js
 node_js:
   - v12.3.0
 cache:
   yarn: true
+addons:
+  chrome: stable

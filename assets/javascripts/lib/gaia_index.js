@@ -1,11 +1,11 @@
-import { chunk } from 'lodash';
+import chunk from 'lodash/chunk';
 import GaiaDocument from './gaia_document';
-import { privateUserSession } from './blockstack_client';
+import Record from './records/record';
 
 const version = 1;
 
 function parseDocuments(rawDocuments) {
-  return (rawDocuments || []).map(raw => GaiaDocument.fromGaiaIndex(raw));
+  return (rawDocuments || []).map(raw => new GaiaDocument(raw));
 }
 
 class GaiaIndex {
@@ -42,8 +42,8 @@ class GaiaIndex {
   }
 
   async load() {
-    const indexJson = await privateUserSession.getFile('index');
-    const index = JSON.parse(indexJson);
+    const indexJson = await Record.getSession().getFile('index');
+    const index = indexJson && JSON.parse(indexJson);
 
     if (index) {
       this.version = index.version || 1;
@@ -63,7 +63,7 @@ class GaiaIndex {
     this.onChangeCallbacks.push(callback);
   }
 
-  serialize() {
+  attributes() {
     return { files: this.documents, version: this.version };
   }
 
@@ -73,13 +73,13 @@ class GaiaIndex {
   }
 
   toJSON() {
-    return this.serialize();
+    return this.attributes();
   }
 
   async _syncFile(callback) {
     await this.load();
     callback(this);
-    await privateUserSession.putFile('index', JSON.stringify(this));
+    await Record.getSession().putFile('index', JSON.stringify(this));
     return this;
   }
 }

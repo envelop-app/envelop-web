@@ -1,26 +1,21 @@
-import Record from './records/record';
-import ProgressRegister from './progress_register';
+import BaseDocumentUploader from './base_document_uploader';
 
-const publicFileOptions = { encrypt: false, verify: false };
-function putPublicFile(name, contents) {
-  return Record.getSession().putFile(name, contents, publicFileOptions);
-}
-
-class DocumentUploader {
-  constructor(serializedDocument) {
-    this.serializedDocument = serializedDocument;
+class DocumentUploader extends BaseDocumentUploader {
+  constructor() {
+    super(...arguments);
     this.reader = new FileReader();
-    this.progress = new ProgressRegister(serializedDocument.fileSize);
   }
 
   upload(file) {
     return new Promise((resolve, reject) => {
       this.reader.onload = (evt) => {
-        const rawFilePromise = this.uploadRawFile(evt.target.result);
+        const buffer = evt.target.result || this.reader.result;
+        const rawFilePromise = this.uploadRawFile(this.doc.url, buffer, { partNumber: 0 });
+
         rawFilePromise
           .then(() => {
-            this.progress.add(this.serializedDocument.fileSize);
-            resolve(this.serializedDocument);
+            this.progress.add(this.doc.size);
+            resolve(this.doc);
           });
       }
 
@@ -30,15 +25,6 @@ class DocumentUploader {
 
       this.reader.readAsArrayBuffer(file);
     });
-  }
-
-  onProgress(callback) {
-    this.progress.onChange(callback);
-  }
-
-  uploadRawFile(contents) {
-    const options = { contentType: 'application/octet-stream' };
-    return putPublicFile(this.serializedDocument.filePath, contents, options);
   }
 }
 

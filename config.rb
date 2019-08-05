@@ -8,7 +8,9 @@ end
 
 configure :build do
   config[:host] = "http://envelop.app"
-  activate :asset_hash, exts: %w(.css .js)
+  activate :asset_hash,
+    exts: %w(.css .js),
+    ignore: [/\.worker\.js$/]
   activate :minify_html
   activate :gzip
 end

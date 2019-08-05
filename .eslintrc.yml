@@ -16,4 +16,5 @@ parserOptions:
 plugins:
   - react
   - jest
-rules: {}
+rules:
+  no-unused-vars: ["error", { "argsIgnorePattern": "^_" }]

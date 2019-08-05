@@ -4,6 +4,13 @@ function generateHash(length) {
   return randomstring.generate(length);
 }
 
+const hooks = {
+  afterInitialize: [],
+  beforeSave: [],
+  afterSave: [],
+  beforeDelete: []
+}
+
 class Record {
   static config(options = {}) {
     this.session = options.session;
@@ -20,16 +27,24 @@ class Record {
   }
 
   static async get(id, options = {}) {
+    if (options.username && !options.username.includes('.')) {
+      options.username += '.id.blockstack';
+    }
+
     const opts = { decrypt: false, verify: false, ...options };
     const json = await this.getSession().getFile(id, opts);
     const payload = JSON.parse(json);
+    const parsed = await this.parse(payload, options);
 
-    return new this(payload, options);
+    return new this(parsed, options);
   }
 
-  static hooks = {
-    beforeDelete: [],
-    beforeSave: []
+  static async parse(raw, _options) {
+    return raw;
+  }
+
+  static get hooks() {
+    return hooks;
   }
 
   static addHook(hookName, hook) {
@@ -41,15 +56,16 @@ class Record {
     }
   }
 
-  static get attributes() {
-    return {
-      id: null,
-      createdAt: null
-    };
+  static afterInitialize(callback) {
+    this.addHook('afterInitialize', callback);
   }
 
   static beforeSave(callback) {
     this.addHook('beforeSave', callback);
+  }
+
+  static afterSave(callback) {
+    this.addHook('afterSave', callback);
   }
 
   static beforeDelete(callback) {
@@ -57,32 +73,15 @@ class Record {
   }
 
   constructor(fields = {}) {
-    this.attributes = {};
-
-    Object.keys(this.constructor.attributes).forEach(attrName => {
-      if (attrName in this) { return; }
-
-      Object.defineProperty(this, attrName, {
-        get() {
-          return this.attributes[attrName];
-        },
-        set(value) {
-          return this.attributes[attrName] = value;
-        }
-      });
-    });
-
     Object.keys(fields).forEach(attrName => {
       this[attrName] = fields[attrName];
     });
-  }
 
-  set createdAt(value) {
-    this.attributes.createdAt = new Date(value);
-  }
+    if (this.created_at) {
+      this.created_at = new Date(this.created_at);
+    }
 
-  get createdAt() {
-    return this.attributes.createdAt;
+    this.runHooks('afterInitialize', { sync: true });
   }
 
   async delete() {
@@ -94,7 +93,16 @@ class Record {
     return !!this.id;
   }
 
-  async runHooks(hookName) {
+  runHooks(hookName, options = {}) {
+    if (options.sync) {
+      this.constructor.hooks[hookName].forEach(hook => hook(this));
+    }
+    else {
+      return this.runHooksAsync(hookName);
+    }
+  }
+
+  async runHooksAsync(hookName, _options) {
     const hooks = this.constructor.hooks[hookName];
     return hooks.reduce(async (previous, current) => {
       await previous;
@@ -102,37 +110,44 @@ class Record {
     }, Promise.resolve(this));
   }
 
-  async save(payload = null) {
-    await this.runHooks('beforeSave');
-
-    if (!payload) {
-      payload = this.serialize();
-    }
-
-    if (!payload.id) {
-      payload.id = this.id || generateHash(6);
-    }
-
-    if (!payload.createdAt) {
-      payload.createdAt = this.createdAt || new Date();
-    }
-
-    // TODO: Maybe snakecase keys before upload? or camelize?
-    const contents = JSON.stringify(payload);
-    const fileOptions = { encrypt: false, verify: false };
-    await Record.getSession().putFile(payload.id, contents, fileOptions);
-    return Object.assign(this, payload);
-  }
-
-  serialize() {
+  attributes() {
     return {
-      createdAt: this.createdAt || null,
+      created_at: this.created_at || null,
       id: this.id || null
     };
   }
 
+  async serialize(payload = this) {
+    return payload;
+  }
+
+  async save(options = {}) {
+    if (!options.skipHooks) {
+      await this.runHooks('beforeSave');
+    }
+
+    const payload = this.attributes();
+    payload.id = this.id || generateHash(6);
+    payload.created_at = this.created_at || new Date();
+
+    // TODO: Maybe snakecase keys before upload? or camelize?
+    const serialized = await this.serialize(payload);
+    const content = JSON.stringify(serialized);
+    const fileOptions = { encrypt: false, verify: false };
+    await Record.getSession().putFile(payload.id, content, fileOptions);
+
+    // FIXME: What about code that checks for isPersisted????
+    Object.assign(this, payload);
+
+    if (!options.skipHooks) {
+      await this.runHooks('afterSave');
+    }
+
+    return this;
+  }
+
   toJSON() {
-    return this.serialize();
+    return this.attributes();
   }
 }
 

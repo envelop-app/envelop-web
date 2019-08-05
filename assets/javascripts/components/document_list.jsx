@@ -8,7 +8,7 @@ import DocumentCardComponent from './document_card.jsx';
 
 function sortDocuments(documents) {
   return documents.sort(function(a, b) {
-    return new Date(b.createdAt) - new Date(a.createdAt)
+    return new Date(b.created_at) - new Date(a.created_at)
   });
 }
 
