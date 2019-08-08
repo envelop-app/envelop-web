@@ -1,8 +1,6 @@
 import GaiaDocument from './gaia_document';
-import GaiaIndex from './gaia_index';
+import { gaiaIndex } from './gaia_index';
 import Record from './records/record';
-
-const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
 class MockSession {
   constructor() {
@@ -33,7 +31,6 @@ function buildDoc() {
 describe('.addDocuments', () => {
   test('saves document and adds it to the index', async () => {
     const doc = buildDoc();
-    const gaiaIndex = new GaiaIndex();
 
     await gaiaIndex.load();
     expect(gaiaIndex.documents.length).toBe(0);
@@ -45,7 +42,6 @@ describe('.addDocuments', () => {
 
   test("includes document's encryption data", async () => {
     let doc = buildDoc();
-    const gaiaIndex = new GaiaIndex();
     await gaiaIndex.addDocuments([doc]);
 
     await gaiaIndex.load();
