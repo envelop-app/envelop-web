@@ -1,0 +1,26 @@
+.ev-body__redirect_mobile {
+  background: $ev-yellow;
+}
+
+.ev-body__redirect_mobile .ev-layout-public__footer {
+  display: none;
+}
+
+.ev-redirect_mobile__main {
+  text-align: center;
+  padding-top: 2rem;
+}
+
+.ev-redirect_mobile__button {
+  display: inline-block;
+  background: $text-primary;
+  color: $gray-light;
+  font-size: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0px 2px 2px rgba(0,0,0,0.2);
+}
+
+.ev-redirect_mobile__button:hover {
+  text-decoration: none;
+}

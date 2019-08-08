@@ -1,0 +1,17 @@
+---
+name: redirect_mobile
+title: envelop – sign in
+description: Share private files easily with envelop
+layout: public
+---
+
+<div class="ev-redirect_mobile__main">
+  <p>
+    <a href="#" id="redirect-link" class="ev-redirect_mobile__button">Finish Sign In</a>
+  </p>
+  <script>
+    var urlParts = window.location.pathname.split('/');
+    var authResponse = urlParts[urlParts.length-1];
+    document.getElementById("redirect-link").setAttribute("href", "envelop://redirect_mobile/" + authResponse);
+  </script>
+</div>
