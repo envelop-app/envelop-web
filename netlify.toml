@@ -7,6 +7,11 @@
   to = "/download.html"
   status = 200
 
+[[redirects]]
+  from = "/redirect_mobile/:data"
+  to = "/redirect_mobile.html"
+  status = 200
+
 [[headers]]
   for = "/manifest.json"
     [headers.values]
