@@ -8,7 +8,8 @@ const hooks = {
   afterInitialize: [],
   beforeSave: [],
   afterSave: [],
-  beforeDelete: []
+  beforeDelete: [],
+  afterDelete: []
 }
 
 class Record {
@@ -72,6 +73,10 @@ class Record {
     this.addHook('beforeDelete', callback);
   }
 
+  static afterDelete(callback) {
+    this.addHook('afterDelete', callback);
+  }
+
   constructor(fields = {}) {
     Object.keys(fields).forEach(attrName => {
       this[attrName] = fields[attrName];
@@ -86,7 +91,8 @@ class Record {
 
   async delete() {
     await this.runHooks('beforeDelete');
-    return Record.getSession().deleteFile(this.id);
+    await Record.getSession().deleteFile(this.id);
+    return this.runHooks('afterDelete');
   }
 
   isPersisted() {
@@ -95,18 +101,18 @@ class Record {
 
   runHooks(hookName, options = {}) {
     if (options.sync) {
-      this.constructor.hooks[hookName].forEach(hook => hook(this));
+      this.constructor.hooks[hookName].forEach(hook => hook(this, options));
     }
     else {
-      return this.runHooksAsync(hookName);
+      return this.runHooksAsync(hookName, options);
     }
   }
 
-  async runHooksAsync(hookName, _options) {
+  async runHooksAsync(hookName, options) {
     const hooks = this.constructor.hooks[hookName];
     return hooks.reduce(async (previous, current) => {
       await previous;
-      return current(this);
+      return current(this, options);
     }, Promise.resolve(this));
   }
 
@@ -123,7 +129,7 @@ class Record {
 
   async save(options = {}) {
     if (!options.skipHooks) {
-      await this.runHooks('beforeSave');
+      await this.runHooks('beforeSave', options);
     }
 
     const payload = this.attributes();
@@ -140,7 +146,7 @@ class Record {
     Object.assign(this, payload);
 
     if (!options.skipHooks) {
-      await this.runHooks('afterSave');
+      await this.runHooks('afterSave', options);
     }
 
     return this;

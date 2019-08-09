@@ -13,14 +13,29 @@ class BaseDocumentUploader {
     this.doc = doc;
     this.progress = new ProgressRegister(doc.size);
     this.encryptor = new Workers.Encryptor({ restartEvery: 10 });
+    this.uploadedCallbacks = [];
   }
 
-  upload(_file) {
-    return Promise.reject('.upload must be implemented in subclasses');
+  async upload(_file) {
+    this.doc.uploaded = true;
+    this.doc.file = null;
+    await this.doc.save({ skipHooks: true });
+
+    this.triggerOnUploaded(this.doc);
+
+    return Promise.resolve();
   }
 
   onProgress(callback) {
     this.progress.onChange(callback);
+  }
+
+  onUploaded(callback) {
+    this.uploadedCallbacks.push(callback);
+  }
+
+  triggerOnUploaded() {
+    this.uploadedCallbacks.forEach(cb => cb(this.doc));
   }
 
   async encrypt(contents, options = {}) {

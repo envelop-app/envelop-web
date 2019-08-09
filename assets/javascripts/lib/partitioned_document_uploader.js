@@ -20,7 +20,7 @@ class PartitionedDocumentUploader extends BaseDocumentUploader {
 
     this.cleanupLimiters();
 
-    return true;
+    return super.upload(file);
   }
 
   cleanupLimiters() {

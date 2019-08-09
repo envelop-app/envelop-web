@@ -22,11 +22,21 @@ class GaiaIndex {
     const groups = chunk(docs, 5);
 
     for (const group of groups) {
-      await Promise.all(group.map(doc => doc.save()));
+      const savePromises = group.map(async doc => {
+
+        doc.onUploaded(uploadedDoc => {
+          this._syncFile(that => {
+            that._setDocuments(that.documents, [uploadedDoc])
+          });
+        });
+
+        await doc.save();
+      })
+      await Promise.all(savePromises);
     }
 
     await this._syncFile(that => {
-      that._setDocuments([...that.documents, ...docs])
+      that._setDocuments(that.documents, docs)
     });
     return this;
   }
@@ -36,7 +46,7 @@ class GaiaIndex {
   }
 
   async deleteDocument(doc) {
-    await doc.delete();
+    doc.delete();
     await this._syncFile(that => {
       that._setDocuments(that.documents.filter(d => d.id !== doc.id));
     });
@@ -69,8 +79,28 @@ class GaiaIndex {
     return { files: this.documents, version: this.version };
   }
 
-  _setDocuments(documents) {
-    this.documents = parseDocuments(documents);
+  _setDocuments(documents, overrides = []) {
+    const allDocuments = [];
+
+    const tempDocuments = parseDocuments(documents);
+    const tempOverrides = parseDocuments(overrides);
+
+    tempDocuments.forEach(doc => {
+      const overrideIndex = tempOverrides.findIndex(d => d.id === doc.id);
+      if (overrideIndex > -1) {
+        const override = tempOverrides.splice(overrideIndex, 1)[0];
+        allDocuments.push(override);
+      }
+      else {
+        allDocuments.push(doc);
+      }
+    });
+
+    tempOverrides.forEach((override) => {
+      allDocuments.push(override);
+    });
+
+    this.documents = allDocuments;
     this.callOnChange();
   }
 

@@ -26,6 +26,10 @@ function getUploader(record) {
     uploader.onProgress(callback);
   });
 
+  record.uploadedCallbacks.forEach((callback) => {
+    uploader.onUploaded(callback);
+  });
+
   return uploader;
 }
 
@@ -37,6 +41,7 @@ const WithFile = (superclass) => {
       this.file = fields.file;
       this.downloadProgressCallbacks = [];
       this.uploadProgressCallbacks = [];
+      this.uploadedCallbacks = [];
       this.url = fields.url || uuid();
     }
 
@@ -78,6 +83,19 @@ const WithFile = (superclass) => {
       }
       else {
         throw "Progress callback must be of type 'function'";
+      }
+    }
+
+    onUploaded(callback) {
+      if (callback && typeof callback === 'function') {
+        this.uploadedCallbacks.push(callback);
+
+        if (this._uploader) {
+          this._uploader.onUploaded(callback);
+        }
+      }
+      else {
+        throw "Uploaded callback must be of type 'function'";
       }
     }
 
@@ -131,7 +149,7 @@ const WithFile = (superclass) => {
     return true;
   });
 
-  klass.afterSave(async (record) => {
+  klass.afterSave(async (record, options = {}) => {
     if (!record.file) { return; }
 
     // FIXME: only record.attributes must be passed to the uploader,
@@ -139,17 +157,18 @@ const WithFile = (superclass) => {
     record.salt = record.id;
 
     record._uploader = getUploader(record);
-    await record._uploader.upload(record.file);
+    const upload = record._uploader.upload(record.file);
 
-    record.uploaded = true;
-    record.file = null;
-    await record.save({ skipHooks: false });
+    if (options.syncUpload) {
+      await upload;
+    }
 
-    return true;
+    return Promise.resolve();
   });
 
-  klass.beforeDelete((record) => {
-    return new DocumentRemover(record).remove();
+  klass.afterDelete((record) => {
+    new DocumentRemover(record).remove();
+    return Promise.resolve();
   });
 
   return klass;
