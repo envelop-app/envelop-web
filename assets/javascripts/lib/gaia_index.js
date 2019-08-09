@@ -18,26 +18,25 @@ class GaiaIndex {
   }
 
   async addDocuments(docs) {
+    const onUploadPromises = docs.map(doc => {
+      return new Promise(resolve => {
+        doc.onUploaded(uploadedDoc => resolve(uploadedDoc));
+      });
+    });
+
     // Upload files at a time and update index in the end
     const groups = chunk(docs, 5);
 
     for (const group of groups) {
-      const savePromises = group.map(async doc => {
-
-        doc.onUploaded(uploadedDoc => {
-          this._syncFile(that => {
-            that._setDocuments(that.documents, [uploadedDoc])
-          });
-        });
-
-        await doc.save();
-      })
+      const savePromises = group.map(doc => doc.save());
       await Promise.all(savePromises);
     }
 
-    await this._syncFile(that => {
-      that._setDocuments(that.documents, docs)
-    });
+    await this._syncFile(that => that._setDocuments(that.documents, docs));
+
+    const uploadedDocs = await Promise.all(onUploadPromises);
+    this._syncFile(that => that._setDocuments(that.documents, uploadedDocs));
+
     return this;
   }
 
