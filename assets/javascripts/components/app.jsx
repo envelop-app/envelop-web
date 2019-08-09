@@ -65,10 +65,18 @@ class AppComponent extends Component {
       return;
     }
 
-    Page.preventClose(() => {
-      const gaiaDocuments = files.map(file => GaiaDocument.fromFile(file));
+    const gaiaDocuments = files.map(file => GaiaDocument.fromFile(file));
+
+    const allUploaded = gaiaDocuments.map(doc => {
+      return new Promise(resolve => {
+        doc.onUploaded(() => resolve());
+      });
+    });
+
+    Page.preventClose(async () => {
       this.setState({ documents: [...gaiaDocuments, ...this.state.documents] });
-      return gaiaIndex.addDocuments(gaiaDocuments);
+      await gaiaIndex.addDocuments(gaiaDocuments);
+      return Promise.all(allUploaded);
     });
   }
 
