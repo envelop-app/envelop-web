@@ -1,6 +1,7 @@
 import chunk from 'lodash/chunk';
 import GaiaDocument from './gaia_document';
 import Record from './records/record';
+import sleep from './sleep';
 
 const version = 1;
 
@@ -13,6 +14,7 @@ class GaiaIndex {
     this.version = null;
     this.documents = [];
     this.onChangeCallbacks = [];
+    this.busy = false;
   }
 
   async addDocuments(docs) {
@@ -76,12 +78,26 @@ class GaiaIndex {
     return this.attributes();
   }
 
+  async wait() {
+    while (this.busy) {
+      await sleep(50);
+    }
+  }
+
   async _syncFile(callback) {
+    if (this.busy) {
+      this.wait();
+    }
+    this.busy = true;
+
     await this.load();
     callback(this);
     await Record.getSession().putFile('index', JSON.stringify(this));
+
+    this.busy = false;
+
     return this;
   }
 }
 
-export default GaiaIndex;
+export const gaiaIndex = new GaiaIndex();
