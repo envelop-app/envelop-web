@@ -10,7 +10,7 @@
 [[redirects]]
   from = "/redirect_mobile/:data"
   to = "/redirect_mobile.html"
-  status = 200
+  status = 302
 
 [[headers]]
   for = "/manifest.json"
