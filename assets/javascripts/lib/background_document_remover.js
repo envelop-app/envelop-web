@@ -21,8 +21,12 @@ async function removeAll() {
 
   const deletePromises = urls.map(async url => {
     return limiter.schedule(async () => {
-      await Record.getSession().deleteFile(url);
-      return removeUrl(url);
+      try {
+        await Record.getSession().deleteFile(url);
+      }
+      finally {
+        removeUrl(url);
+      }
     });
   });
 
