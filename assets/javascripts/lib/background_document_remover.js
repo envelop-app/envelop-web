@@ -2,6 +2,9 @@ import Bottleneck from 'bottleneck';
 
 import LocalDatabase from './local_database';
 import Record from './records/record';
+import sleep from './sleep';
+
+let busy = false;
 
 async function fetchUrls() {
   const keys = await LocalDatabase.keys();
@@ -15,6 +18,11 @@ async function removeUrl(url) {
 }
 
 async function removeAll() {
+  while (busy) {
+    await sleep(50);
+  }
+  busy = true;
+
   const limiter = new Bottleneck({ maxConcurrent: 1, minTime: 1000 });
 
   const urls = await fetchUrls();
@@ -30,7 +38,11 @@ async function removeAll() {
     });
   });
 
-  return Promise.all(deletePromises);
+  await Promise.all(deletePromises);
+
+  busy = false;
+
+  return Promise.resolve();
 }
 
 const BackgroundDocumentRemover = {};
