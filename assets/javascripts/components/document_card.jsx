@@ -114,7 +114,7 @@ class DocumentCardComponent extends Component {
         </DocumentCardMediaComponent>
         <div className="ev-document-card__body">
           <div className="ev-document-card__body-left">
-            <div className="ev-document-card__text-title">{doc.name}</div>
+            <div className="ev-document-card__text-title" title={doc.name}>{doc.name}</div>
             <div className="ev-document-card__text-primary">{prettyBytes(doc.size)}</div>
             <div className="ev-document-card__text-secondary">{this.formatDate(doc.created_at)}</div>
           </div>
