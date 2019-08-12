@@ -1,6 +1,9 @@
 import Bottleneck from 'bottleneck';
 
-import { privateUserSession } from './blockstack_client';
+import BackgroundDocumentRemover from './background_document_remover';
+import Record from './records/record';
+
+import LocalDatabase from './local_database';
 
 class DocumentRemover {
   constructor(gaiaDocument) {
@@ -8,12 +11,39 @@ class DocumentRemover {
     this.limiter = new Bottleneck({ maxConcurrent: 1, minTime: 1000 });
   }
 
-  remove() {
-    if (this.gaiaDocument.num_parts > 1) {
-      return this.removeParts();
-    } else {
-      return this.removeRawFile(this.gaiaDocument.url);
+  async remove() {
+    try {
+      await this.removeLater();
     }
+    catch (e) {
+      if (e.name === 'QuotaExceededError') {
+        if (this.gaiaDocument.num_parts > 1) {
+          await this.removeParts();
+        } else {
+          await this.removeRawFile(this.gaiaDocument.url);
+        }
+      }
+    }
+  }
+
+  async removeLater() {
+    let urls = [];
+
+    if (this.gaiaDocument.num_parts > 1) {
+      urls = [...this.gaiaDocument.getPartUrls()];
+    } else {
+      urls = [this.gaiaDocument.url];
+    }
+
+    const promises = urls.map(url => {
+      return LocalDatabase.setItem(`delete:${url}`, true);
+    });
+
+    await Promise.all(promises);
+
+    BackgroundDocumentRemover.removeAll();
+
+    return true;
   }
 
   removeParts() {
@@ -24,7 +54,7 @@ class DocumentRemover {
   }
 
   removeRawFile(url) {
-    return privateUserSession.deleteFile(url);
+    return Record.getSession().deleteFile(url);
   }
 }
 

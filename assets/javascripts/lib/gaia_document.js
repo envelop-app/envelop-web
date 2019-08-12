@@ -163,6 +163,7 @@ class GaiaDocument extends WithFile(Record) {
     return {
       ...super.attributes(),
       content_type: this.content_type || null,
+      deleted: this.deleted || undefined,
       localId: this.id || null,
       passcode: this.passcode || null,
       version: this.version || null,
@@ -232,6 +233,10 @@ GaiaDocument.afterInitialize((record) => {
 GaiaDocument.afterInitialize((record) => {
   if (record.version < 2) { return; }
   record.uploaded = record.uploaded || false;
+});
+
+GaiaDocument.beforeDelete((record) => {
+  record.deleted = true;
 });
 
 export default GaiaDocument;

@@ -6,8 +6,8 @@ class DocumentUploader extends BaseDocumentUploader {
     this.reader = new FileReader();
   }
 
-  upload(file) {
-    return new Promise((resolve, reject) => {
+  async upload(file) {
+    await new Promise((resolve, reject) => {
       this.reader.onload = (evt) => {
         const buffer = evt.target.result || this.reader.result;
         const rawFilePromise = this.uploadRawFile(this.doc.url, buffer, { partNumber: 0 });
@@ -25,6 +25,8 @@ class DocumentUploader extends BaseDocumentUploader {
 
       this.reader.readAsArrayBuffer(file);
     });
+
+    return super.upload(file);
   }
 }
 

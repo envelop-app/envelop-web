@@ -12,11 +12,15 @@ function sortDocuments(documents) {
   });
 }
 
+function filterDocuments(documents) {
+  return documents.filter(doc => doc.deleted !== true);
+}
+
 function DocumentListComponent(props) {
   return (
     <div className="ev-document-list ev-document-list-grid">
       <div className="ev-document-list-grid__inner">
-        {sortDocuments(props.documents).map(doc => (
+        {sortDocuments(filterDocuments(props.documents)).map(doc => (
           <div className="ev-document-list-grid__cell" key={doc.uniqueKey()}>
             <DocumentCardComponent
               deleting={props.deleting === doc}

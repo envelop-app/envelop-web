@@ -22,6 +22,17 @@ class MockSession {
     return Promise.resolve(path);
   }
 
+  deleteFile(path) {
+    if (this.files[path]) {
+      delete this.files[path];
+    }
+    else {
+      throw '404 File does not exist';
+    }
+
+    return Promise.resolve();
+  }
+
   loadUserData() {
     return { username: 'chrisrock.id.blockstack' };
   }
@@ -79,7 +90,7 @@ describe('v2', () => {
       expect(doc.uploaded).toBe(false);
       expect(doc.isReady()).toBe(false);
 
-      await doc.save();
+      await doc.save({ syncUpload: true });
 
       expect(doc.version).toBe(2);
       expect(doc.url).toMatch(uuidRegex);
@@ -127,7 +138,7 @@ describe('v2', () => {
 
       const file = new File([buffer], 'foo.txt', { type: 'text/plain' });
       const doc = GaiaDocument.fromFile(file);
-      await doc.save();
+      await doc.save({ syncUpload: true });
 
       const encryptedContent = await Record.getSession().getFile(doc.url);
 
@@ -265,6 +276,15 @@ describe('v2', () => {
     expect(doc.id).toEqual(null);
     expect(doc.isReady()).toEqual(false);
   });
+
+  describe('.delete()', () => {
+    test('marks file as delete', async () => {
+      const doc = buildDoc();
+      await doc.delete();
+
+      expect(doc.deleted).toEqual(true);
+    });
+  })
 });
 
 describe('v1', () => {

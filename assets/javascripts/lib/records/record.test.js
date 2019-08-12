@@ -57,6 +57,16 @@ describe('hooks', () => {
     expect(record.saving).toEqual(true);
   });
 
+  test('.afterSave', async () => {
+    const HookedRecord = class extends Record {}
+    HookedRecord.afterSave(record => Promise.resolve(record.isSaved = true));
+
+    const record = new HookedRecord();
+    await record.save();
+
+    expect(record.isSaved).toEqual(true);
+  });
+
   test('.beforeDelete', async () => {
     const HookedRecord = class extends Record {}
     HookedRecord.beforeDelete(record => Promise.resolve(record.deleting = true));
@@ -65,5 +75,15 @@ describe('hooks', () => {
     await record.delete();
 
     expect(record.deleting).toEqual(true);
+  });
+
+  test('.afterDelete', async () => {
+    const HookedRecord = class extends Record {}
+    HookedRecord.afterDelete(record => Promise.resolve(record.isDeleted = true));
+
+    const record = new HookedRecord();
+    await record.delete();
+
+    expect(record.isDeleted).toEqual(true);
   });
 });
