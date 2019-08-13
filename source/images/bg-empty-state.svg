@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="385px" height="497px" viewBox="0 0 385 497" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
-    <title>Background</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Web" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Desktop-HD---Empty-State" transform="translate(-484.000000, -257.000000)">
-            <g id="Background" transform="translate(445.000000, 257.000000)">
-                <path d="M97.7864758,154.891527 C130.18379,81.5306633 336.16403,94.9574231 399.542566,190.191272 C462.921101,285.425122 390.488489,497 325.560056,497 C260.631624,497 260.631624,354.152021 233.859656,312.200384 C207.087689,270.248747 65.3891615,228.252391 97.7864758,154.891527 Z" id="Weird-Shape" fill="#FAE6CE"></path>
-                <path d="M131.742446,389.81911 C169.774695,398.562463 171.282225,357.265621 171.215235,302.428084 C171.148246,247.590546 178.692655,184.695913 140.660406,175.95256 C102.628158,167.209207 62.6906845,219.858186 62.7576738,274.695724 C62.8246631,329.533261 93.7101978,381.075757 131.742446,389.81911 Z" id="Weird-Shape" fill-opacity="0.6" fill="#D0D5FA" transform="translate(117.269619, 282.993278) rotate(49.000000) translate(-117.269619, -282.993278) "></path>
-                <path d="M361.924435,114 C388.111079,114 417,88.936942 417,57 C417,25.063058 388.111079,0 361.924435,0 C335.737791,0 326,36.5489763 326,62.7429591 C326,88.936942 335.737791,114 361.924435,114 Z" id="Weird-Shape" fill="#D0D5FA"></path>
-                <polygon id="Polygon" fill="#2026A2" opacity="0.6" transform="translate(68.000000, 46.000000) rotate(-90.000000) translate(-68.000000, -46.000000) " points="68 34 80 46 68 58 56 46"></polygon>
-                <polygon id="Polygon" fill-opacity="0.6" fill="#FF9B21" transform="translate(394.000000, 426.000000) rotate(-90.000000) translate(-394.000000, -426.000000) " points="394 402 418 426 394 450 370 426"></polygon>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg height="497" width="385" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M58.786 154.892c32.398-73.361 238.378-59.935 301.757 35.3C423.92 285.424 351.488 497 286.56 497s-64.928-142.848-91.7-184.8C168.088 270.25 26.39 228.252 58.786 154.892z" fill="#fae6ce"/><path d="M7.142 364c18.353 34.44 50.509 8.484 91.851-27.543 41.343-36.027 93.76-71.596 75.407-106.036-18.353-34.439-84.289-30.04-125.631 5.988C7.426 272.436-11.211 329.56 7.142 364z" fill="#d0d5fa" fill-opacity=".6"/><path d="M322.924 114C349.111 114 378 88.937 378 57S349.111 0 322.924 0 287 36.549 287 62.743C287 88.937 296.738 114 322.924 114z" fill="#d0d5fa"/><path d="M17 46l12-12 12 12-12 12z" fill="#2026a2" opacity=".6"/><path d="M331 426l24-24 24 24-24 24z" fill="#ff9b21" fill-opacity=".6"/></g></svg>
