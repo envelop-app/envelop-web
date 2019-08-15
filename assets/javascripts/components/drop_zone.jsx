@@ -62,7 +62,7 @@ class DropZoneComponent extends Component {
         reject(evt.target.error);
       }
 
-      reader.readAsArrayBuffer(file.slice(1));
+      reader.readAsArrayBuffer(file.slice(0, 1));
     });
   }
 
