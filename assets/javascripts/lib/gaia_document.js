@@ -106,9 +106,14 @@ class GaiaDocument extends WithFile(Record) {
         this.username = options.username;
       }
       else {
-        const userData = Record.getSession().loadUserData();
-        if (userData) {
-          this.username = userData.username;
+        try {
+          const userData = Record.getSession().loadUserData();
+          if (userData) {
+            this.username = userData.username;
+          }
+        }
+        catch (e) {
+          // User is not logged in. Do nothing
         }
       }
     }
