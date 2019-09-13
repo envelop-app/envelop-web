@@ -11,5 +11,16 @@
   },
   "permissions": [
     "tabs"
-  ]
+  ],
+  "commands": {
+    "_execute_browser_action": {
+      "description": "Open Envelop window",
+      "suggested_key": {
+        "chromeos": "Alt+Shift+E",
+        "linux": "Alt+Shift+E",
+        "mac": "Alt+Shift+E",
+        "windows": "Alt+Shift+E"
+      }
+    }
+  }
 }

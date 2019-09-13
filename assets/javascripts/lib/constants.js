@@ -30,6 +30,7 @@ function redirectUri(suffix) {
 const Constants = {
   BLOCKSTACK_ORIGIN: BLOCKSTACK_ORIGIN,
   BLOCKSTACK_REDIRECT_URI: isProduction() ? redirectUri('/app') : redirectUri('/app.html'),
+  BLOCKSTACK_EXTENSION_REDIRECT_URI: isProduction() ? redirectUri('/extension_app') : redirectUri('/extension_app.html'),
   SHARE_URI: SHARE_URI,
   PREVIEW: __PREVIEW__,
   FILE_SIZE_LIMIT: Infinity,
