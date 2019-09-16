@@ -62,8 +62,10 @@ class AvatarComponent extends Component {
     if (item == 0) {
       window.open('https://play.google.com/store/apps/details?id=app.envelop', '_blank');
     } else if (item == 1) {
-      window.open('mailto:feedback@envelop.app?subject=Envelop Feedback', '_blank');
+      window.open('/faq.html', '_blank');
     } else if (item == 2) {
+      window.open('mailto:feedback@envelop.app?subject=Envelop Feedback', '_blank');
+    } else if (item == 3) {
       privateUserSession.signUserOut();
       window.location = window.location.origin;
     }
@@ -87,6 +89,9 @@ class AvatarComponent extends Component {
           <MenuList>
             <MenuListItem>
               <MenuListItemText primaryText={'Android app'} />
+            </MenuListItem>
+            <MenuListItem>
+              <MenuListItemText primaryText={'FAQs'} />
             </MenuListItem>
             <MenuListItem>
               <MenuListItemText primaryText={'Send us feedback'} />
