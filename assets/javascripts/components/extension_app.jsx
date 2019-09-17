@@ -73,7 +73,11 @@ class ExtensionAppComponent extends Component {
       <div key="container" className="ev-extension-app__container">
         {this.showEmptyState() ?
             <div className="ev-extension-app__empty-state">
-              <img className="ev-extension-app__empty-state-image" src="/images/bg-empty-state.svg" />
+              <img
+                className="ev-extension-app__empty-state-image"
+                src="/images/bg-empty-state.svg"
+                draggable={false}
+              />
               <div className="ev-extension-app__empty-state-text">
                 Drag and drop<br/> to upload
               </div>
