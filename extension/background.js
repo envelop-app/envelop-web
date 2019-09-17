@@ -18,12 +18,12 @@ function openWindow() {
     height: parseInt(height),
     width: parseInt(width),
     left: parseInt(left),
-    top: parseInt(top),
-    focused: true
+    top: parseInt(top)
   }
 
-  chrome.windows.create(options, function(newWindow) {
+  browser.windows.create(options).then(function(newWindow) {
     currentWindowId = newWindow.id;
+    focusWindow();
   });
 }
 
@@ -33,18 +33,21 @@ function openOrFocusWindow() {
     return
   }
 
-  chrome.windows.getAll({}, function(windows) {
+  browser.windows.getAll({}).then(function(windows) {
     var windowIds = windows.map(function(win) { return win.id });
 
     if (windowIds.indexOf(currentWindowId) > -1) {
-      chrome.windows.update(currentWindowId, { focused: true });
-    }
-    else {
+      focusWindow();
+    } else {
       openWindow();
     }
   });
 }
 
-chrome.browserAction.onClicked.addListener(function() {
+function focusWindow() {
+  browser.windows.update(currentWindowId, { focused: true });
+}
+
+browser.browserAction.onClicked.addListener(function() {
   openOrFocusWindow();
 });
