@@ -13,33 +13,32 @@ class ExtensionNavbarComponent extends Component {
   }
 
   handleInputChange = async (evt) => {
-    console.log(evt)
     await this.props.uploadFiles([...evt.target.files]);
     this.inputRef.current.value = null;
   }
 
   render() {
     return (
-      <nav className="ev-navbar ev-navbar--inverted ev-navbar--fixed">
-        <ul className="ev-navbar__items">
-          <li className="ev-navbar__item">
-            <label htmlFor="file-upload">
+      <label className="ev-upload__label" htmlFor="file-upload">
+        <nav className="ev-navbar ev-navbar--inverted ev-navbar--fixed">
+          <ul className="ev-navbar__items">
+            <li className="ev-navbar__item">
               <div className="ev-upload-btn">
                 <i className="material-icons">add</i>
               </div>
-            </label>
-            <input
-              ref={this.inputRef}
-              className="ev-upload__input"
-              id="file-upload"
-              onChange={this.handleInputChange}
-              type="file"
-              name="file-upload"
-            />
-          </li>
-          <li className="ev-navbar__item  ev-navbar__item--no-pading">UPLOAD</li>
-        </ul>
-      </nav>
+            </li>
+            <li className="ev-navbar__item  ev-navbar__item--no-pading">UPLOAD</li>
+          </ul>
+          <input
+            ref={this.inputRef}
+            className="ev-upload__input"
+            id="file-upload"
+            onChange={this.handleInputChange}
+            type="file"
+            name="file-upload"
+          />
+        </nav>
+      </label>
     );
   }
 }

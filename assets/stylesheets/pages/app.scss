@@ -58,6 +58,14 @@
   }
 }
 
+.ev-upload__label {
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.5;
+  }
+}
+
 .ev-upload__input {
   position: absolute;
   top: -1000px;
