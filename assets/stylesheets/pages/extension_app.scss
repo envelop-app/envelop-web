@@ -2,6 +2,10 @@
 @import "../elements/plus_btn";
 @import "../elements/extension_document_list";
 
+.ev-extension-app__container {
+  padding-top: $ev-navbar-height;
+}
+
 .ev-extension-app__empty-state {
   position: relative;
   text-align: center;

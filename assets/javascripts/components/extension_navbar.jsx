@@ -20,7 +20,7 @@ class ExtensionNavbarComponent extends Component {
 
   render() {
     return (
-      <nav className="ev-navbar ev-navbar--inverted">
+      <nav className="ev-navbar ev-navbar--inverted ev-navbar--fixed">
         <ul className="ev-navbar__items">
           <li className="ev-navbar__item">
             <label htmlFor="file-upload">
