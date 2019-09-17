@@ -63,3 +63,30 @@
   top: -1000px;
   opacity: 0;
 }
+
+.ev-app__empty-state {
+  position: relative;
+  text-align: center;
+  margin: auto;
+  width: 50%;
+  max-width: 550px;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    width: 80%;
+  }
+}
+
+.ev-app__empty-state-image {
+  width: 60%;
+}
+
+.ev-app__empty-state-text {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+
+  @media(min-width: mdc-layout-grid-breakpoint-min('desktop')) {
+    font-size: 30px;
+  }
+}
