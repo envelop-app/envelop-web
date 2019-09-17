@@ -58,7 +58,9 @@ class ExtensionAppComponent extends Component {
     Page.preventClose(async () => {
       this.setState({ documents: [...gaiaDocuments, ...this.state.documents] });
       await gaiaIndex.addDocuments(gaiaDocuments);
-      return Promise.all(allUploaded);
+      return Promise
+        .all(allUploaded)
+        .then(() => window.scroll({ top: 0, behavior: 'smooth' }));
     });
   }
 
