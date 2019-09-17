@@ -1,10 +1,14 @@
-.ev-body__privacy_policy {
+.ev-body__faq {
   background: $ev-yellow;
 }
 
-.ev-privacy-policy__main {
+.ev-faq__main {
   margin: auto;
   max-width: 600px;
   padding: 20px;
   line-height: 125%;
+}
+
+.ev-faq__main a {
+  text-decoration: underline;
 }
