@@ -10,6 +10,7 @@ import { gaiaIndex } from '../lib/gaia_index';
 import Page from '../lib/page';
 
 import ExtensionNavbarComponent from '../components/extension_navbar.jsx';
+import ExtensionFooterComponent from '../components/extension_footer.jsx';
 import ExtensionDocumentListComponent from '../components/extension_document_list.jsx';
 
 class ExtensionAppComponent extends Component {
@@ -91,7 +92,8 @@ class ExtensionAppComponent extends Component {
             />
         }
       </div>,
-      <DropZoneComponent onDroppedFile={(files) => this.uploadFiles(files)} />
+      <ExtensionFooterComponent key="footer" />,
+      <DropZoneComponent key="drop" onDroppedFile={(files) => this.uploadFiles(files)} />
     ];
   }
 }
