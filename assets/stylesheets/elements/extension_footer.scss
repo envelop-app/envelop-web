@@ -1,0 +1,35 @@
+.ev-extension-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px solid $gray-light;
+  background-color: white;
+}
+
+.ev-extension-footer__text {
+  padding: 0 18px;
+  font-size: $text-small;
+}
+
+.ev-extension-footer__btn-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.ev-extension-footer__kebab {
+  height: 24px;
+  width: 24px;
+  margin-right: 10px;
+  padding: 0 5px;
+  background-image: url('/images/baseline-more_vert-24px.svg');
+  background-repeat: no-repeat;
+}
+
+.ev-extension-footer__icon {
+  cursor: pointer;
+  padding-right: 20px;
+}

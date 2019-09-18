@@ -1,0 +1,26 @@
+{
+  "name": "Envelop Extension",
+  "version": "0.4",
+  "description": "This is the Envelop Extension.",
+  "manifest_version": 2,
+  "background": {
+    "scripts": ["browser-polyfill.min.js", "background.js"]
+  },
+  "browser_action": {
+    "default_title": "Envelop"
+  },
+  "permissions": [
+    "tabs"
+  ],
+  "commands": {
+    "_execute_browser_action": {
+      "description": "Open Envelop window",
+      "suggested_key": {
+        "chromeos": "Alt+Shift+E",
+        "linux": "Alt+Shift+E",
+        "mac": "Alt+Shift+E",
+        "windows": "Alt+Shift+E"
+      }
+    }
+  }
+}

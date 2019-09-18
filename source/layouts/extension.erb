@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title><%= current_page.data.title %></title>
+    <meta name="description" content="<%= current_page.data.description %>">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <%= stylesheet_link_tag "common" %>
+    <%= javascript_include_tag "vendors" %>
+    <%= javascript_include_tag "common" %>
+    <%= javascript_include_tag File.basename(current_resource.path, '.html'), defer: true %>
+  </head>
+  <body class="ev-extension__<%= current_page.data.name %>">
+    <%= yield %>
+    <div class="js-toast-wrapper"></div>
+  </body>
+</html>

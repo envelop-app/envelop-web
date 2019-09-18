@@ -17,6 +17,10 @@
   position: fixed;
   z-index: 1;
 }
+.ev-navbar--inverted {
+  background-color: white;
+  color: $text-primary;
+}
 
 .ev-navbar--no-shadow {
   box-shadow: none;
@@ -47,6 +51,10 @@
   height: 100%;
   padding: 0 20px;
   font-size: 13pt;
+}
+
+.ev-navbar__item--no-pading {
+  padding: 0;
 }
 
 .ev-navbar__item-link {

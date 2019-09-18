@@ -129,7 +129,11 @@ class AppComponent extends Component {
         {this.renderUpload()}
         {this.showEmptyState() ?
             <div className="ev-app__empty-state">
-              <img className="ev-app__empty-state-image" src="/images/bg-empty-state.svg" />
+              <img
+                className="ev-app__empty-state-image"
+                src="/images/bg-empty-state.svg"
+                draggable={false}
+              />
               <div className="ev-app__empty-state-text">
                 Looking a little empty? Share your files, music, images, videos ...
               </div>

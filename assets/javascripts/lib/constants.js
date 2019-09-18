@@ -30,6 +30,7 @@ function redirectUri(suffix) {
 const Constants = {
   BLOCKSTACK_ORIGIN: BLOCKSTACK_ORIGIN,
   BLOCKSTACK_REDIRECT_URI: isProduction() ? redirectUri('/app') : redirectUri('/app.html'),
+  BLOCKSTACK_EXTENSION_REDIRECT_URI: isProduction() ? redirectUri('/extension_app') : redirectUri('/extension_app.html'),
   SHARE_URI: SHARE_URI,
   PREVIEW: __PREVIEW__,
   FILE_SIZE_LIMIT: Infinity,
@@ -38,7 +39,8 @@ const Constants = {
   KEY_ITERATIONS: 10000,
   KEY_SIZE: 256,
   SINGLE_FILE_SIZE_LIMIT: 9 * (10 ** 6), // 9 MB
-  TEMP_DOCUMENTS_PREFIX: 'tempDocuments'
+  TEMP_DOCUMENTS_PREFIX: 'tempDocuments',
+  FEEDBACK_URL: 'mailto:feedback@envelop.app?subject=Envelop Feedback'
 };
 
 export default Constants;
