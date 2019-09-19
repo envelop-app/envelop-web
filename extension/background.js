@@ -1,7 +1,6 @@
 /* global chrome */
 
-var url = 'http://localhost:3000';
-// var url = 'https://envelop.app';
+var url = 'https://envelop.app';
 
 var currentWindowId = null;
 

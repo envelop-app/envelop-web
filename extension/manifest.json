@@ -1,16 +1,25 @@
 {
-  "name": "Envelop Extension",
-  "version": "0.4",
-  "description": "This is the Envelop Extension.",
+  "name": "Envelop",
+  "version": "1.0.1",
+  "description": "Share private files easily",
   "manifest_version": 2,
   "background": {
     "scripts": ["browser-polyfill.min.js", "background.js"]
   },
+  "icons": {
+    "128": "envelop-icon.png"
+  },
   "browser_action": {
-    "default_title": "Envelop"
+    "default_title": "Envelop",
+    "default_icon": "envelop-icon.png",
+    "theme_icons": [{
+      "light": "envelop-icon.png",
+      "dark": "envelop-icon-dark.png",
+      "size": 128
+    }]
   },
   "permissions": [
-    "tabs"
+    "*://envelop.app/*"
   ],
   "commands": {
     "_execute_browser_action": {
