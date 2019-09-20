@@ -18,7 +18,10 @@ class DropZoneComponent extends Component {
     const dropNode = this.dropZoneRef.current;
     dropNode.addEventListener('dragover', evt => evt.preventDefault());
     dropNode.addEventListener('dragleave', () => {
-      this.setState({ open: false });
+      // Firefox fires dragleave on children
+      if (!evt.currentTarget.contains(evt.relatedTarget)) {
+        this.setState({ open: false });
+      }
     });
     dropNode.addEventListener('drop', (evt) => {
       evt.preventDefault();
