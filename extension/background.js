@@ -1,4 +1,4 @@
-/* global chrome */
+/* global browser */
 
 var url = 'https://envelop.app';
 

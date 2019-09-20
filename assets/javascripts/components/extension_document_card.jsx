@@ -53,7 +53,7 @@ class ExtensionDocumentCardComponent extends Component {
       const progress = Math.round(this.state.progress * 100);
 
       return (
-        <span class="ev-text-medium">Uploading {progress}%</span>
+        <span className="ev-text-medium">Uploading {progress}%</span>
       );
     }
   }
