@@ -1,6 +1,6 @@
 {
   "name": "Envelop",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Share private files easily",
   "manifest_version": 2,
   "background": {
@@ -11,12 +11,7 @@
   },
   "browser_action": {
     "default_title": "Envelop",
-    "default_icon": "envelop-icon.png",
-    "theme_icons": [{
-      "light": "envelop-icon.png",
-      "dark": "envelop-icon-dark.png",
-      "size": 128
-    }]
+    "default_icon": "envelop-icon.png"
   },
   "permissions": [
     "*://envelop.app/*"
