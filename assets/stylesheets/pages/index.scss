@@ -24,9 +24,9 @@ $ev-index__cell-padding: 25px;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding: 0 60px;
+  padding: 60px 100px;
   @media(max-width: mdc-layout-grid-breakpoint-max('tablet')) {
-    padding: 0 20px;
+    padding: 30px 20px;
   }
 }
 
@@ -44,12 +44,12 @@ $ev-index__cell-padding: 25px;
 
 .ev-index__section-cell {
   width: calc(50% - #{$ev-index__cell-padding*2});
-  padding: 100px $ev-index__cell-padding;
+  padding: 0 $ev-index__cell-padding;
   margin: auto;
 
   @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
     width: 100%;
-    padding: 30px 10px;
+    padding: 10px 10px;
   }
 }
 
@@ -142,4 +142,45 @@ $ev-index__cell-padding: 25px;
 
 .ev-index__upload-label {
   cursor: pointer;
+}
+
+.ev-index__section-cell-full {
+  width: 100%;
+}
+
+.ev-index__section-cell-third {
+  width: 33.33%;
+  margin: auto;
+  padding: 20px 0;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('tablet')) {
+    width: 100%;
+  }
+}
+
+.ev-index__extension {
+  background-color: white;
+  border-radius: 10px;
+  text-align: center;
+  margin: 0 40px;
+  padding: 20px;
+  box-shadow: 0 2px 1px rgba(0, 0, 0, 0.25);
+}
+
+a:hover .ev-index__extension {
+  box-shadow: 0 4px 3px rgba(0, 0, 0, 0.25);
+}
+
+.ev-index__extension-link:hover {
+  text-decoration: none;
+}
+
+.ev-index__extension-logo {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+.ev-index__extension-name {
+  font-size: 24px;
 }

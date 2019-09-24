@@ -60,12 +60,14 @@ class AvatarComponent extends Component {
 
   onSelect = (item) => {
     if (item == 0) {
-      window.open('https://play.google.com/store/apps/details?id=app.envelop', '_blank');
+      window.open('/#homepage-extensions', '_blank');
     } else if (item == 1) {
-      window.open('/faq.html', '_blank');
+      window.open('https://play.google.com/store/apps/details?id=app.envelop', '_blank');
     } else if (item == 2) {
-      window.open('mailto:feedback@envelop.app?subject=Envelop Feedback', '_blank');
+      window.open('/faq.html', '_blank');
     } else if (item == 3) {
+      window.open('mailto:feedback@envelop.app?subject=Envelop Feedback', '_blank');
+    } else if (item == 4) {
       privateUserSession.signUserOut();
       window.location = window.location.origin;
     }
@@ -87,6 +89,9 @@ class AvatarComponent extends Component {
           onSelected={this.onSelect}
         >
           <MenuList>
+            <MenuListItem>
+              <MenuListItemText primaryText={'Browser extensions'} />
+            </MenuListItem>
             <MenuListItem>
               <MenuListItemText primaryText={'Android app'} />
             </MenuListItem>
