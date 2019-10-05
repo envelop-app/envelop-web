@@ -88,9 +88,10 @@ class AppComponent extends Component {
     );
   }
 
-  onConfirmDelete = (doc) => {
+  onConfirmDelete = async (doc) => {
     this.setState({ deleting: doc });
-    gaiaIndex.deleteDocument(doc);
+    await doc.cancelUpload();
+    await gaiaIndex.deleteDocument(doc);
   }
 
   showEmptyState() {

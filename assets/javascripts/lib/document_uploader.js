@@ -4,6 +4,7 @@ class DocumentUploader extends BaseDocumentUploader {
   constructor() {
     super(...arguments);
     this.reader = new FileReader();
+    this.cancelled = false;
   }
 
   async upload(file) {
@@ -15,7 +16,13 @@ class DocumentUploader extends BaseDocumentUploader {
         rawFilePromise
           .then(() => {
             this.progress.add(this.doc.size);
-            resolve(this.doc);
+
+            if (this.cancelled) {
+              reject(new Error('cancel'));
+            }
+            else {
+              resolve(this.doc);
+            }
           });
       }
 
@@ -27,6 +34,10 @@ class DocumentUploader extends BaseDocumentUploader {
     });
 
     return super.upload(file);
+  }
+
+  async cancel() {
+    this.cancelled = true;
   }
 }
 

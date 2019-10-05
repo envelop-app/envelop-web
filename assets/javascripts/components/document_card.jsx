@@ -72,17 +72,15 @@ class DocumentCardComponent extends Component {
   }
 
   renderMenu() {
-    return [
-      !this.isDisabled() &&
+    return (
+      <>
         <a
-          key="1"
           href=""
           onClick={this.handleKebabOpen}
           className="ev-document-card__media-kebab mdc-menu-surface--anchor"
           ref={this.setAnchorElement}
-        />,
+        />
         <Menu
-          key="2"
           anchorCorner={Corner.BOTTOM_START}
           anchorElement={this.state.anchorElement}
           open={this.state.open}
@@ -96,7 +94,8 @@ class DocumentCardComponent extends Component {
             </MenuListItem>
           </MenuList>
         </Menu>
-    ];
+      </>
+    );
   }
 
   render() {
