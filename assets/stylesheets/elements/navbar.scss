@@ -93,3 +93,38 @@
     display: none;
   }
 }
+
+.ev-navbar__banner {
+  position: fixed;
+  top: $ev-navbar-height;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: #000;
+  font-size: 17px;
+  text-decoration: underline;
+  z-index: 1;
+
+  * {
+    color: #FFF;
+  }
+}
+
+.ev-navbar__banner-text {
+  flex: 1;
+  text-align: center;
+
+  @media(max-width: mdc-layout-grid-breakpoint-max('phone')) {
+    padding: 15px 5px;
+    font-size: 14px;
+  }
+}
+
+.ev-navbar__banner-close {
+  padding: 0 20px;
+
+  i {
+    line-height: 54px;
+  }
+}

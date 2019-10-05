@@ -5,6 +5,7 @@ import { privateUserSession } from '../lib/blockstack_client';
 
 import App from '../components/app.jsx'
 import AvatarComponent from '../components/avatar.jsx'
+import BannerComponent from '../components/banner.jsx'
 
 import Record from '../lib/records/record';
 Record.config({ session: privateUserSession });
@@ -20,6 +21,9 @@ function ensureUsernameExists() {
 function mountComponents() {
   const avatarContainer = document.querySelector('.js-navbar-user');
   ReactDOM.render(<AvatarComponent />, avatarContainer);
+
+  const bannerContainer = document.querySelector('.js-banner');
+  ReactDOM.render(<BannerComponent />, bannerContainer);
 
   const appContainer = document.querySelector('.js-app-container');
   ReactDOM.render(<App />, appContainer);
