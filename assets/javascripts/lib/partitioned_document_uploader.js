@@ -23,6 +23,12 @@ class PartitionedDocumentUploader extends BaseDocumentUploader {
     return super.upload(file);
   }
 
+  async cancel() {
+    await this.uploadLimiter.stop();
+    this.cleanupLimiters();
+    return true;
+  }
+
   cleanupLimiters() {
     this.uploadLimiter.disconnect();
   }

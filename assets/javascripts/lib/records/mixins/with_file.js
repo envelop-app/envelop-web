@@ -60,6 +60,10 @@ const WithFile = (superclass) => {
       return await this._downloader.download();
     }
 
+    async cancelUpload() {
+      return this._uploader && this._uploader.cancel();
+    }
+
     onDownloadProgress(callback) {
       if (callback && typeof callback === 'function') {
         this.downloadProgressCallbacks.push(callback);
