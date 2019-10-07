@@ -46,7 +46,7 @@ class BannerComponent extends Component {
           href={this.state.extensionUrl}
           className="ev-navbar__banner-text"
           target='_blank'>
-          We have news! 🥳 Now you can use a Browser Extension to share your files.
+          {"We have news! 🎉 Now you can use a Browser Extension to share your files."}
         </a>
         <a
           href="#"
