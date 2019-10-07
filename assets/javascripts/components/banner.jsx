@@ -17,7 +17,7 @@ function getExtensionUrl() {
 class BannerComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { show: true, extensionUrl: getExtensionUrl() };
+    this.state = { show: false, extensionUrl: getExtensionUrl() };
   }
 
   componentDidMount() {
