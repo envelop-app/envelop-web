@@ -119,7 +119,9 @@ class AppComponent extends Component {
           id="file-upload"
           onChange={this.handleInputChange}
           type="file"
-          name="file-upload" />
+          name="file-upload"
+          multiple
+        />
       </div>
     );
   }

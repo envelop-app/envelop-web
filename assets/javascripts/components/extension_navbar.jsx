@@ -36,6 +36,7 @@ class ExtensionNavbarComponent extends Component {
             onChange={this.handleInputChange}
             type="file"
             name="file-upload"
+            multiple
           />
         </nav>
       </label>
