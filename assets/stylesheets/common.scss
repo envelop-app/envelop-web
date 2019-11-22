@@ -8,6 +8,7 @@ $mdc-typography-font-family: unquote("Questrial, sans-serif") !default;
 @import "@material/snackbar/mdc-snackbar";
 @import "@material/layout-grid/mdc-layout-grid";
 @import "./style";
+@import "./material_icons";
 @import "./layouts/*";
 @import "./pages/*";
 
