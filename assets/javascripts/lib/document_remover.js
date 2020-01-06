@@ -5,10 +5,19 @@ import Record from './records/record';
 
 import LocalDatabase from './local_database';
 
+const RETRY_INTERVAL = 1000;
+const RETRY_ATTEMPTS = 3;
+
 class DocumentRemover {
   constructor(gaiaDocument) {
     this.gaiaDocument = gaiaDocument;
-    this.limiter = new Bottleneck({ maxConcurrent: 1, minTime: 1000 });
+    this.limiter = new Bottleneck({maxConcurrent: 1, minTime: 1000});
+
+    this.limiter.on('failed', async (error, jobInfo) => {
+      if (jobInfo.retryCount === RETRY_ATTEMPTS) {
+        return RETRY_INTERVAL;
+      }
+    });
   }
 
   async remove() {

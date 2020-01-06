@@ -2,10 +2,19 @@ import Bottleneck from 'bottleneck';
 
 import BaseDocumentUploader from './base_document_uploader';
 
+const RETRY_INTERVAL = 1000;
+const RETRY_ATTEMPTS = 3;
+
 class PartitionedDocumentUploader extends BaseDocumentUploader {
   constructor() {
     super(...arguments);
-    this.uploadLimiter = new Bottleneck({ maxConcurrent: 3 });
+    this.uploadLimiter = new Bottleneck({maxConcurrent: 3});
+
+    this.uploadLimiter.on('failed', async (error, jobInfo) => {
+      if (jobInfo.retryCount === RETRY_ATTEMPTS) {
+        return RETRY_INTERVAL;
+      }
+    });
   }
 
   async upload(file) {
