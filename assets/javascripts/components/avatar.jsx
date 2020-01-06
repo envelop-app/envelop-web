@@ -16,13 +16,25 @@ class AvatarComponent extends Component {
       coordinates: undefined,
       open: false,
       user: user,
-      person: new Person(user.profile)
+      person: new Person(user.profile),
+      avatarUrl: '/images/default-avatar.png',
     };
   }
 
   componentDidMount() {
     this.setSize();
     window.addEventListener('resize', () => this.setSize());
+
+    const avatarUrl = this.state.person.avatarUrl();
+
+    if (avatarUrl) {
+      const imageUrl = fetch(avatarUrl)
+        .then(response => response.blob())
+        .then(image => {
+          const objectUrl = URL.createObjectURL(image);
+          this.setState({avatarUrl: objectUrl});
+        });
+    }
   }
 
   setSize() {
