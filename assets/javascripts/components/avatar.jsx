@@ -28,7 +28,7 @@ class AvatarComponent extends Component {
     const avatarUrl = this.state.person.avatarUrl();
 
     if (avatarUrl) {
-      const imageUrl = fetch(avatarUrl)
+      fetch(avatarUrl)
         .then(response => response.blob())
         .then(image => {
           const objectUrl = URL.createObjectURL(image);
