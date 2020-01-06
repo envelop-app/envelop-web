@@ -53,7 +53,7 @@ class AvatarComponent extends Component {
   }
 
   avatarUrl() {
-    return this.state.person.avatarUrl() || '/images/default-avatar.png';
+    return this.state.avatarUrl;
   }
 
   displayName() {
