@@ -3,10 +3,19 @@ import Bottleneck from 'bottleneck';
 import BaseDocumentDownloader from './base_document_downloader';
 import LocalDatabase from './local_database';
 
+const RETRY_INTERVAL = 1000;
+const RETRY_ATTEMPTS = 3;
+
 class PartitionedDocumentDownloader extends BaseDocumentDownloader {
   constructor() {
     super(...arguments);
-    this.limiter = new Bottleneck({ maxConcurrent: 3 });
+    this.limiter = new Bottleneck({maxConcurrent: 3});
+
+    this.limiter.on('failed', async (error, jobInfo) => {
+      if (jobInfo.retryCount === RETRY_ATTEMPTS) {
+        return RETRY_INTERVAL;
+      }
+    });
   }
 
   async download() {
