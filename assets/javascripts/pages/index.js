@@ -3,8 +3,10 @@ import ReactDOM from "react-dom";
 
 import {
   privateUserSession,
-  publicUserSession
+  publicUserSession,
+  authOptions
 } from '../lib/blockstack_client';
+import { showBlockstackConnect } from '@blockstack/connect';
 import Constants from '../lib/constants'
 import GaiaDocument from '../lib/gaia_document';
 import LocalIndex from '../lib/local_index';
@@ -23,7 +25,7 @@ function mountComponents() {
 function initAuthentication(loginBtn, goToAppBtn) {
   loginBtn.addEventListener('click', event => {
     event.preventDefault();
-    privateUserSession.redirectToSignIn(Constants.BLOCKSTACK_REDIRECT_URI);
+    showBlockstackConnect(authOptions);
   })
 
   goToAppBtn.addEventListener('click', event => {
@@ -74,9 +76,7 @@ document.addEventListener("DOMContentLoaded", event => {
   if (privateUserSession.isUserSignedIn()) {
     goToAppBtn.classList.remove('hide');
   } else if (privateUserSession.isSignInPending()) {
-    privateUserSession.handlePendingSignIn().then(userData => {
-      window.location = Constants.BLOCKSTACK_REDIRECT_URI;
-    });
+    privateUserSession.handlePendingSignIn();
   } else {
     loginBtn.classList.remove('hide');
   }
