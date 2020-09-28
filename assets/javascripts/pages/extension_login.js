@@ -1,16 +1,16 @@
 import {
-  privateUserSession,
-  publicUserSession
+  publicUserSession,
+  extensionAuthOptions
 } from '../lib/blockstack_client';
-import Constants from '../lib/constants'
 
 import Record from '../lib/records/record';
+import { showBlockstackConnect } from '@blockstack/connect';
 Record.config({ session: publicUserSession });
 
 function initAuthentication(loginBtn) {
   loginBtn.addEventListener('click', event => {
     event.preventDefault();
-    privateUserSession.redirectToSignIn(Constants.BLOCKSTACK_EXTENSION_REDIRECT_URI);
+    showBlockstackConnect(extensionAuthOptions);
   });
 }
 
