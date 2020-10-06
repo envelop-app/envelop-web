@@ -21,7 +21,7 @@ const options = {
   },
 };
 
-const extensionOptions = options;
+const extensionOptions = Object.assign({}, options)
 extensionOptions.finished = ({ }) => {
   window.location = Constants.BLOCKSTACK_EXTENSION_REDIRECT_URI;
 }
