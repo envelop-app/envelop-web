@@ -24,7 +24,6 @@ function mountComponents() {
 function initAuthentication(loginBtn, goToAppBtn) {
   loginBtn.addEventListener('click', event => {
     event.preventDefault();
-    console.log(Constants.BLOCKSTACK_REDIRECT_URI)
     authenticate();
   })
 
@@ -57,7 +56,6 @@ function initUploadInput(inputElement) {
           window.location = Constants.BLOCKSTACK_REDIRECT_URI;
         }
         else {
-          console.log(Constants.BLOCKSTACK_REDIRECT_URI)
           authenticate();
         }
       });

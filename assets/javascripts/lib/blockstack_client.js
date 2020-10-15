@@ -16,7 +16,7 @@ const authOptions = {
   userSession: privateUserSession,
   appDetails: {
     name: 'Envelop',
-    icon: 'envelop-icon.png',
+    icon: '/images/manifest-icon.png',
   }
 }
 
