@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import {
+  authenticate,
   privateUserSession,
   publicUserSession
 } from '../lib/blockstack_client';
@@ -23,7 +24,8 @@ function mountComponents() {
 function initAuthentication(loginBtn, goToAppBtn) {
   loginBtn.addEventListener('click', event => {
     event.preventDefault();
-    privateUserSession.redirectToSignIn(Constants.BLOCKSTACK_REDIRECT_URI);
+    console.log(Constants.BLOCKSTACK_REDIRECT_URI)
+    authenticate();
   })
 
   goToAppBtn.addEventListener('click', event => {
@@ -55,7 +57,8 @@ function initUploadInput(inputElement) {
           window.location = Constants.BLOCKSTACK_REDIRECT_URI;
         }
         else {
-          privateUserSession.redirectToSignIn(Constants.BLOCKSTACK_REDIRECT_URI);
+          console.log(Constants.BLOCKSTACK_REDIRECT_URI)
+          authenticate();
         }
       });
   });
@@ -74,7 +77,7 @@ document.addEventListener("DOMContentLoaded", event => {
   if (privateUserSession.isUserSignedIn()) {
     goToAppBtn.classList.remove('hide');
   } else if (privateUserSession.isSignInPending()) {
-    privateUserSession.handlePendingSignIn().then(userData => {
+    privateUserSession.handlePendingSignIn().then(() => {
       window.location = Constants.BLOCKSTACK_REDIRECT_URI;
     });
   } else {

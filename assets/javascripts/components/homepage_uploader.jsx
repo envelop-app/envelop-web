@@ -5,7 +5,7 @@ import Constants from '../lib/constants';
 import Dialogs from '../lib/dialogs';
 import GaiaDocument from '../lib/gaia_document';
 import LocalIndex from '../lib/local_index';
-import { privateUserSession } from '../lib/blockstack_client';
+import { authenticate, privateUserSession } from '../lib/blockstack_client';
 
 import DropZoneComponent from './drop_zone.jsx';
 import MainDialogComponent from './main_dialog.jsx';
@@ -43,7 +43,7 @@ class HomepageUploaderComponent extends Component {
       window.location = Constants.BLOCKSTACK_REDIRECT_URI;
     }
     else {
-      privateUserSession.redirectToSignIn(Constants.BLOCKSTACK_REDIRECT_URI);
+      authenticate();
     }
   }
 
