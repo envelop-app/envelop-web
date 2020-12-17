@@ -1,8 +1,10 @@
 import { ReadableStream, WritableStream } from 'web-streams-polyfill/ponyfill';
 import streamSaver from 'streamsaver';
+import Constants from './constants'
 
-streamSaver.WritableStream = WritableStream;
 streamSaver.ReadableStream = ReadableStream;
+streamSaver.WritableStream = WritableStream;
+streamSaver.mitm = Constants.MITM;
 
 class BrowserDownloader {
   constructor(doc) {

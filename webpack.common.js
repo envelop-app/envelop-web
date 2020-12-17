@@ -4,6 +4,7 @@ const autoprefixer = require('autoprefixer');
 const fs = require('fs');
 const globImporter = require('node-sass-glob-importer');
 const WorkerPlugin = require('worker-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 function getPageEntries() {
   // Read all files under /assets/javascripts/pages/* and create
@@ -78,7 +79,13 @@ module.exports = {
     new webpack.DefinePlugin({
       __PREVIEW__: !!process.env.PREVIEW
     }),
-    new WorkerPlugin()
+    new WorkerPlugin(),
+    new CopyPlugin({
+      patterns: [
+        { from: path.join(__dirname, 'node_modules', 'streamsaver', 'sw.js'), to: "" },
+        { from: path.join(__dirname, 'node_modules', 'streamsaver', 'mitm.html'), to: "" },
+      ],
+    }),
   ],
   optimization: {
     splitChunks: {

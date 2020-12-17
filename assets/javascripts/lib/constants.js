@@ -40,7 +40,8 @@ const Constants = {
   KEY_SIZE: 256,
   SINGLE_FILE_SIZE_LIMIT: 9 * (10 ** 6), // 9 MB
   TEMP_DOCUMENTS_PREFIX: 'tempDocuments',
-  FEEDBACK_URL: 'mailto:feedback@envelop.app?subject=Envelop Feedback'
+  FEEDBACK_URL: 'mailto:feedback@envelop.app?subject=Envelop Feedback',
+  MITM: BLOCKSTACK_ORIGIN + '/mitm.html'
 };
 
 export default Constants;
