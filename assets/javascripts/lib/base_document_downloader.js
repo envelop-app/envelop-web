@@ -58,19 +58,6 @@ class BaseDocumentDownloader {
     return decrypted;
   }
 
-  createBlob(contents) {
-    const blobOptions = { name: this.doc.name, type: this.doc.getMimeType() };
-    const blobContents = contents.length ? contents : [contents];
-    return new Blob(blobContents, blobOptions);
-  }
-
-  revokeLater(objectUrl) {
-    window.addEventListener('focus', function handler() {
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
-      window.removeEventListener('focus', handler);
-    });
-  }
-
   async getEncryptionKey(encryption) {
     if (this._encryptionKey) { return this._encryptionKey; }
 

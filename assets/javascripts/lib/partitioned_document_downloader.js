@@ -1,5 +1,6 @@
 import Bottleneck from 'bottleneck';
 
+import BrowserDownloader from './browser_downloader';
 import BaseDocumentDownloader from './base_document_downloader';
 import LocalDatabase from './local_database';
 
@@ -16,37 +17,34 @@ class PartitionedDocumentDownloader extends BaseDocumentDownloader {
         return RETRY_INTERVAL;
       }
     });
+
+    this.browserDownloader = new BrowserDownloader(this.doc);
   }
 
   async download() {
-    let parts;
-
     try {
       await this.downloadParts({ saveLocal: true });
-      parts = await this.loadPartsFromLocal();
+      await this.loadPartsFromLocal();
     }
     catch (e) {
       if (e.name === 'QuotaExceededError') {
         await this.deletePartsFromLocal();
 
-        parts = await this.downloadParts();
+        await this.downloadParts();
       }
     }
 
-    const blob = this.createBlob(parts);
-    const objectUrl = URL.createObjectURL(blob);
+    this.browserDownloader.finish();
 
     await this.deletePartsFromLocal();
-    this.revokeLater(objectUrl);
 
     this.limiter.disconnect();
-
-    return objectUrl;
   }
 
   downloadParts(options = {}) {
     const promises = this.doc.mapPartUrls(async (partUrl, partNumber) => {
       const part = await this.scheduleDownload(partUrl, partNumber);
+      this.browserDownloader.collect(part);
 
       if (options.saveLocal) {
         await LocalDatabase.setItem(this.localUrl(partUrl), part);

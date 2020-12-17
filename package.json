@@ -38,6 +38,8 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@blockstack/connect": "^2.12.7",
+    "@blockstack/stacks-transactions": "^0.7.0",
     "@material/layout-grid": "^0.41.0",
     "@material/menu": "^2.3.0",
     "@material/react-dialog": "^0.13.0",
@@ -47,8 +49,6 @@
     "@material/snackbar": "^2.3.0",
     "base64-js": "^1.3.0",
     "blockstack": "^19.1.0",
-    "@blockstack/connect": "^2.12.7",
-    "@blockstack/stacks-transactions": "^0.7.0",
     "bottleneck": "^2.19.1",
     "buffer": "^5.2.1",
     "copy-to-clipboard": "^3.2.0",
@@ -65,7 +65,9 @@
     "randomstring": "^1.1.5",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "streamsaver": "^2.0.5",
     "uuid": "^3.3.2",
+    "web-streams-polyfill": "^3.0.1",
     "worker-plugin": "https://github.com/envelop-app/worker-plugin.git"
   }
 }
