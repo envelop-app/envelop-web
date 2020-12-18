@@ -19,20 +19,6 @@ class DocumentDownloadCardComponent extends Component {
     return this.props.doc;
   }
 
-  triggerBrowserDownload(url) {
-    const link = document.createElement('a')
-    link.href = url;
-    link.download = this.props.doc.name;
-
-    if (detectBrowser().name === 'firefox') {
-      const event = new MouseEvent('click', {bubbles: true, cancelable: true, view: window});
-      link.dispatchEvent(event);
-    }
-    else {
-      link.click();
-    }
-  }
-
   handleDownload() {
     Page.preventClose(() => {
       const fakeInitialProgress = (Math.random() * 0.05) + 0.01;
@@ -43,8 +29,7 @@ class DocumentDownloadCardComponent extends Component {
 
       return this.props.doc
         .download()
-        .then((downloadUrl) => {
-          setTimeout(() => this.triggerBrowserDownload(downloadUrl), 200);
+        .then(() => {
           this.setState({ downloadState: 'downloaded' });
           return true;
         });
