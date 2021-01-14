@@ -1,0 +1,29 @@
+<div class="ev-homepage-banner hide">
+  <span class="ev-homepage-banner-text">
+    <a href="https://blog.blockstack.org/see-the-stacks-co-blog-for-latest-stacks-ecosystem-updates/" target="_blank">
+      Blockstack is currently updating their services, as such creating new accounts is temporarily unavailable.
+    </a>
+  </span>
+  <a href="#" class="ev-homepage-banner-close">
+    <i class="material-icons">close</i>
+  </a>
+</div>
+
+<script>
+  const localStorageKey = "hideHomepageBanner";
+  const hideHomepageBanner = localStorage.getItem(localStorageKey);
+  const bannerEl = document.querySelector(".ev-homepage-banner");
+
+  if (!hideHomepageBanner) {
+    bannerEl.classList.remove("hide");
+  }
+
+  function hideBanner(evt) {
+    evt.preventDefault();
+
+    bannerEl.classList.add("hide");
+    localStorage.setItem(localStorageKey, true);
+  }
+
+  bannerEl.addEventListener("click", hideBanner);
+</script>
