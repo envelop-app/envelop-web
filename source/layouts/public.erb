@@ -1,4 +1,6 @@
 <% wrap_layout :layout do %>
+  <%= partial(:banner) %>
+
   <div class="ev-layout-public">
     <% if content_for?(:navbar) %>
       <%= yield_content(:navbar) %>
