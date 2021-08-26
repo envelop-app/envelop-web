@@ -53,7 +53,7 @@ class GaiaIndex {
   }
 
   async load() {
-    const indexJson = await Record.getSession().getFile('index');
+    const indexJson = await Record.getStorage().getFile('index');
     const index = indexJson && JSON.parse(indexJson);
 
     if (index) {
@@ -121,7 +121,7 @@ class GaiaIndex {
 
     await this.load();
     callback(this);
-    await Record.getSession().putFile('index', JSON.stringify(this));
+    await Record.getStorage().putFile('index', JSON.stringify(this));
 
     this.busy = false;
 

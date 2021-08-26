@@ -1,4 +1,5 @@
 import randomstring from 'randomstring';
+import { Storage  } from '@stacks/storage';
 
 function generateHash(length) {
   return randomstring.generate(length);
@@ -27,13 +28,17 @@ class Record {
     return session;
   }
 
+  static getStorage() {
+    return new Storage({ userSession: this.getSession() });
+  }
+
   static async get(id, options = {}) {
     if (options.username && !options.username.includes('.')) {
       options.username += '.id.blockstack';
     }
 
     const opts = { decrypt: false, verify: false, ...options };
-    const json = await this.getSession().getFile(id, opts);
+    const json = await this.getStorage().getFile(id, opts);
     const payload = JSON.parse(json);
     const parsed = await this.parse(payload, options);
 
@@ -91,7 +96,7 @@ class Record {
 
   async delete() {
     await this.runHooks('beforeDelete');
-    await Record.getSession().deleteFile(this.id);
+    await Record.getStorage().deleteFile(this.id);
     return this.runHooks('afterDelete');
   }
 
@@ -140,7 +145,7 @@ class Record {
     const serialized = await this.serialize(payload);
     const content = JSON.stringify(serialized);
     const fileOptions = { encrypt: false, verify: false };
-    await Record.getSession().putFile(payload.id, content, fileOptions);
+    await Record.getStorage().putFile(payload.id, content, fileOptions);
 
     // FIXME: What about code that checks for isPersisted????
     Object.assign(this, payload);

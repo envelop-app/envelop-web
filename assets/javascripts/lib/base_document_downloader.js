@@ -20,7 +20,7 @@ class BaseDocumentDownloader {
 
   async downloadRawFile(url, options = {}) {
     const getOptions = { username: this.doc.username, decrypt: false, verify: false };
-    const contents = await Record.getSession().getFile(url, getOptions);
+    const contents = await Record.getStorage().getFile(url, getOptions);
 
     if (this.doc.version < 2) {
       return contents;

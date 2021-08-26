@@ -5,7 +5,7 @@ import Workers from './workers';
 
 const publicFileOptions = { encrypt: false, verify: false };
 function putPublicFile(name, contents) {
-  return Record.getSession().putFile(name, contents, publicFileOptions);
+  return Record.getStorage().putFile(name, contents, publicFileOptions);
 }
 
 class BaseDocumentUploader {

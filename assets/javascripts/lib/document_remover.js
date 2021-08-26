@@ -63,7 +63,7 @@ class DocumentRemover {
   }
 
   removeRawFile(url) {
-    return Record.getSession().deleteFile(url);
+    return Record.getStorage().deleteFile(url);
   }
 }
 

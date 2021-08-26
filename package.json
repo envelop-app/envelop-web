@@ -48,6 +48,7 @@
     "@stacks/auth": "^2.0.1",
     "@stacks/connect": "^5.0.5",
     "@stacks/profile": "^2.0.1",
+    "@stacks/storage": "^2.0.1",
     "@stacks/transactions": "^2.0.1",
     "base64-js": "^1.3.0",
     "bottleneck": "^2.19.1",
