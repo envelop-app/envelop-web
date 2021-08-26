@@ -1,5 +1,5 @@
-import {AppConfig, UserSession} from 'blockstack';
-import { showBlockstackConnect } from '@blockstack/connect';
+import {AppConfig, UserSession} from '@stacks/auth';
+import { showConnect } from '@stacks/connect';
 import Constants from './constants';
 
 function getUserSession(scopes) {
@@ -28,11 +28,11 @@ const extensionAuthOptions = {
 }
 
 function authenticate() {
-  return showBlockstackConnect(authOptions);
+  return showConnect(authOptions);
 }
 
 function extensionAuthenticate() {
-  return showBlockstackConnect(extensionAuthOptions);
+  return showConnect(extensionAuthOptions);
 }
 
 export { authenticate, extensionAuthenticate, privateUserSession, publicUserSession };

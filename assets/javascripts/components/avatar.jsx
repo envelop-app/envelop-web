@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Person} from 'blockstack';
+import {Person} from '@stacks/profile';
 import copy from 'copy-to-clipboard';
 import prettyBytes from 'pretty-bytes';
 import {privateUserSession} from '../lib/blockstack_client';
