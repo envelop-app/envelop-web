@@ -1,6 +1,6 @@
 ![Envelop](https://envelop.app/images/logo.svg)
 
-DISCLAIMER: This project is no longer being maintained
+**DISCLAIMER**: This project is no longer being maintained
 
 # Web app 🌐 [![Netlify Status](https://api.netlify.com/api/v1/badges/84718080-fc42-4011-acab-9d891c514d0c/deploy-status)](https://app.netlify.com/sites/envelop-web/deploys) [![Build Status](https://travis-ci.org/envelop-app/envelop-web.svg?branch=master)](https://travis-ci.org/envelop-app/envelop-web)
 
