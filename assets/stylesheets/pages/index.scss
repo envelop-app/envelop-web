@@ -148,7 +148,7 @@ $ev-index__cell-padding: 25px;
 }
 
 .ev-index__section-cell-third {
-  width: calc(33.33% - #{$ev-index__cell-padding});
+  width: calc(50% - #{$ev-index__cell-padding});
   padding: 20px 0;
 
   @media(max-width: mdc-layout-grid-breakpoint-max('tablet')) {

@@ -28,7 +28,10 @@ const extensionAuthOptions = {
 }
 
 function authenticate() {
-  return showBlockstackConnect(authOptions);
+  return showBlockstackConnect({  
+    ...authOptions,
+    sendToSignIn: true,
+  });
 }
 
 function extensionAuthenticate() {
